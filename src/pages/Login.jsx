@@ -11,7 +11,7 @@ export default function Login() {
 
   const onChange = (event) => {
     const { name, value } = event.target;
-    setState({ [name]: value });
+    setState((prevState) => ({ ...prevState, [name]: value }));
   };
 
   const onSubmit = (event) => {
@@ -42,7 +42,10 @@ export default function Login() {
                 </p>
               </div>
             </div>
-            <Card padding="p-12">
+            <Card
+              padding="p-12"
+              additionalStyle="flex justify-center self-center z-40"
+            >
               <div className="mb-4">
                 <h3 className="font-semibold text-2xl text-gray-800">
                   Sign In{" "}

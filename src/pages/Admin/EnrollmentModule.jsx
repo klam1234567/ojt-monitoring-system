@@ -2,5 +2,9 @@ import React from "react";
 import { Layout } from "components";
 
 export default function EnrollmentModule() {
-  return <Layout>EnrollmentModule</Layout>;
+  return (
+    <Layout title="Enrollment Module" description="a list of enrollment module">
+      EnrollmentModule
+    </Layout>
+  );
 }

@@ -35,4 +35,64 @@ const sidebarList = [
   },
 ];
 
-export { sidebarList };
+// dummy data
+const coordinatorDummyData = [
+  {
+    id: 1,
+    coordinatorName: "Snow",
+    contact: 1,
+    email: "iandrilon2@gmail.com",
+    address: "address",
+  },
+  {
+    id: 2,
+    coordinatorName: "Lannister",
+    contact: 3,
+    email: "iandrilon2@gmail.com",
+    address: "address",
+  },
+  {
+    id: 4,
+    coordinatorName: "Stark",
+    contact: 4,
+    email: "iandrilon2@gmail.com",
+    address: "address",
+  },
+  {
+    id: 5,
+    coordinatorName: "Targaryen",
+    contact: 5,
+    email: "iandrilon2@gmail.com",
+    address: "address",
+  },
+  {
+    id: 6,
+    coordinatorName: "Melisandre",
+    contact: 6,
+    email: "iandrilon2@gmail.com",
+    address: "address",
+  },
+  {
+    id: 7,
+    coordinatorName: "Clifford",
+    contact: 7,
+    email: "iandrilon2@gmail.com",
+    address: "address",
+  },
+  {
+    id: 8,
+    coordinatorName: "Frances",
+    contact: 8,
+    email: "iandrilon2@gmail.com",
+    address: "address",
+  },
+  {
+    id: 9,
+    coordinatorName: "Roxie",
+    contact: 9,
+    email: "iandrilon2@gmail.com",
+    address: "address",
+  },
+];
+
+export { sidebarList, coordinatorDummyData };
