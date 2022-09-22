@@ -8,6 +8,7 @@ import {
   Students,
   EnrollmentModule,
   Organization,
+  UpdateCoordinator,
 } from "pages";
 
 function App() {
@@ -20,6 +21,11 @@ function App() {
         <Route exact path="/students" element={<Students />} />
         <Route exact path="/enrollmentModule" element={<EnrollmentModule />} />
         <Route exact path="/organization" element={<Organization />} />
+        <Route
+          exact
+          path="/updateCoordinator"
+          element={<UpdateCoordinator />}
+        />
       </Routes>
     </Router>
   );

@@ -1,6 +1,15 @@
 import firebase from "firebase/compat/app";
+import "firebase/compat/firestore";
+import "firebase/compat/auth";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-import { getFirestore, collection, addDoc } from "firebase/firestore";
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  doc,
+  deleteDoc,
+  updateDoc,
+} from "firebase/firestore";
 import "firebase/compat/storage";
 
 import swal from "sweetalert2";
@@ -20,7 +29,30 @@ const app = firebase.initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-const saveData = async (data, collectionName) => {
+const updateDocument = async (collectionName, config, id) => {
+  try {
+    const updateRef = doc(db, collectionName, id);
+
+    await updateDoc(updateRef, {
+      ...config,
+    }).then(() => {
+      swal.fire({
+        title: "Successfully Updated",
+        text: "click ok to continue",
+        icon: "success",
+      });
+    });
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+const deleteUserAuth = (id) => auth.currentUser.delete(id);
+
+const deleteDocoment = async (collection, docId) =>
+  await deleteDoc(doc(db, collection, docId));
+
+const saveDoc = async (data, collectionName) => {
   try {
     const dbRef = collection(db, collectionName);
     const coordinatorDatas = await addDoc(dbRef, data);
@@ -31,13 +63,17 @@ const saveData = async (data, collectionName) => {
   }
 };
 
-const registerUser = async (email, password) => {
+const registerUser = async (email, password, status) => {
   try {
     const userCredential = await createUserWithEmailAndPassword(
       auth,
       email,
       password
     );
+
+    if (userCredential) {
+      userCredential.user.displayName = status;
+    }
 
     return userCredential;
   } catch (e) {
@@ -49,8 +85,19 @@ const registerUser = async (email, password) => {
           icon: "warning",
         });
         break;
+      default:
+        return;
     }
   }
 };
 
-export { app, registerUser, saveData };
+export {
+  app,
+  registerUser,
+  saveDoc,
+  db,
+  auth,
+  deleteDocoment,
+  deleteUserAuth,
+  updateDocument,
+};

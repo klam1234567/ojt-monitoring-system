@@ -6,3 +6,4 @@ export { default as Coordinator } from "./Admin/Coordinator";
 export { default as Students } from "./Admin/Students";
 export { default as EnrollmentModule } from "./Admin/EnrollmentModule";
 export { default as Organization } from "./Admin/Organization";
+export { default as UpdateCoordinator } from "./UpdateCoordinator";
