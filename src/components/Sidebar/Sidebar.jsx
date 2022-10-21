@@ -1,9 +1,9 @@
-import React from "react";
-import { Link, useLocation } from "react-router-dom";
-import { sidebarList } from "data";
+import React from "react"
+import { Link, useLocation } from "react-router-dom"
+import { sidebarList } from "data"
 
 export default function Sidebar() {
-  const query = useLocation();
+  const query = useLocation()
 
   return (
     <section className="w-1/4">
@@ -33,10 +33,10 @@ export default function Sidebar() {
                   <span className="text-sm">{type.title}</span>
                 </Link>
               </li>
-            );
+            )
           })}
         </ul>
       </aside>
     </section>
-  );
+  )
 }

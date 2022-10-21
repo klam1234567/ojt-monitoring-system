@@ -1,7 +1,7 @@
-import firebase from "firebase/compat/app";
-import "firebase/compat/firestore";
-import "firebase/compat/auth";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import firebase from "firebase/compat/app"
+import "firebase/compat/firestore"
+import "firebase/compat/auth"
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth"
 import {
   getFirestore,
   collection,
@@ -9,10 +9,10 @@ import {
   doc,
   deleteDoc,
   updateDoc,
-} from "firebase/firestore";
-import "firebase/compat/storage";
+} from "firebase/firestore"
+import "firebase/compat/storage"
 
-import swal from "sweetalert2";
+import swal from "sweetalert2"
 
 const firebaseConfig = {
   apiKey: "AIzaSyCdrNFkMEBLHqinww8lQE5i2tMvYeWsIHg",
@@ -22,16 +22,16 @@ const firebaseConfig = {
   messagingSenderId: "270373481852",
   appId: "1:270373481852:web:220ece83711e0acb8948f9",
   measurementId: "G-8MQVSYHT3C",
-};
+}
 
 // Initialize Firebase
-const app = firebase.initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
+const app = firebase.initializeApp(firebaseConfig)
+const db = getFirestore(app)
+const auth = getAuth(app)
 
 const updateDocument = async (collectionName, config, id) => {
   try {
-    const updateRef = doc(db, collectionName, id);
+    const updateRef = doc(db, collectionName, id)
 
     await updateDoc(updateRef, {
       ...config,
@@ -40,28 +40,28 @@ const updateDocument = async (collectionName, config, id) => {
         title: "Successfully Updated",
         text: "click ok to continue",
         icon: "success",
-      });
-    });
+      })
+    })
   } catch (e) {
-    console.log(e);
+    console.log(e)
   }
-};
+}
 
-const deleteUserAuth = (id) => auth.currentUser.delete(id);
+const deleteUserAuth = (id) => auth.currentUser.delete(id)
 
-const deleteDocoment = async (collection, docId) =>
-  await deleteDoc(doc(db, collection, docId));
+const deleteDocument = async (collection, docId) =>
+  await deleteDoc(doc(db, collection, docId))
 
 const saveDoc = async (data, collectionName) => {
   try {
-    const dbRef = collection(db, collectionName);
-    const coordinatorDatas = await addDoc(dbRef, data);
+    const dbRef = collection(db, collectionName)
+    const coordinatorDatas = await addDoc(dbRef, data)
 
-    return coordinatorDatas;
+    return coordinatorDatas
   } catch (e) {
-    console.log(e);
+    console.log(e)
   }
-};
+}
 
 const registerUser = async (email, password, status) => {
   try {
@@ -69,13 +69,13 @@ const registerUser = async (email, password, status) => {
       auth,
       email,
       password
-    );
+    )
 
     if (userCredential) {
-      userCredential.user.displayName = status;
+      userCredential.user.displayName = status
     }
 
-    return userCredential;
+    return userCredential
   } catch (e) {
     switch (e.code) {
       case "auth/email-already-in-use":
@@ -83,13 +83,13 @@ const registerUser = async (email, password, status) => {
           title: "Oops!",
           text: "email is already in use please try again",
           icon: "warning",
-        });
-        break;
+        })
+        break
       default:
-        return;
+        return
     }
   }
-};
+}
 
 export {
   app,
@@ -97,7 +97,7 @@ export {
   saveDoc,
   db,
   auth,
-  deleteDocoment,
+  deleteDocument,
   deleteUserAuth,
   updateDocument,
-};
+}

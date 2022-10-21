@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 import {
   BarChart,
   Bar,
@@ -6,9 +6,8 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   ResponsiveContainer,
-} from "recharts";
+} from "recharts"
 
 export default function Barchart() {
   const data = [
@@ -24,7 +23,7 @@ export default function Barchart() {
       name: "Organization",
       value: 2000,
     },
-  ];
+  ]
 
   return (
     <div>
@@ -55,5 +54,5 @@ export default function Barchart() {
         </BarChart>
       </ResponsiveContainer>
     </div>
-  );
+  )
 }

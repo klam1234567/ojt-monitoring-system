@@ -1,5 +1,5 @@
-import React from "react";
-import { Sidebar } from "components";
+import React from "react"
+import { Sidebar } from "components"
 
 export default function Layout({ children, title, description }) {
   return (
@@ -13,5 +13,5 @@ export default function Layout({ children, title, description }) {
         <aside className="my-4 w-full">{children}</aside>
       </div>
     </div>
-  );
+  )
 }

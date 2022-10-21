@@ -1,5 +1,5 @@
-import React from "react";
-import { PageModal, Textbox } from "components";
+import React from "react"
+import { PageModal, Textbox } from "components"
 
 export default function AddCoordinatorModal({
   isToggle,
@@ -9,7 +9,7 @@ export default function AddCoordinatorModal({
   clearState,
   onSubmit,
 }) {
-  const { coordinatorName, contact, email, address, password } = config;
+  const { coordinatorName, contact, email, address, password } = config
 
   return (
     <PageModal open={isToggle} isClose={toggleModal}>
@@ -78,5 +78,5 @@ export default function AddCoordinatorModal({
         </div>
       </form>
     </PageModal>
-  );
+  )
 }

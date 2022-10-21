@@ -1,24 +1,24 @@
-import React, { useState } from "react";
-import { Card } from "components";
+import React, { useState } from "react"
+import { Card } from "components"
 
 const initialState = {
   email: "",
   password: "",
-};
+}
 
 export default function Login() {
-  const [{ email, password }, setState] = useState(initialState);
+  const [{ email, password }, setState] = useState(initialState)
 
   const onChange = (event) => {
-    const { name, value } = event.target;
-    setState((prevState) => ({ ...prevState, [name]: value }));
-  };
+    const { name, value } = event.target
+    setState((prevState) => ({ ...prevState, [name]: value }))
+  }
 
   const onSubmit = (event) => {
-    event.preventDefault();
+    event.preventDefault()
 
-    console.log({ email, password });
-  };
+    console.log({ email, password })
+  }
 
   return (
     <section className="flex h-screen">
@@ -112,5 +112,5 @@ export default function Login() {
         </div>
       </div>
     </section>
-  );
+  )
 }

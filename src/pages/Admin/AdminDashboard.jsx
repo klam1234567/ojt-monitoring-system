@@ -1,6 +1,6 @@
-import React from "react";
-import { Users, User, Database } from "react-feather";
-import { Layout, Card, Barchart } from "components";
+import React from "react"
+import { Users, User, Database } from "react-feather"
+import { Layout, Card, Barchart } from "components"
 
 export default function AdminDashboard() {
   const statisticalCard = [
@@ -22,7 +22,7 @@ export default function AdminDashboard() {
       icon: <Database />,
       counter: 100,
     },
-  ];
+  ]
 
   return (
     <Layout
@@ -55,5 +55,5 @@ export default function AdminDashboard() {
 
       <Barchart />
     </Layout>
-  );
+  )
 }

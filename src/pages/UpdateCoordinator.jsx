@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useContext } from "react";
-import { CoordinatorContext } from "context/CoordinatorProvider";
-import { useLocation } from "react-router-dom";
-import { Layout, Textbox, Back } from "components";
-import { updateDocument } from "config/firebase";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect, useContext } from "react"
+import { CoordinatorContext } from "context/CoordinatorProvider"
+import { useLocation } from "react-router-dom"
+import { Layout, Textbox, Back } from "components"
+import { updateDocument } from "config/firebase"
+import { Link } from "react-router-dom"
 
 // Utils
-import { objectAssign } from "Utils/ReusableSyntax";
+import { objectAssign } from "Utils/ReusableSyntax"
 
 const initialState = {
   authId: "",
@@ -14,27 +14,30 @@ const initialState = {
   contact: "",
   email: "",
   address: "",
-};
+}
 
 export default function UpdateCoordinator() {
-  const params = useLocation();
-  const paramsId = params.search.split("=");
+  const params = useLocation()
+  const paramsId = params.search.split("=")
 
-  const { setcoordinatorId, fetchSpecificCoord } =
-    useContext(CoordinatorContext);
+  const { setcoordinatorId, fetchSpecificCoord } = useContext(
+    CoordinatorContext
+  )
 
-  fetchSpecificCoord && objectAssign(fetchSpecificCoord, initialState);
+  fetchSpecificCoord && objectAssign(fetchSpecificCoord, initialState)
 
-  const [{ authId, coordinatorName, contact, email, address }, setState] =
-    useState(initialState);
+  const [
+    { authId, coordinatorName, contact, email, address },
+    setState,
+  ] = useState(initialState)
 
   const onChange = (event) => {
-    const { name, value } = event.target;
-    setState((prevState) => ({ ...prevState, [name]: value }));
-  };
+    const { name, value } = event.target
+    setState((prevState) => ({ ...prevState, [name]: value }))
+  }
 
   const onSubmit = (event) => {
-    event.preventDefault();
+    event.preventDefault()
 
     const config = {
       authId,
@@ -42,14 +45,14 @@ export default function UpdateCoordinator() {
       contact,
       email,
       address,
-    };
+    }
 
-    updateDocument("coordinatorData", config, paramsId[1]);
-  };
+    updateDocument("coordinatorData", config, paramsId[1])
+  }
 
   useEffect(() => {
-    paramsId[1] && setcoordinatorId(paramsId[1]);
-  }, [paramsId[1]]);
+    paramsId[1] && setcoordinatorId(paramsId[1])
+  }, [paramsId[1]])
 
   return (
     <Layout
@@ -111,5 +114,5 @@ export default function UpdateCoordinator() {
         </div>
       </form>
     </Layout>
-  );
+  )
 }

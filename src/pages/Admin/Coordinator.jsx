@@ -1,19 +1,19 @@
-import React, { Fragment, useState, useContext } from "react";
-import swal from "sweetalert2";
-import { Plus } from "react-feather";
-import { Layout, Table, AddCoordinatorModal } from "components";
-import { useNavigate } from "react-router-dom";
+import React, { Fragment, useState, useContext } from "react"
+import swal from "sweetalert2"
+import { Plus } from "react-feather"
+import { Layout, Table, AddCoordinatorModal } from "components"
+import { useNavigate } from "react-router-dom"
 
 // context
-import { CoordinatorContext } from "context/CoordinatorProvider";
+import { CoordinatorContext } from "context/CoordinatorProvider"
 
 //firebase
 import {
   registerUser,
   saveDoc,
-  deleteDocoment,
+  deleteDocument,
   deleteUserAuth,
-} from "config/firebase";
+} from "config/firebase"
 
 const initialState = {
   coordinatorName: "",
@@ -21,49 +21,51 @@ const initialState = {
   email: "",
   address: "",
   password: "",
-};
+}
 
 export default function Coordinator() {
-  const [isToggle, setToggle] = useState(false);
+  const [isToggle, setToggle] = useState(false)
 
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
-  const [{ coordinatorName, contact, email, address, password }, setState] =
-    useState(initialState);
+  const [
+    { coordinatorName, contact, email, address, password },
+    setState,
+  ] = useState(initialState)
 
-  const config = { coordinatorName, contact, email, address, password };
+  const config = { coordinatorName, contact, email, address, password }
 
-  const { fetchCoordinator } = useContext(CoordinatorContext);
+  const { fetchCoordinator } = useContext(CoordinatorContext)
 
   const clearState = () => {
-    setState(initialState);
-  };
+    setState(initialState)
+  }
 
   const toggleModal = () => {
-    setToggle((isToggle) => !isToggle);
-  };
+    setToggle((isToggle) => !isToggle)
+  }
 
   const onChange = (event) => {
-    const { name, value } = event.target;
+    const { name, value } = event.target
 
-    setState((prevState) => ({ ...prevState, [name]: value }));
-  };
+    setState((prevState) => ({ ...prevState, [name]: value }))
+  }
 
   const onSubmit = async (event) => {
-    event.preventDefault();
+    event.preventDefault()
 
     try {
-      const credentials = await registerUser(email, password, "coordinator");
+      const credentials = await registerUser(email, password, "coordinator")
 
       if (credentials) {
-        console.log(credentials);
+        console.log(credentials)
         const config = {
           authId: credentials.user.uid,
           email: credentials.user.email,
           coordinatorName,
           contact,
           address,
-        };
+        }
 
         config.email &&
           config.authId &&
@@ -72,16 +74,16 @@ export default function Coordinator() {
               title: "Successfully Created",
               text: "please click the okay button to continue",
               icon: "success",
-            });
-          });
+            })
+          })
       }
 
-      clearState();
-      setToggle(false);
+      clearState()
+      setToggle(false)
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
-  };
+  }
 
   //column example
   const columns = [
@@ -90,7 +92,7 @@ export default function Coordinator() {
       headerName: "User Identification",
       width: 200,
       renderCell: (data) => {
-        return <span className="text-blue-500">{data.id}</span>;
+        return <span className="text-blue-500">{data.id}</span>
       },
     },
     {
@@ -99,7 +101,7 @@ export default function Coordinator() {
       width: 200,
       hide: true,
       renderCell: (data) => {
-        return <span className="text-blue-500">{data.id}</span>;
+        return <span className="text-blue-500">{data.id}</span>
       },
     },
     {
@@ -135,7 +137,7 @@ export default function Coordinator() {
       renderCell: (params) => {
         // delete data in coordinator row
         const Delete = (e) => {
-          e.stopPropagation(); // don't select this row after clicking
+          e.stopPropagation() // don't select this row after clicking
 
           swal
             .fire({
@@ -144,33 +146,32 @@ export default function Coordinator() {
               icon: "warning",
               showCancelButton: true,
             })
-            .then((result) => {
+            .then(async (result) => {
               if (result.isConfirmed) {
-                deleteDocoment("coordinatorData", params.row.id).then(() => {
-                  deleteUserAuth(params.row.authId).then(() => {
-                    swal.fire({
-                      title: "Successfully Deleted",
-                      text: "Please click yes to continue",
-                      icon: "success",
-                    });
-                  });
-                });
+                await deleteUserAuth(params.row.authId)
+                deleteDocument("coordinatorData", params.row.id).then(() => {
+                  swal.fire({
+                    title: "Successfully Deleted",
+                    text: "Please click yes to continue",
+                    icon: "success",
+                  })
+                })
               } else {
-                swal.fire("Yay!", "your data is safe", "success");
+                swal.fire("Yay!", "your data is safe", "success")
               }
-            });
-        };
+            })
+        }
 
         // update data in coordinator row
         const Update = (e) => {
-          e.stopPropagation(); // don't select this row after clickin
+          e.stopPropagation() // don't select this row after clickin
 
           if (params.row.id) {
-            navigate(`/updateCoordinator?id=${params.row.id}`);
+            navigate(`/updateCoordinator?id=${params.row.id}`)
           }
 
           // updateToggleModal();
-        };
+        }
 
         return (
           <div className="space-x-4">
@@ -187,10 +188,10 @@ export default function Coordinator() {
               Delete
             </button>
           </div>
-        );
+        )
       },
     },
-  ];
+  ]
 
   // const updateModal = (
   //   <UpdateCoordinatorModal
@@ -212,7 +213,7 @@ export default function Coordinator() {
       onSubmit={onSubmit}
       onChange={onChange}
     />
-  );
+  )
 
   // // loading spinner before the data comes out
   // const loading = fetchCoordinator.length <= 0;
@@ -232,5 +233,5 @@ export default function Coordinator() {
         <Table data={fetchCoordinator} columns={columns} loading={false} />
       </Layout>
     </Fragment>
-  );
+  )
 }

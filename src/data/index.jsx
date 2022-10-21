@@ -1,6 +1,7 @@
-import { Home, User, Users, Book, FileText } from "react-feather";
+import React from "react"
+import { Home, User, Users, Book, FileText } from "react-feather"
 
-const iconSize = 18;
+const iconSize = 18
 
 const sidebarList = [
   {
@@ -33,7 +34,7 @@ const sidebarList = [
     icon: <FileText size={iconSize} />,
     path: "/organization",
   },
-];
+]
 
 // dummy data
 const coordinatorDummyData = [
@@ -93,6 +94,6 @@ const coordinatorDummyData = [
     email: "iandrilon2@gmail.com",
     address: "address",
   },
-];
+]
 
-export { sidebarList, coordinatorDummyData };
+export { sidebarList, coordinatorDummyData }
