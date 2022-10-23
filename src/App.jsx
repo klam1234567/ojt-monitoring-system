@@ -10,6 +10,7 @@ import {
   EnrollmentModule,
   Organization,
   UpdateCoordinator,
+  UpdateStudents,
 } from "./pages"
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
           path="/updateCoordinator"
           element={<UpdateCoordinator />}
         />
+        <Route exact path="/updateStudents" element={<UpdateStudents />} />
       </Routes>
     </Router>
   )

@@ -11,8 +11,8 @@ import { CoordinatorContext } from "context/CoordinatorProvider"
 import {
   registerUser,
   saveDoc,
-  deleteDocument,
-  deleteUserAuth,
+  // deleteDocument,
+  // deleteUserAuth,
 } from "config/firebase"
 
 const initialState = {
@@ -28,10 +28,8 @@ export default function Coordinator() {
 
   const navigate = useNavigate()
 
-  const [
-    { coordinatorName, contact, email, address, password },
-    setState,
-  ] = useState(initialState)
+  const [{ coordinatorName, contact, email, address, password }, setState] =
+    useState(initialState)
 
   const config = { coordinatorName, contact, email, address, password }
 
@@ -136,31 +134,33 @@ export default function Coordinator() {
       width: 200,
       renderCell: (params) => {
         // delete data in coordinator row
-        const Delete = (e) => {
-          e.stopPropagation() // don't select this row after clicking
+        // const Delete = (e) => {
+        //   e.stopPropagation() // don't select this row after clicking
 
-          swal
-            .fire({
-              title: "ARE YOU SURE?",
-              text: "are you sure to delete this data?",
-              icon: "warning",
-              showCancelButton: true,
-            })
-            .then(async (result) => {
-              if (result.isConfirmed) {
-                await deleteUserAuth(params.row.authId)
-                deleteDocument("coordinatorData", params.row.id).then(() => {
-                  swal.fire({
-                    title: "Successfully Deleted",
-                    text: "Please click yes to continue",
-                    icon: "success",
-                  })
-                })
-              } else {
-                swal.fire("Yay!", "your data is safe", "success")
-              }
-            })
-        }
+        //   swal
+        //     .fire({
+        //       title: "ARE YOU SURE?",
+        //       text: "are you sure to delete this data?",
+        //       icon: "warning",
+        //       showCancelButton: true,
+        //     })
+        //     .then(async (result) => {
+        //       if (result.isConfirmed) {
+        //         await deleteUserAuth(params.row?.authId)
+        //         await deleteDocument("coordinatorData", params.row.id).then(
+        //           () => {
+        //             swal.fire({
+        //               title: "Successfully Deleted",
+        //               text: "Please click yes to continue",
+        //               icon: "success",
+        //             })
+        //           }
+        //         )
+        //       } else {
+        //         swal.fire("Yay!", "your data is safe", "success")
+        //       }
+        //     })
+        // }
 
         // update data in coordinator row
         const Update = (e) => {
@@ -181,12 +181,12 @@ export default function Coordinator() {
             >
               Edit
             </button>
-            <button
+            {/* <button
               className="cursor-pointer cursor-pointer bg-slate-900 hover:bg-slate-600 transition-all text-white py-2 px-4 rounded-lg border-2"
               onClick={Delete}
             >
               Delete
-            </button>
+            </button> */}
           </div>
         )
       },

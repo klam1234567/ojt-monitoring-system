@@ -47,7 +47,7 @@ const updateDocument = async (collectionName, config, id) => {
   }
 }
 
-const deleteUserAuth = (id) => auth.currentUser.delete(id)
+const deleteUserAuth = async (id) => await auth.currentUser.delete(id)
 
 const deleteDocument = async (collection, docId) =>
   await deleteDoc(doc(db, collection, docId))

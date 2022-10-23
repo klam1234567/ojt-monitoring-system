@@ -4,12 +4,15 @@ import "styles/index.css"
 import App from "./App"
 
 import { CoordinatorProvider } from "context/CoordinatorProvider"
+import { StudentProvider } from "context/StudentProvider"
 
 const root = ReactDOM.createRoot(document.getElementById("root"))
 root.render(
   <React.StrictMode>
-    <CoordinatorProvider>
-      <App />
-    </CoordinatorProvider>
+    <StudentProvider>
+      <CoordinatorProvider>
+        <App />
+      </CoordinatorProvider>
+    </StudentProvider>
   </React.StrictMode>
 )
