@@ -56,7 +56,7 @@ export default function Coordinator() {
       const credentials = await registerUser(email, password, "coordinator")
 
       if (credentials) {
-        console.log(credentials)
+        // coordinator details that will save to firebase
         const config = {
           authId: credentials.user.uid,
           email: credentials.user.email,
@@ -65,6 +65,7 @@ export default function Coordinator() {
           address,
         }
 
+        //firebase saved event
         config.email &&
           config.authId &&
           saveDoc(config, "coordinatorData").then(() => {
