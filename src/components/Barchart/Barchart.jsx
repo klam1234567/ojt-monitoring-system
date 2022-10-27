@@ -9,19 +9,19 @@ import {
   ResponsiveContainer,
 } from "recharts"
 
-export default function Barchart() {
+export default function Barchart({ student, coordinator, organization }) {
   const data = [
     {
       name: "Student Trainee",
-      value: 4000,
+      value: student,
     },
     {
       name: "Coordinator",
-      value: 3000,
+      value: coordinator,
     },
     {
       name: "Organization",
-      value: 2000,
+      value: organization,
     },
   ]
 
