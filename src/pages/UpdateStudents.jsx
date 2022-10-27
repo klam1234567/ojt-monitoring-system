@@ -21,8 +21,6 @@ export default function UpdateCoordinator() {
   const params = useLocation()
   const paramsId = params.search.split("=")
 
-  console.log(paramsId[1])
-
   const { setStudentId, fetchSpecificStudent } = useContext(StudentContext)
 
   fetchSpecificStudent && objectAssign(fetchSpecificStudent, initialState)
@@ -51,7 +49,7 @@ export default function UpdateCoordinator() {
 
   useEffect(() => {
     paramsId[1] && setStudentId(paramsId[1])
-  }, [paramsId[1]])
+  }, [paramsId])
 
   return (
     <Layout

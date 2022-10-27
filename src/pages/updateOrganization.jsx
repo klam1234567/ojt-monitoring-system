@@ -57,7 +57,7 @@ export default function UpdateCoordinator() {
 
   useEffect(() => {
     paramsId[1] && setOrganizationId(paramsId[1])
-  }, [paramsId[1]])
+  }, [paramsId])
 
   return (
     <Layout

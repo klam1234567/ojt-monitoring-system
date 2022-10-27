@@ -20,16 +20,13 @@ export default function UpdateCoordinator() {
   const params = useLocation()
   const paramsId = params.search.split("=")
 
-  const { setcoordinatorId, fetchSpecificCoord } = useContext(
-    CoordinatorContext
-  )
+  const { setcoordinatorId, fetchSpecificCoord } =
+    useContext(CoordinatorContext)
 
   fetchSpecificCoord && objectAssign(fetchSpecificCoord, initialState)
 
-  const [
-    { authId, coordinatorName, contact, email, address },
-    setState,
-  ] = useState(initialState)
+  const [{ authId, coordinatorName, contact, email, address }, setState] =
+    useState(initialState)
 
   const onChange = (event) => {
     const { name, value } = event.target
@@ -52,7 +49,7 @@ export default function UpdateCoordinator() {
 
   useEffect(() => {
     paramsId[1] && setcoordinatorId(paramsId[1])
-  }, [paramsId[1]])
+  }, [paramsId])
 
   return (
     <Layout
