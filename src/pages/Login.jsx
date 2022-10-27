@@ -100,12 +100,12 @@ export default function Login() {
                 </div>
               </form>
               <div className="pt-5 text-center text-gray-400 text-md">
-                <span>
+                {/* <span>
                   Don't have an account ?
                   <span className="text-green hover:text-gray-500 ml-1 cursor-pointer hover:underline">
                     Sign In
                   </span>
-                </span>
+                </span> */}
               </div>
             </Card>
           </div>

@@ -11,6 +11,7 @@ import {
   Organization,
   UpdateCoordinator,
   UpdateStudents,
+  UpdateOrganization,
 } from "./pages"
 
 function App() {
@@ -29,6 +30,11 @@ function App() {
           element={<UpdateCoordinator />}
         />
         <Route exact path="/updateStudents" element={<UpdateStudents />} />
+        <Route
+          exact
+          path="/updateOrganization"
+          element={<UpdateOrganization />}
+        />
       </Routes>
     </Router>
   )

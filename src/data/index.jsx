@@ -1,5 +1,5 @@
 import React from "react"
-import { Home, User, Users, Book, FileText } from "react-feather"
+import { Home, User, Users, Book, FileText, LogOut } from "react-feather"
 
 const iconSize = 18
 
@@ -33,6 +33,12 @@ const sidebarList = [
     title: "Organization",
     icon: <FileText size={iconSize} />,
     path: "/organization",
+  },
+  {
+    id: 6,
+    title: "Logout",
+    icon: <LogOut size={iconSize} />,
+    path: "",
   },
 ]
 

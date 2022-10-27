@@ -9,5 +9,6 @@ export { default as Back } from "./Back/Back"
 export { default as PageModal } from "./Modal/PageModal"
 export { default as AddCoordinatorModal } from "./Modal/AddCoordinatorModal"
 export { default as AddStudentsModal } from "./Modal/AddStudentsModal"
+export { default as AddOrganization } from "./Modal/AddOrganization"
 
 export { default as Layout } from "./Layout/Layout"
