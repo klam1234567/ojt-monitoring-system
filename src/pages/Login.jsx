@@ -1,5 +1,9 @@
-import React, { useState } from "react"
+import React, { useState, useContext } from "react"
+import { AuthContext } from "context/auth"
+import { signInWithEmailAndPassword, auth } from "config/firebase"
 import { Card } from "components"
+import { Navigate } from "react-router-dom"
+import swal from "sweetalert2"
 
 const initialState = {
   email: "",
@@ -9,15 +13,29 @@ const initialState = {
 export default function Login() {
   const [{ email, password }, setState] = useState(initialState)
 
+  const context = useContext(AuthContext)
+
   const onChange = (event) => {
     const { name, value } = event.target
     setState((prevState) => ({ ...prevState, [name]: value }))
   }
 
-  const onSubmit = (event) => {
+  const onSubmit = async (event) => {
     event.preventDefault()
 
-    console.log({ email, password })
+    const response = await signInWithEmailAndPassword(auth, email, password)
+
+    if (response) {
+      swal.fire({
+        title: "Success!",
+        text: "successfully login click okay to continue",
+        icon: "success",
+      })
+    }
+  }
+
+  if (context) {
+    return <Navigate to="/admin" />
   }
 
   return (

@@ -1,7 +1,12 @@
 import firebase from "firebase/compat/app"
 import "firebase/compat/firestore"
 import "firebase/compat/auth"
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth"
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+} from "firebase/auth"
 import {
   getFirestore,
   collection,
@@ -63,17 +68,13 @@ const saveDoc = async (data, collectionName) => {
   }
 }
 
-const registerUser = async (email, password, status) => {
+const registerUser = async (email, password) => {
   try {
     const userCredential = await createUserWithEmailAndPassword(
       auth,
       email,
       password
     )
-
-    if (userCredential) {
-      userCredential.user.displayName = status
-    }
 
     return userCredential
   } catch (e) {
@@ -100,4 +101,6 @@ export {
   deleteDocument,
   deleteUserAuth,
   updateDocument,
+  signInWithEmailAndPassword,
+  signOut,
 }

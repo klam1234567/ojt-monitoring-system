@@ -14,3 +14,4 @@ export { default as AddStudentsModal } from "./Modal/AddStudentsModal"
 export { default as AddOrganization } from "./Modal/AddOrganization"
 
 export { default as Layout } from "./Layout/Layout"
+export { default as PrivateRoute } from "./Layout/PrivateRoute"

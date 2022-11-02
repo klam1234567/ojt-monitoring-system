@@ -1,9 +1,17 @@
 import React from "react"
 import { Link, useLocation } from "react-router-dom"
-import { sidebarList } from "data"
+import { LogOut } from "react-feather"
+import { auth, signOut } from "config/firebase"
+import rolesHook from "hooks/rolesHook"
 
 export default function Sidebar() {
   const query = useLocation()
+
+  const { info, links } = rolesHook()
+
+  console.log(info, links)
+
+  const logoutUser = () => signOut(auth)
 
   return (
     <section className="w-1/4">
@@ -14,11 +22,11 @@ export default function Sidebar() {
             className="rounded-full w-44 h-44 border-2 border-gray-500 object-cover mb-4"
             alt=""
           />
-          <h1 className="font-bold">Ian Drilon</h1>
-          <h2 className="text-sm">iandrilon2@gmail.com</h2>
+          <h1 className="font-bold">{info.name}</h1>
+          <h2 className="text-sm">{info.email}</h2>
         </div>
         <ul className="space-y-3 mt-10">
-          {sidebarList.map((type) => {
+          {links.map((type) => {
             return (
               <li key={type.id}>
                 <Link
@@ -35,6 +43,17 @@ export default function Sidebar() {
               </li>
             )
           })}
+          <li>
+            <div
+              onClick={logoutUser}
+              className={`text-slate-600 hover:text-white flex items-center hover:text-white hover:bg-slate-800 cursor-pointer transition-all rounded-sm py-2`}
+            >
+              <i className="mx-2 ml-3">
+                <LogOut size="18" />
+              </i>
+              <span className="text-sm">Logout</span>
+            </div>
+          </li>
         </ul>
       </aside>
     </section>

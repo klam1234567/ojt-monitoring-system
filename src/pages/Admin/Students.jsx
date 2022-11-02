@@ -65,7 +65,7 @@ export default function Students() {
     event.preventDefault()
 
     try {
-      const credentials = await registerUser(email, password, "student")
+      const credentials = await registerUser(email, password)
 
       console.log(credentials)
 
@@ -79,6 +79,16 @@ export default function Students() {
           contact,
           address,
         }
+
+        const userData = {
+          authId: credentials.user.uid,
+          email: credentials.user.email,
+          name: fullName,
+          status: "student",
+        }
+
+        //firebase saved event userData
+        config.email && config.authId && (await saveDoc(userData, "userData"))
 
         config.email &&
           config.authId &&

@@ -1,9 +1,9 @@
 import React from "react"
-import { Home, User, Users, Book, FileText, LogOut } from "react-feather"
+import { Home, User, Users, Book, FileText } from "react-feather"
 
 const iconSize = 18
 
-const sidebarList = [
+const admin = [
   {
     id: 1,
     title: "Dashboard",
@@ -34,11 +34,53 @@ const sidebarList = [
     icon: <FileText size={iconSize} />,
     path: "/organization",
   },
+]
+
+const coordinator = [
   {
-    id: 6,
-    title: "Logout",
-    icon: <LogOut size={iconSize} />,
-    path: "",
+    id: 1,
+    title: "Dashboard",
+    icon: <Home size={iconSize} />,
+    path: "/admin",
+  },
+  {
+    id: 2,
+    title: "Master List",
+    icon: <User size={iconSize} />,
+    path: "/coordinator",
+  },
+  {
+    id: 3,
+    title: "Tasks",
+    icon: <Users size={iconSize} />,
+    path: "/students",
+  },
+  {
+    id: 4,
+    title: "Task Submitted",
+    icon: <Book size={iconSize} />,
+    path: "/enrollmentModule",
+  },
+]
+
+const student = [
+  {
+    id: 1,
+    title: "Dashboard",
+    icon: <Home size={iconSize} />,
+    path: "/admin",
+  },
+  {
+    id: 2,
+    title: "My Tasks",
+    icon: <User size={iconSize} />,
+    path: "/coordinator",
+  },
+  {
+    id: 3,
+    title: "Task Record",
+    icon: <Users size={iconSize} />,
+    path: "/students",
   },
 ]
 
@@ -102,4 +144,4 @@ const coordinatorDummyData = [
   },
 ]
 
-export { sidebarList, coordinatorDummyData }
+export { admin, coordinator, student, coordinatorDummyData }

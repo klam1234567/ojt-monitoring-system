@@ -1,6 +1,6 @@
 import React from "react"
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
-
+import { PrivateRoute } from "components"
 // pages
 import {
   Login,
@@ -19,7 +19,9 @@ function App() {
     <Router>
       <Routes>
         <Route exact path="/" element={<Login />} />
-        <Route exact path="/admin" element={<AdminDashboard />} />
+        <Route exact path="/admin" element={<PrivateRoute />}>
+          <Route exact path="/admin" element={<AdminDashboard />} />
+        </Route>
         <Route exact path="/coordinator" element={<Coordinator />} />
         <Route exact path="/students" element={<Students />} />
         <Route exact path="/enrollmentModule" element={<EnrollmentModule />} />
