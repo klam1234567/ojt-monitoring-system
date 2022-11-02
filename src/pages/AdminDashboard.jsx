@@ -1,9 +1,10 @@
-import React, { useContext } from "react"
+import React, { Fragment, useContext } from "react"
 import { StudentContext } from "context/StudentProvider"
 import { CoordinatorContext } from "context/CoordinatorProvider"
 import { OrganizationContext } from "context/OrganizationProvider"
 import { Users, User, Database } from "react-feather"
 import { Layout, Card, Barchart } from "components"
+import rolesHook from "hooks/rolesHook"
 
 export default function AdminDashboard() {
   const { fetchStudent } = useContext(StudentContext)
@@ -13,6 +14,8 @@ export default function AdminDashboard() {
   const student = fetchStudent.length
   const coordinator = fetchCoordinator.length
   const organization = fetchOrganization.length
+
+  const { info } = rolesHook()
 
   const statisticalCard = [
     {
@@ -35,11 +38,8 @@ export default function AdminDashboard() {
     },
   ]
 
-  return (
-    <Layout
-      title="Dashboard"
-      description="this section you will see the summary of every data and barchart"
-    >
+  const admin = (
+    <Fragment>
       <section className="flex gap-5 w-full mb-6">
         {statisticalCard.map((type) => (
           <Card
@@ -69,6 +69,21 @@ export default function AdminDashboard() {
         coordinator={coordinator}
         organization={organization}
       />
+    </Fragment>
+  )
+
+  const coordinatorDashboard = <Fragment>coordinator dashboard</Fragment>
+
+  const studentDashboard = <Fragment>student dashboard</Fragment>
+
+  return (
+    <Layout
+      title="Dashboard"
+      description="this section you will see the summary of every data and barchart"
+    >
+      {info.status === "admin" && admin}
+      {info.status === "coordinator" && coordinatorDashboard}
+      {info.status === "student" && studentDashboard}
     </Layout>
   )
 }

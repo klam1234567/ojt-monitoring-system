@@ -23,14 +23,24 @@ export default function Login() {
   const onSubmit = async (event) => {
     event.preventDefault()
 
-    const response = await signInWithEmailAndPassword(auth, email, password)
+    try {
+      const response = await signInWithEmailAndPassword(auth, email, password)
 
-    if (response) {
-      swal.fire({
-        title: "Success!",
-        text: "successfully login click okay to continue",
-        icon: "success",
-      })
+      if (response) {
+        swal.fire({
+          title: "Success!",
+          text: "successfully login click okay to continue",
+          icon: "success",
+        })
+      }
+    } catch (error) {
+      if ((error.code = "auth/user-not-found")) {
+        swal.fire({
+          title: "Oops!",
+          text: "this account still not registered please try again",
+          icon: "warning",
+        })
+      }
     }
   }
 

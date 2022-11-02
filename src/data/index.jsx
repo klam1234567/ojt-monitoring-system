@@ -47,19 +47,19 @@ const coordinator = [
     id: 2,
     title: "Master List",
     icon: <User size={iconSize} />,
-    path: "/coordinator",
+    path: "/masterList",
   },
   {
     id: 3,
     title: "Tasks",
     icon: <Users size={iconSize} />,
-    path: "/students",
+    path: "/tasks",
   },
   {
     id: 4,
     title: "Task Submitted",
     icon: <Book size={iconSize} />,
-    path: "/enrollmentModule",
+    path: "/taskSubmitted",
   },
 ]
 
@@ -74,13 +74,13 @@ const student = [
     id: 2,
     title: "My Tasks",
     icon: <User size={iconSize} />,
-    path: "/coordinator",
+    path: "/studentTasks",
   },
   {
     id: 3,
     title: "Task Record",
     icon: <Users size={iconSize} />,
-    path: "/students",
+    path: "/taskRecord",
   },
 ]
 
