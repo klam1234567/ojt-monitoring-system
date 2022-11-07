@@ -1,14 +1,15 @@
 import React, { useContext, useState } from "react"
 import { MenuItem } from "@mui/material"
 import { TabPanel } from "@mui/lab"
-import { useNavigate } from "react-router-dom"
+//import { useNavigate } from "react-router-dom"
 import { Layout, Tabs, Textbox, SelectMenu, Table } from "components"
 
 // context api
 import { StudentContext } from "context/StudentProvider"
 import { CoordinatorContext } from "context/CoordinatorProvider"
 import { OrganizationContext } from "context/OrganizationProvider"
-import { saveDoc } from "config/firebase"
+import { EnrollmentContext } from "context/EnrollmentProvider"
+import { saveDoc, deleteDocument } from "config/firebase"
 import swal from "sweetalert2"
 
 const initialState = {
@@ -22,11 +23,12 @@ export default function EnrollmentModule() {
   const [{ schoolYear, studName, coordName, orgsName }, setState] =
     useState(initialState)
 
-  const navigate = useNavigate()
+  //const navigate = useNavigate()
 
   const { fetchStudent } = useContext(StudentContext)
   const { fetchCoordinator } = useContext(CoordinatorContext)
   const { fetchOrganization } = useContext(OrganizationContext)
+  const { fetchEnrollment } = useContext(EnrollmentContext)
 
   const studentName = fetchStudent.map((type) => type.fullName)
   const coordinatorName = fetchCoordinator.map((type) => type.coordinatorName)
@@ -120,59 +122,59 @@ export default function EnrollmentModule() {
       width: 200,
       renderCell: (params) => {
         // delete data in coordinator row
-        // const Delete = (e) => {
-        //   e.stopPropagation() // don't select this row after clicking
+        const Delete = (e) => {
+          e.stopPropagation() // don't select this row after clicking
 
-        //   swal
-        //     .fire({
-        //       title: "ARE YOU SURE?",
-        //       text: "are you sure to delete this data?",
-        //       icon: "warning",
-        //       showCancelButton: true,
-        //     })
-        //     .then(async (result) => {
-        //       if (result.isConfirmed) {
-        //         await deleteUserAuth(params.row?.authId)
-        //         await deleteDocument("coordinatorData", params.row.id).then(
-        //           () => {
-        //             swal.fire({
-        //               title: "Successfully Deleted",
-        //               text: "Please click yes to continue",
-        //               icon: "success",
-        //             })
-        //           }
-        //         )
-        //       } else {
-        //         swal.fire("Yay!", "your data is safe", "success")
-        //       }
-        //     })
-        // }
+          swal
+            .fire({
+              title: "ARE YOU SURE?",
+              text: "are you sure to delete this data?",
+              icon: "warning",
+              showCancelButton: true,
+            })
+            .then(async (result) => {
+              if (result.isConfirmed) {
+                await deleteDocument(
+                  "enrollmentModuleData",
+                  params.row.id
+                ).then(() => {
+                  swal.fire({
+                    title: "Successfully Deleted",
+                    text: "Please click yes to continue",
+                    icon: "success",
+                  })
+                })
+              } else {
+                swal.fire("Yay!", "your data is safe", "success")
+              }
+            })
+        }
 
         // update data in coordinator row
-        const Update = (e) => {
-          e.stopPropagation() // don't select this row after clickin
+        // const Update = (e) => {
+        //   e.stopPropagation() // don't select this row after clickin
 
-          if (params.row.id) {
-            navigate(`/updateCoordinator?id=${params.row.id}`)
-          }
+        //   if (params.row.id) {
+        //     navigate(`/updateCoordinator?id=${params.row.id}`)
+        //   }
 
-          // updateToggleModal();
-        }
+        //   // updateToggleModal();
+        // }
 
         return (
           <div className="space-x-4">
-            <button
+            {/* <button
               className="cursor-pointer bg-slate-600 hover:bg-slate-800 transition-all text-white py-2 px-4 rounded-lg border-2"
               onClick={Update}
             >
               Edit
-            </button>
-            {/* <button
+            </button> */}
+            <button
               className="cursor-pointer cursor-pointer bg-slate-900 hover:bg-slate-600 transition-all text-white py-2 px-4 rounded-lg border-2"
               onClick={Delete}
             >
               Delete
-            </button> */}
+            </button>
           </div>
         )
       },
@@ -183,7 +185,7 @@ export default function EnrollmentModule() {
     <Layout title="Enrollment Module" description="a list of enrollment module">
       <Tabs>
         <TabPanel value="1">
-          <Table data={fetchCoordinator} columns={columns} loading={false} />
+          <Table data={fetchEnrollment} columns={columns} loading={false} />
         </TabPanel>
         <TabPanel value="2">
           <form onSubmit={(event) => onSubmit(event)}>

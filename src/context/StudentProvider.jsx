@@ -23,7 +23,7 @@ const StudentProvider = ({ children }) => {
 
   useEffect(fetchdata, [])
 
-  const fetchSpecificCoordinator = () => {
+  const fetchSpecificStudents = () => {
     if (studentId) {
       const document = app.firestore().collection("studentsData").doc(studentId)
       return document.onSnapshot((snapshot) => {
@@ -36,7 +36,7 @@ const StudentProvider = ({ children }) => {
     }
   }
 
-  useEffect(fetchSpecificCoordinator, [studentId])
+  useEffect(fetchSpecificStudents, [studentId])
 
   return (
     <StudentContext.Provider
