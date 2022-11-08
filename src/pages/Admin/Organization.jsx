@@ -153,7 +153,7 @@ export default function Organization() {
           e.stopPropagation() // don't select this row after clickin
 
           if (params.row.id) {
-            navigate(`/updateOrganization?id=${params.row.id}`)
+            navigate(`/admin/updateOrganization?id=${params.row.id}`)
           }
 
           // updateToggleModal();

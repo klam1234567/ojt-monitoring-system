@@ -14,25 +14,25 @@ const admin = [
     id: 2,
     title: "Coordinator",
     icon: <User size={iconSize} />,
-    path: "/coordinator",
+    path: "/admin/coordinator",
   },
   {
     id: 3,
     title: "Students",
     icon: <Users size={iconSize} />,
-    path: "/students",
+    path: "/admin/students",
   },
   {
     id: 4,
     title: "Enrollment Module",
     icon: <Book size={iconSize} />,
-    path: "/enrollmentModule",
+    path: "/admin/enrollmentModule",
   },
   {
     id: 5,
     title: "Organization",
     icon: <FileText size={iconSize} />,
-    path: "/organization",
+    path: "/admin/organization",
   },
 ]
 

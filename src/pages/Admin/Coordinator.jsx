@@ -180,7 +180,7 @@ export default function Coordinator() {
           e.stopPropagation() // don't select this row after clickin
 
           if (params.row.id) {
-            navigate(`/updateCoordinator?id=${params.row.id}`)
+            navigate(`/admin/updateCoordinator?id=${params.row.id}`)
           }
 
           // updateToggleModal();

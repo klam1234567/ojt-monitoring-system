@@ -27,6 +27,9 @@ export default function Login() {
       const response = await signInWithEmailAndPassword(auth, email, password)
 
       if (response) {
+        const { email } = response?.user
+        localStorage.setItem("email", email)
+
         swal.fire({
           title: "Success!",
           text: "successfully login click okay to continue",
@@ -45,7 +48,7 @@ export default function Login() {
   }
 
   if (context) {
-    return <Navigate to="/admin" />
+    return <Navigate to={`/admin?email=${context.email}`} />
   }
 
   return (

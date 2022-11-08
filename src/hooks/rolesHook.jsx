@@ -15,11 +15,18 @@ export default function RolesHook() {
   })
 
   const fetchUserInformation = () => {
-    userInformation.forEach((user) => {
+    // const split = location.pathname.split("/")
+
+    const email = localStorage.getItem("email")
+
+    const userInfo = userInformation.filter((obj) => obj.email === email)
+
+    userInfo.forEach((user) => {
       if (user.email === context.email) {
         user.status === "admin" && setLinks(admin)
         user.status === "coordinator" && setLinks(coordinator)
         user.status === "student" && setLinks(student)
+
         setInfo({
           name: user.name,
           email: user.email,

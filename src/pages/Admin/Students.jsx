@@ -199,7 +199,7 @@ export default function Students() {
           e.stopPropagation() // don't select this row after clickin
 
           if (params.row.id) {
-            navigate(`/updateStudents?id=${params.row.id}`)
+            navigate(`/admin/updateStudents?id=${params.row.id}`)
           }
 
           // updateToggleModal();

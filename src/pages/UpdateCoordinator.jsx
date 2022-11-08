@@ -56,7 +56,7 @@ export default function UpdateCoordinator() {
       title="Update Coordinator"
       description="this section you can update coordinator information"
     >
-      <Back redirect="/coordinator" />
+      <Back redirect="/admin/coordinator" />
       <form className="w-full" onSubmit={(event) => onSubmit(event)}>
         <div className="flex gap-5 my-4">
           <Textbox

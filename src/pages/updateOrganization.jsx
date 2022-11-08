@@ -64,7 +64,7 @@ export default function UpdateCoordinator() {
       title="Update organization"
       description="this section you can update organization information"
     >
-      <Back redirect="/organization" />
+      <Back redirect="/admin/organization" />
       <form className="w-full" onSubmit={(event) => onSubmit(event)}>
         <div className="w-full my-4">
           <Textbox

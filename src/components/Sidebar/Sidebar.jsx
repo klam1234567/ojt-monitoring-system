@@ -9,7 +9,10 @@ export default function Sidebar() {
 
   const { info, links } = rolesHook()
 
-  const logoutUser = () => signOut(auth)
+  const logoutUser = () => {
+    signOut(auth)
+    localStorage.clear()
+  }
 
   return (
     <section className="w-1/4">
