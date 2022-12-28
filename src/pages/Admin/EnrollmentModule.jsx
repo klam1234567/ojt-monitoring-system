@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react"
+import React, { useContext, useState, useEffect } from "react"
 import { MenuItem } from "@mui/material"
 import { TabPanel } from "@mui/lab"
 //import { useNavigate } from "react-router-dom"
@@ -16,12 +16,15 @@ const initialState = {
   schoolYear: "",
   studName: "",
   coordName: "",
+  coordEmail: "",
   orgsName: "",
 }
 
 export default function EnrollmentModule() {
-  const [{ schoolYear, studName, coordName, orgsName }, setState] =
+  const [{ schoolYear, studName, coordName, coordEmail, orgsName }, setState] =
     useState(initialState)
+
+  const [coordinatorNames, setCoordinatorNames] = useState(null)
 
   //const navigate = useNavigate()
 
@@ -31,8 +34,19 @@ export default function EnrollmentModule() {
   const { fetchEnrollment } = useContext(EnrollmentContext)
 
   const studentName = fetchStudent.map((type) => type.fullName)
-  const coordinatorName = fetchCoordinator.map((type) => type.coordinatorName)
+  // const coordinatorName = fetchCoordinator.map((type) => type.coordinatorName)
+  const coordinatorEmail = fetchCoordinator.map((type) => type.email)
   const orgName = fetchOrganization.map((type) => type.organizationName)
+
+  const fetchCoordinatorNames = () => {
+    const fetchCoordinatorByEmail = fetchCoordinator.filter(
+      (type) => type.email === coordEmail
+    )
+
+    setCoordinatorNames(fetchCoordinatorByEmail)
+  }
+
+  useEffect(fetchCoordinatorNames, [coordEmail])
 
   const onChange = (event) => {
     const { name, value } = event.target
@@ -52,6 +66,7 @@ export default function EnrollmentModule() {
         studName,
         coordName,
         orgsName,
+        coordEmail,
       }
 
       const response = await swal.fire({
@@ -104,6 +119,11 @@ export default function EnrollmentModule() {
     {
       field: "coordName",
       headerName: "Coordinator Name",
+      width: 200,
+    },
+    {
+      field: "coordEmail",
+      headerName: "Coordinator Email",
       width: 200,
     },
     {
@@ -181,9 +201,11 @@ export default function EnrollmentModule() {
     },
   ]
 
+  const tabName = ["Module List", "Add new Module"]
+
   return (
     <Layout title="Enrollment Module" description="a list of enrollment module">
-      <Tabs>
+      <Tabs tabName={tabName}>
         <TabPanel value="1">
           <Table data={fetchEnrollment} columns={columns} loading={false} />
         </TabPanel>
@@ -213,16 +235,29 @@ export default function EnrollmentModule() {
             </div>
             <div className="flex gap-4 my-4">
               <SelectMenu
+                name="coordEmail"
+                value={coordEmail}
+                onChange={(event) => onChange(event)}
+                title="Coordinator Email"
+              >
+                {coordinatorEmail.map((type, index) => (
+                  <MenuItem key={index} value={type}>
+                    {type}
+                  </MenuItem>
+                ))}
+              </SelectMenu>
+              <SelectMenu
                 name="coordName"
                 value={coordName}
                 onChange={(event) => onChange(event)}
                 title="Coordinator"
               >
-                {coordinatorName.map((type, index) => (
-                  <MenuItem key={index} value={type}>
-                    {type}
-                  </MenuItem>
-                ))}
+                {coordinatorNames !== null &&
+                  coordinatorNames.map((type, index) => (
+                    <MenuItem key={index} value={type.coordinatorName}>
+                      {type.coordinatorName}
+                    </MenuItem>
+                  ))}
               </SelectMenu>
               <SelectMenu
                 name="orgsName"

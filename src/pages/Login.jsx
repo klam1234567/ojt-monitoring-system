@@ -48,7 +48,7 @@ export default function Login() {
   }
 
   if (context) {
-    return <Navigate to={`/admin?email=${context.email}`} />
+    return <Navigate to="/admin" />
   }
 
   return (

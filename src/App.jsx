@@ -12,6 +12,10 @@ import {
   UpdateCoordinator,
   UpdateStudents,
   UpdateOrganization,
+  MasterList,
+  Tasks,
+  TasksSubmitted,
+  UpdateMasterList,
 } from "./pages"
 
 function App() {
@@ -95,6 +99,42 @@ function App() {
             element={<UpdateOrganization />}
           />
         </Route>
+        {/* Administrator Routes */}
+
+        {/* Coordinator Routes */}
+        <Route exact path={`${linkType}/masterList`} element={<PrivateRoute />}>
+          <Route
+            exact
+            path={`${linkType}/masterList`}
+            element={<MasterList />}
+          />
+        </Route>
+        <Route exact path={`${linkType}/tasks`} element={<PrivateRoute />}>
+          <Route exact path={`${linkType}/tasks`} element={<Tasks />} />
+        </Route>
+        <Route
+          exact
+          path={`${linkType}/taskSubmitted`}
+          element={<PrivateRoute />}
+        >
+          <Route
+            exact
+            path={`${linkType}/taskSubmitted`}
+            element={<TasksSubmitted />}
+          />
+        </Route>
+        <Route
+          exact
+          path={`${linkType}/updateMasterList`}
+          element={<PrivateRoute />}
+        >
+          <Route
+            exact
+            path={`${linkType}/updateMasterList`}
+            element={<UpdateMasterList />}
+          />
+        </Route>
+        {/* Coordinator Routes */}
       </Routes>
     </Router>
   )

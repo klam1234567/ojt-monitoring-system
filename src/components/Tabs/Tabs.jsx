@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { Tab, Box } from "@mui/material"
 import { TabContext, TabList } from "@mui/lab"
 
-export default function Tabs({ children }) {
+export default function Tabs({ children, tabName }) {
   const [value, setValue] = useState("1")
 
   const handleChange = (event, newValue) => {
@@ -14,8 +14,8 @@ export default function Tabs({ children }) {
     <TabContext value={value}>
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
         <TabList onChange={handleChange} aria-label="lab API tabs example">
-          <Tab label="Module List" value="1" />
-          <Tab label="Add new module" value="2" />
+          <Tab label={tabName[0]} value="1" />
+          <Tab label={tabName[1]} value="2" />
         </TabList>
       </Box>
       {children}

@@ -1,13 +1,10 @@
 import React from "react"
 import { Layout } from "components"
 
-export default function CoordinatorDashbord() {
+export default function Tasjs() {
   return (
-    <Layout
-      title="Dashboard"
-      description="this section you will see the summary of every data and barchart"
-    >
-      CoordinatorDashbord
+    <Layout title="Students" description="a list of student data">
+      MasterList
     </Layout>
   )
 }

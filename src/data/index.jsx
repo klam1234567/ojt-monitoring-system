@@ -46,20 +46,20 @@ const coordinator = [
   {
     id: 2,
     title: "Master List",
-    icon: <User size={iconSize} />,
-    path: "/masterList",
+    icon: <Users size={iconSize} />,
+    path: "/admin/masterList",
   },
   {
     id: 3,
     title: "Tasks",
-    icon: <Users size={iconSize} />,
-    path: "/tasks",
+    icon: <FileText size={iconSize} />,
+    path: "/admin/tasks",
   },
   {
     id: 4,
     title: "Task Submitted",
     icon: <Book size={iconSize} />,
-    path: "/taskSubmitted",
+    path: "/admin/taskSubmitted",
   },
 ]
 

@@ -2,7 +2,7 @@ import React, { Fragment, useContext } from "react"
 import { StudentContext } from "context/StudentProvider"
 import { CoordinatorContext } from "context/CoordinatorProvider"
 import { OrganizationContext } from "context/OrganizationProvider"
-import { Users, User, Database } from "react-feather"
+import { Users, User, Database, FileText } from "react-feather"
 import { Layout, Card, Barchart } from "components"
 import rolesHook from "hooks/rolesHook"
 
@@ -17,7 +17,7 @@ export default function AdminDashboard() {
 
   const { info } = rolesHook()
 
-  const statisticalCard = [
+  const statisticalCardAdmin = [
     {
       id: 1,
       title: "Student Trainee",
@@ -38,10 +38,25 @@ export default function AdminDashboard() {
     },
   ]
 
+  const statisticalCardCoordinator = [
+    {
+      id: 1,
+      title: "Student",
+      icon: <Users />,
+      counter: student,
+    },
+    {
+      id: 2,
+      title: "Tasks",
+      icon: <FileText />,
+      counter: coordinator,
+    },
+  ]
+
   const admin = (
     <Fragment>
       <section className="flex gap-5 w-full mb-6">
-        {statisticalCard.map((type) => (
+        {statisticalCardAdmin.map((type) => (
           <Card
             key={type.id}
             padding="p-5"
@@ -72,7 +87,33 @@ export default function AdminDashboard() {
     </Fragment>
   )
 
-  const coordinatorDashboard = <Fragment>coordinator dashboard</Fragment>
+  const coordinatorDashboard = (
+    <Fragment>
+      <section className="flex gap-5 w-full mb-6">
+        {statisticalCardCoordinator.map((type) => (
+          <Card
+            key={type.id}
+            padding="p-5"
+            additionalStyle="shadow-sm rounded-lg border-2 w-full"
+          >
+            <aside className="flex items-center justify-between">
+              <div className="space-y-2">
+                {/**Title */}
+                <h1 className="font-bold text-2xl">{type.title}</h1>
+                {/**Counter */}
+                <span className="text-md text-slate-400 font-bold">
+                  {type.counter.toLocaleString()}
+                </span>
+              </div>
+              <div className="bg-slate-900 w-12 h-12 flex rounded-full text-white items-center justify-center">
+                {type.icon}
+              </div>
+            </aside>
+          </Card>
+        ))}
+      </section>
+    </Fragment>
+  )
 
   const studentDashboard = <Fragment>student dashboard</Fragment>
 
