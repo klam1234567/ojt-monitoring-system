@@ -16,6 +16,7 @@ import {
   Tasks,
   TasksSubmitted,
   UpdateMasterList,
+  ManageTasks,
 } from "./pages"
 
 function App() {
@@ -132,6 +133,17 @@ function App() {
             exact
             path={`${linkType}/updateMasterList`}
             element={<UpdateMasterList />}
+          />
+        </Route>
+        <Route
+          exact
+          path={`${linkType}/updateTasks`}
+          element={<PrivateRoute />}
+        >
+          <Route
+            exact
+            path={`${linkType}/updateTasks`}
+            element={<ManageTasks />}
           />
         </Route>
         {/* Coordinator Routes */}

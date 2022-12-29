@@ -9,25 +9,28 @@ import { OrganizationProvider } from "context/OrganizationProvider"
 import { UserProvider } from "context/UserProvider"
 import { EnrollmentProvider } from "context/EnrollmentProvider"
 import { RegisteredStudentProvider } from "context/RegisteredStudentProvider"
+import { TaskProvider } from "context/TasksProvider"
 import { AuthProvider } from "context/auth"
 
 const root = ReactDOM.createRoot(document.getElementById("root"))
 root.render(
   <React.StrictMode>
     <AuthProvider>
-      <RegisteredStudentProvider>
-        <EnrollmentProvider>
-          <UserProvider>
-            <OrganizationProvider>
-              <StudentProvider>
-                <CoordinatorProvider>
-                  <App />
-                </CoordinatorProvider>
-              </StudentProvider>
-            </OrganizationProvider>
-          </UserProvider>
-        </EnrollmentProvider>
-      </RegisteredStudentProvider>
+      <TaskProvider>
+        <RegisteredStudentProvider>
+          <EnrollmentProvider>
+            <UserProvider>
+              <OrganizationProvider>
+                <StudentProvider>
+                  <CoordinatorProvider>
+                    <App />
+                  </CoordinatorProvider>
+                </StudentProvider>
+              </OrganizationProvider>
+            </UserProvider>
+          </EnrollmentProvider>
+        </RegisteredStudentProvider>
+      </TaskProvider>
     </AuthProvider>
   </React.StrictMode>
 )
