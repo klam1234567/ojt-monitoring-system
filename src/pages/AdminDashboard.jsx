@@ -1,19 +1,28 @@
 import React, { Fragment, useContext } from "react"
+import { Users, User, Database, FileText, File } from "react-feather"
+import { Layout, Card, Barchart } from "components"
+import rolesHook from "hooks/rolesHook"
+
+// context api
 import { StudentContext } from "context/StudentProvider"
 import { CoordinatorContext } from "context/CoordinatorProvider"
 import { OrganizationContext } from "context/OrganizationProvider"
-import { Users, User, Database, FileText } from "react-feather"
-import { Layout, Card, Barchart } from "components"
-import rolesHook from "hooks/rolesHook"
+import { TaskContext } from "context/TasksProvider"
+import { RegisteredStudentContext } from "context/RegisteredStudentProvider"
 
 export default function AdminDashboard() {
   const { fetchStudent } = useContext(StudentContext)
   const { fetchCoordinator } = useContext(CoordinatorContext)
   const { fetchOrganization } = useContext(OrganizationContext)
+  const { fetchTasks, fetchSubCollection } = useContext(TaskContext)
+  const { fetchRegisteredStudent } = useContext(RegisteredStudentContext)
 
   const student = fetchStudent.length
   const coordinator = fetchCoordinator.length
   const organization = fetchOrganization.length
+  const tasks = fetchTasks.length
+  const registeredStudents = fetchRegisteredStudent.length
+  const taskSubmitted = fetchSubCollection.length
 
   const { info } = rolesHook()
 
@@ -43,13 +52,19 @@ export default function AdminDashboard() {
       id: 1,
       title: "Student",
       icon: <Users />,
-      counter: student,
+      counter: registeredStudents,
     },
     {
       id: 2,
       title: "Tasks",
       icon: <FileText />,
-      counter: coordinator,
+      counter: tasks,
+    },
+    {
+      id: 3,
+      title: "Task Submitted",
+      icon: <File />,
+      counter: taskSubmitted,
     },
   ]
 

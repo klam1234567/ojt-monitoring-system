@@ -1,5 +1,7 @@
 import React from "react"
-import { PageModal, Textbox } from "components"
+import { MenuItem } from "@mui/material"
+import { sectionList } from "Utils/ReusableSyntax"
+import { PageModal, Textbox, SelectMenu } from "components"
 
 export default function AddStudentsModal({
   isToggle,
@@ -9,8 +11,16 @@ export default function AddStudentsModal({
   clearState,
   onSubmit,
 }) {
-  const { schoolID, fullName, course, contact, email, address, password } =
-    config
+  const {
+    schoolID,
+    fullName,
+    course,
+    contact,
+    section,
+    email,
+    address,
+    password,
+  } = config
 
   return (
     <PageModal open={isToggle} isClose={toggleModal}>
@@ -33,6 +43,18 @@ export default function AddStudentsModal({
             label="Full Name"
             onChange={(event) => onChange(event)}
           />
+          <SelectMenu
+            name="section"
+            value={section}
+            onChange={(event) => onChange(event)}
+            title="Section"
+          >
+            {sectionList.map((type, index) => (
+              <MenuItem key={index} value={type}>
+                {type}
+              </MenuItem>
+            ))}
+          </SelectMenu>
         </div>
         <div className="flex gap-5 my-4">
           <Textbox

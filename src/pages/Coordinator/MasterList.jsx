@@ -8,6 +8,7 @@ import { RegisteredStudentContext } from "context/RegisteredStudentProvider"
 import { saveDoc, deleteDocument } from "config/firebase"
 import { useNavigate } from "react-router-dom"
 import { AuthContext } from "context/auth"
+import { filterByUUID, eliminateDuplicates } from "Utils/ReusableSyntax"
 import swal from "sweetalert2"
 
 const initialState = {
@@ -15,6 +16,7 @@ const initialState = {
   schoolID: "",
   course: "",
   contact: "",
+  section: "",
   schoolYear: "",
   organization: "",
   email: "",
@@ -28,6 +30,7 @@ export default function MasterList() {
       schoolID,
       course,
       contact,
+      section,
       schoolYear,
       organization,
       email,
@@ -39,6 +42,11 @@ export default function MasterList() {
   const { fetchEnrollment } = useContext(EnrollmentContext)
   const { fetchRegisteredStudent } = useContext(RegisteredStudentContext)
   const context = useContext(AuthContext)
+
+  const filteredData = filterByUUID(fetchRegisteredStudent, context.uid)
+  const sectionList = fetchEnrollment.map((type) => type.section)
+  const filteredSectionList = eliminateDuplicates(sectionList)
+
   const navigate = useNavigate()
 
   const fetchStudents = fetchEnrollment.filter(
@@ -65,6 +73,7 @@ export default function MasterList() {
         schoolID,
         course,
         contact,
+        section,
         schoolYear,
         organization,
         studentEmail: email,
@@ -263,6 +272,18 @@ export default function MasterList() {
             name="contact"
             label="Contact"
           />
+          <SelectMenu
+            name="section"
+            value={section}
+            onChange={(event) => onChange(event)}
+            title="Section"
+          >
+            {filteredSectionList.map((type, index) => (
+              <MenuItem key={index} value={type}>
+                {type}
+              </MenuItem>
+            ))}
+          </SelectMenu>
         </div>
         <div className="flex gap-4 mb-4">
           <SelectMenu
@@ -331,11 +352,7 @@ export default function MasterList() {
     <Layout title="Master List" description="all the student lists are here">
       <Tabs tabName={tabName}>
         <TabPanel value="1">
-          <Table
-            data={fetchRegisteredStudent}
-            columns={columns}
-            loading={false}
-          />
+          <Table data={filteredData} columns={columns} loading={false} />
         </TabPanel>
         <TabPanel value="2">{add_new_trainee}</TabPanel>
       </Tabs>

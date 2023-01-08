@@ -14,6 +14,10 @@ import {
   doc,
   deleteDoc,
   updateDoc,
+  onSnapshot,
+  query,
+  setDoc,
+  getDocs,
 } from "firebase/firestore"
 import "firebase/compat/storage"
 
@@ -103,6 +107,13 @@ const registerUser = async (email, password) => {
 }
 
 export {
+  onSnapshot,
+  query,
+  setDoc,
+  getDocs,
+  collection,
+  getFirestore,
+  doc,
   app,
   registerUser,
   saveDoc,

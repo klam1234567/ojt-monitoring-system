@@ -1,32 +1,40 @@
 import React, { Fragment, useState, useContext } from "react"
 import { TabPanel } from "@mui/lab"
-import { Layout, Tabs, Textbox, Table } from "components"
+import { MenuItem } from "@mui/material"
+import { Layout, Tabs, Textbox, Table, SelectMenu } from "components"
 import { generateTaskCode, Months } from "Utils/ReusableSyntax"
-import { TaskContext } from "context/TasksProvider"
 import { saveDoc, deleteDocument } from "config/firebase"
 import { useNavigate } from "react-router-dom"
+import { filterByUUID } from "Utils/ReusableSyntax"
 import swal from "sweetalert2"
 
 //context api
 import { AuthContext } from "context/auth"
+import { TaskContext } from "context/TasksProvider"
+import { RegisteredStudentContext } from "context/RegisteredStudentProvider"
 
 const initialState = {
   taskCode: generateTaskCode(),
   taskName: "",
+  section: "",
   deadline: "",
   description: "",
 }
 
 export default function Tasks() {
-  const [{ taskCode, taskName, deadline, description }, setState] =
+  const [{ taskCode, taskName, section, deadline, description }, setState] =
     useState(initialState)
 
   const navigate = useNavigate()
   const context = useContext(AuthContext)
+  const { fetchRegisteredStudent } = useContext(RegisteredStudentContext)
   const { fetchTasks } = useContext(TaskContext)
 
-  console.log(fetchTasks)
-
+  const filteredTasks = filterByUUID(fetchTasks, context.uid)
+  const filteredRegisteredStudent = filterByUUID(
+    fetchRegisteredStudent,
+    context.uid
+  )
   const clearState = () => setState({ ...initialState })
 
   const onChange = (event) => {
@@ -43,9 +51,10 @@ export default function Tasks() {
         coordinatorUUID: context.uid,
         taskCode,
         taskName,
+        section,
         deadline,
         description,
-        deadlineStatus: "not submitted",
+        deadlineStatus: "active",
       }
 
       const response = await swal.fire({
@@ -113,7 +122,7 @@ export default function Tasks() {
 
         const MyDateString = `${
           Months[MyDate.getMonth()]
-        } ${MyDate.getDate()} ${MyDate.getFullYear()}`
+        } ${MyDate.getDate()}, ${MyDate.getFullYear()}`
 
         return (
           <span className="bg-slate-500 text-slate-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-slate-200 dark:text-slate-800 mt-2">
@@ -211,6 +220,19 @@ export default function Tasks() {
             onChange={(event) => onChange(event)}
             label="Task Name"
           />
+        </div>
+        <div className="flex gap-4 my-4">
+          <SelectMenu
+            name="section"
+            title="Section"
+            onChange={(event) => onChange(event)}
+          >
+            {filteredRegisteredStudent.map((type, index) => (
+              <MenuItem key={index} value={type.section}>
+                {type.section}
+              </MenuItem>
+            ))}
+          </SelectMenu>
           <Textbox
             type="date"
             className="w-full"
@@ -257,7 +279,7 @@ export default function Tasks() {
     <Layout title="Tasks" description="a list of tasks assigned by coordinator">
       <Tabs tabName={tabName}>
         <TabPanel value="1">
-          <Table data={fetchTasks} columns={columns} loading={false} />
+          <Table data={filteredTasks} columns={columns} loading={false} />
         </TabPanel>
         <TabPanel value="2">{add_new_trainee}</TabPanel>
       </Tabs>

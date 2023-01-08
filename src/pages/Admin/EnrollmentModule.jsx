@@ -10,19 +10,23 @@ import { CoordinatorContext } from "context/CoordinatorProvider"
 import { OrganizationContext } from "context/OrganizationProvider"
 import { EnrollmentContext } from "context/EnrollmentProvider"
 import { saveDoc, deleteDocument } from "config/firebase"
+import { eliminateDuplicates } from "Utils/ReusableSyntax"
 import swal from "sweetalert2"
 
 const initialState = {
   schoolYear: "",
   studName: "",
+  section: "",
   coordName: "",
   coordEmail: "",
   orgsName: "",
 }
 
 export default function EnrollmentModule() {
-  const [{ schoolYear, studName, coordName, coordEmail, orgsName }, setState] =
-    useState(initialState)
+  const [
+    { schoolYear, studName, section, coordName, coordEmail, orgsName },
+    setState,
+  ] = useState(initialState)
 
   const [coordinatorNames, setCoordinatorNames] = useState(null)
 
@@ -34,6 +38,9 @@ export default function EnrollmentModule() {
   const { fetchEnrollment } = useContext(EnrollmentContext)
 
   const studentName = fetchStudent.map((type) => type.fullName)
+  const sectionList = fetchStudent.map((type) => type.section)
+  const filteredSectionList = eliminateDuplicates(sectionList)
+
   // const coordinatorName = fetchCoordinator.map((type) => type.coordinatorName)
   const coordinatorEmail = fetchCoordinator.map((type) => type.email)
   const orgName = fetchOrganization.map((type) => type.organizationName)
@@ -64,6 +71,7 @@ export default function EnrollmentModule() {
       const config = {
         schoolYear,
         studName,
+        section,
         coordName,
         orgsName,
         coordEmail,
@@ -227,6 +235,18 @@ export default function EnrollmentModule() {
                 title="Students"
               >
                 {studentName.map((type, index) => (
+                  <MenuItem key={index} value={type}>
+                    {type}
+                  </MenuItem>
+                ))}
+              </SelectMenu>
+              <SelectMenu
+                name="section"
+                value={section}
+                onChange={(event) => onChange(event)}
+                title="Section List"
+              >
+                {filteredSectionList.map((type, index) => (
                   <MenuItem key={index} value={type}>
                     {type}
                   </MenuItem>

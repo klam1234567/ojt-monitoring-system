@@ -17,6 +17,9 @@ import {
   TasksSubmitted,
   UpdateMasterList,
   ManageTasks,
+  StudentTasks,
+  ViewSubmission,
+  UpdateStudentGrade,
 } from "./pages"
 
 function App() {
@@ -146,7 +149,43 @@ function App() {
             element={<ManageTasks />}
           />
         </Route>
+        <Route
+          exact
+          path={`${linkType}/view-submission`}
+          element={<PrivateRoute />}
+        >
+          <Route
+            exact
+            path={`${linkType}/view-submission`}
+            element={<ViewSubmission />}
+          />
+        </Route>
+        <Route
+          exact
+          path={`${linkType}/update-grade`}
+          element={<PrivateRoute />}
+        >
+          <Route
+            exact
+            path={`${linkType}/update-grade`}
+            element={<UpdateStudentGrade />}
+          />
+        </Route>
         {/* Coordinator Routes */}
+
+        {/* Students Routes */}
+        <Route
+          exact
+          path={`${linkType}/studentTasks`}
+          element={<PrivateRoute />}
+        >
+          <Route
+            exact
+            path={`${linkType}/studentTasks`}
+            element={<StudentTasks />}
+          />
+        </Route>
+        {/* Students Routes */}
       </Routes>
     </Router>
   )

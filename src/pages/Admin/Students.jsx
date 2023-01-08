@@ -20,6 +20,7 @@ const initialState = {
   fullName: "",
   course: "",
   contact: 0,
+  section: "",
   email: "",
   address: "",
   password: "",
@@ -31,19 +32,9 @@ export default function Students() {
   const navigate = useNavigate()
 
   const [
-    { schoolID, fullName, course, contact, email, address, password },
+    { schoolID, fullName, course, section, contact, email, address, password },
     setState,
   ] = useState(initialState)
-
-  const config = {
-    schoolID,
-    fullName,
-    course,
-    contact,
-    email,
-    address,
-    password,
-  }
 
   const { fetchStudent } = useContext(StudentContext)
 
@@ -63,13 +54,12 @@ export default function Students() {
 
   const onSubmit = async (event) => {
     event.preventDefault()
+    const courseValidator = /^([^0-9]*)$/
 
     try {
-      const credentials = await registerUser(email, password)
+      if (courseValidator.test(course)) {
+        const credentials = await registerUser(email, password)
 
-      console.log(credentials)
-
-      if (credentials) {
         const config = {
           authId: credentials.user.uid,
           email: credentials.user.email,
@@ -77,6 +67,7 @@ export default function Students() {
           fullName,
           course,
           contact,
+          section,
           address,
         }
 
@@ -86,7 +77,6 @@ export default function Students() {
           name: fullName,
           status: "student",
         }
-
         //firebase saved event userData
         config.email && config.authId && (await saveDoc(userData, "userData"))
 
@@ -99,6 +89,12 @@ export default function Students() {
               icon: "success",
             })
           })
+      } else {
+        swal.fire({
+          title: "Warning!!",
+          text: "course field has number",
+          icon: "warning",
+        })
       }
 
       clearState()
@@ -140,6 +136,11 @@ export default function Students() {
     {
       field: "contact",
       headerName: "Contact",
+      width: 200,
+    },
+    {
+      field: "section",
+      headerName: "Section",
       width: 200,
     },
     {
@@ -224,6 +225,17 @@ export default function Students() {
       },
     },
   ]
+
+  const config = {
+    schoolID,
+    fullName,
+    course,
+    contact,
+    section,
+    email,
+    address,
+    password,
+  }
 
   const addModal = (
     <AddStudentsModal

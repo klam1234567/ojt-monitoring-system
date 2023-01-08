@@ -74,13 +74,13 @@ const student = [
     id: 2,
     title: "My Tasks",
     icon: <User size={iconSize} />,
-    path: "/studentTasks",
+    path: "/admin/studentTasks",
   },
   {
     id: 3,
     title: "Task Record",
     icon: <Users size={iconSize} />,
-    path: "/taskRecord",
+    path: "/admin/taskRecord",
   },
 ]
 

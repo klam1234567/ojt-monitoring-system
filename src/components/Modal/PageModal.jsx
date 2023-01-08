@@ -15,7 +15,7 @@ export default function PageModal({ open, isClose, children }) {
             className="absolute top-5 right-5 cursor-pointer"
             onClick={isClose}
           >
-            <X />
+            <X className="text-gray-400 hover:text-gray-600 transition-all" />
           </i>
           {children}
         </div>

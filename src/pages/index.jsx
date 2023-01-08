@@ -16,3 +16,8 @@ export { default as Tasks } from "./Coordinator/Tasks"
 export { default as TasksSubmitted } from "./Coordinator/TasksSubmitted"
 export { default as UpdateMasterList } from "./UpdateMasterList"
 export { default as ManageTasks } from "./UpdateTasks"
+export { default as ViewSubmission } from "./Coordinator/ViewSubmission"
+export { default as UpdateStudentGrade } from "./UpdateStudentGrades"
+
+// student page
+export { default as StudentTasks } from "./Student/StudentTasks"
