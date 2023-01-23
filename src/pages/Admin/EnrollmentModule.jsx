@@ -10,23 +10,20 @@ import { CoordinatorContext } from "context/CoordinatorProvider"
 import { OrganizationContext } from "context/OrganizationProvider"
 import { EnrollmentContext } from "context/EnrollmentProvider"
 import { saveDoc, deleteDocument } from "config/firebase"
-import { eliminateDuplicates } from "Utils/ReusableSyntax"
+import { eliminateDuplicates, filterByStudentName } from "Utils/ReusableSyntax"
 import swal from "sweetalert2"
 
 const initialState = {
   schoolYear: "",
   studName: "",
-  section: "",
   coordName: "",
   coordEmail: "",
   orgsName: "",
 }
 
 export default function EnrollmentModule() {
-  const [
-    { schoolYear, studName, section, coordName, coordEmail, orgsName },
-    setState,
-  ] = useState(initialState)
+  const [{ schoolYear, studName, coordName, coordEmail, orgsName }, setState] =
+    useState(initialState)
 
   const [coordinatorNames, setCoordinatorNames] = useState(null)
 
@@ -38,11 +35,12 @@ export default function EnrollmentModule() {
   const { fetchEnrollment } = useContext(EnrollmentContext)
 
   const studentName = fetchStudent.map((type) => type.fullName)
-  const sectionList = fetchStudent.map((type) => type.section)
-  const filteredSectionList = eliminateDuplicates(sectionList)
+  // const sectionList = fetchStudent.map((type) => type.section)
+  // const filteredSectionList = eliminateDuplicates(sectionList)
 
   // const coordinatorName = fetchCoordinator.map((type) => type.coordinatorName)
   const coordinatorEmail = fetchCoordinator.map((type) => type.email)
+  const filteredStudent = filterByStudentName(fetchStudent, studName)
   const orgName = fetchOrganization.map((type) => type.organizationName)
 
   const fetchCoordinatorNames = () => {
@@ -71,10 +69,11 @@ export default function EnrollmentModule() {
       const config = {
         schoolYear,
         studName,
-        section,
         coordName,
         orgsName,
         coordEmail,
+        enrolled: true,
+        studentDetails: filteredStudent,
       }
 
       const response = await swal.fire({
@@ -240,7 +239,7 @@ export default function EnrollmentModule() {
                   </MenuItem>
                 ))}
               </SelectMenu>
-              <SelectMenu
+              {/* <SelectMenu
                 name="section"
                 value={section}
                 onChange={(event) => onChange(event)}
@@ -251,14 +250,14 @@ export default function EnrollmentModule() {
                     {type}
                   </MenuItem>
                 ))}
-              </SelectMenu>
+              </SelectMenu> */}
             </div>
             <div className="flex gap-4 my-4">
               <SelectMenu
                 name="coordEmail"
                 value={coordEmail}
                 onChange={(event) => onChange(event)}
-                title="Coordinator Email"
+                title="Supervisor Email"
               >
                 {coordinatorEmail.map((type, index) => (
                   <MenuItem key={index} value={type}>
@@ -270,7 +269,7 @@ export default function EnrollmentModule() {
                 name="coordName"
                 value={coordName}
                 onChange={(event) => onChange(event)}
-                title="Coordinator"
+                title="Supervisor"
               >
                 {coordinatorNames !== null &&
                   coordinatorNames.map((type, index) => (

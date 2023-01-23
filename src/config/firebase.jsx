@@ -18,6 +18,7 @@ import {
   query,
   setDoc,
   getDocs,
+  FieldValue,
 } from "firebase/firestore"
 import "firebase/compat/storage"
 
@@ -124,4 +125,5 @@ export {
   updateDocument,
   signInWithEmailAndPassword,
   signOut,
+  FieldValue,
 }

@@ -21,3 +21,5 @@ export { default as UpdateStudentGrade } from "./UpdateStudentGrades"
 
 // student page
 export { default as StudentTasks } from "./Student/StudentTasks"
+export { default as TaskRecord } from "./Student/TaskRecord"
+export { default as ViewStudentSubmission } from "./Student/ViewStudentSubmission"

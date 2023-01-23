@@ -1,40 +1,40 @@
 import React, { Fragment, useState, useContext } from "react"
 import { TabPanel } from "@mui/lab"
-import { MenuItem } from "@mui/material"
 import { Layout, Tabs, Textbox, Table, SelectMenu } from "components"
 import { generateTaskCode, Months } from "Utils/ReusableSyntax"
 import { saveDoc, deleteDocument } from "config/firebase"
 import { useNavigate } from "react-router-dom"
-import { filterByUUID } from "Utils/ReusableSyntax"
+import { filterByCoordinatorUUID, filterByUUID } from "Utils/ReusableSyntax"
 import swal from "sweetalert2"
 
 //context api
 import { AuthContext } from "context/auth"
 import { TaskContext } from "context/TasksProvider"
-import { RegisteredStudentContext } from "context/RegisteredStudentProvider"
+import { CoordinatorContext } from "context/CoordinatorProvider"
 
 const initialState = {
   taskCode: generateTaskCode(),
   taskName: "",
-  section: "",
   deadline: "",
   description: "",
 }
 
 export default function Tasks() {
-  const [{ taskCode, taskName, section, deadline, description }, setState] =
+  const [{ taskCode, taskName, deadline, description }, setState] =
     useState(initialState)
 
   const navigate = useNavigate()
   const context = useContext(AuthContext)
-  const { fetchRegisteredStudent } = useContext(RegisteredStudentContext)
+  const { fetchCoordinator } = useContext(CoordinatorContext)
   const { fetchTasks } = useContext(TaskContext)
 
   const filteredTasks = filterByUUID(fetchTasks, context.uid)
-  const filteredRegisteredStudent = filterByUUID(
-    fetchRegisteredStudent,
+
+  const filteredSupervisor = filterByCoordinatorUUID(
+    fetchCoordinator,
     context.uid
   )
+
   const clearState = () => setState({ ...initialState })
 
   const onChange = (event) => {
@@ -51,7 +51,7 @@ export default function Tasks() {
         coordinatorUUID: context.uid,
         taskCode,
         taskName,
-        section,
+        company: filteredSupervisor[0]?.company,
         deadline,
         description,
         deadlineStatus: "active",
@@ -103,6 +103,12 @@ export default function Tasks() {
     {
       field: "taskName",
       headerName: "Task Name",
+      type: "string",
+      width: 150,
+    },
+    {
+      field: "company",
+      headerName: "Company Name",
       type: "string",
       width: 150,
     },
@@ -222,7 +228,7 @@ export default function Tasks() {
           />
         </div>
         <div className="flex gap-4 my-4">
-          <SelectMenu
+          {/* <SelectMenu
             name="section"
             title="Section"
             onChange={(event) => onChange(event)}
@@ -232,7 +238,16 @@ export default function Tasks() {
                 {type.section}
               </MenuItem>
             ))}
-          </SelectMenu>
+          </SelectMenu> */}
+          <Textbox
+            type="text"
+            className="w-full"
+            name="orgsName"
+            disabled={true}
+            value={filteredSupervisor[0]?.company}
+            onChange={(event) => onChange(event)}
+            label="Task Name"
+          />
           <Textbox
             type="date"
             className="w-full"

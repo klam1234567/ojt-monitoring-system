@@ -1,5 +1,9 @@
-import React from "react"
-import { PageModal, Textbox } from "components"
+import React, { useContext } from "react"
+import { MenuItem } from "@mui/material"
+import { PageModal, Textbox, SelectMenu } from "components"
+
+//context
+import { OrganizationContext } from "context/OrganizationProvider"
 
 export default function AddCoordinatorModal({
   isToggle,
@@ -9,7 +13,10 @@ export default function AddCoordinatorModal({
   clearState,
   onSubmit,
 }) {
-  const { coordinatorName, contact, email, address, password } = config
+  const { coordinatorName, company, contact, email, address, password } = config
+
+  const { fetchOrganization } = useContext(OrganizationContext)
+  const orgName = fetchOrganization.map((type) => type.organizationName)
 
   return (
     <PageModal open={isToggle} isClose={toggleModal}>
@@ -21,9 +28,23 @@ export default function AddCoordinatorModal({
             className="w-full"
             name="coordinatorName"
             value={coordinatorName}
-            label="Coordinate Name"
+            label="Supervisor Name"
             onChange={(event) => onChange(event)}
           />
+          <SelectMenu
+            name="company"
+            value={company}
+            onChange={(event) => onChange(event)}
+            title="Organization"
+          >
+            {orgName.map((type, index) => (
+              <MenuItem key={index} value={type}>
+                {type}
+              </MenuItem>
+            ))}
+          </SelectMenu>
+        </div>
+        <div className="w-full">
           <Textbox
             type="number"
             className="w-full"

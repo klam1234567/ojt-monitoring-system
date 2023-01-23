@@ -20,6 +20,8 @@ import {
   StudentTasks,
   ViewSubmission,
   UpdateStudentGrade,
+  TaskRecord,
+  ViewStudentSubmission,
 } from "./pages"
 
 function App() {
@@ -162,12 +164,12 @@ function App() {
         </Route>
         <Route
           exact
-          path={`${linkType}/update-grade`}
+          path={`${linkType}/update-grade/:id`}
           element={<PrivateRoute />}
         >
           <Route
             exact
-            path={`${linkType}/update-grade`}
+            path={`${linkType}/update-grade/:id`}
             element={<UpdateStudentGrade />}
           />
         </Route>
@@ -183,6 +185,24 @@ function App() {
             exact
             path={`${linkType}/studentTasks`}
             element={<StudentTasks />}
+          />
+        </Route>
+        <Route exact path={`${linkType}/task-record`} element={<TaskRecord />}>
+          <Route
+            exact
+            path={`${linkType}/task-record`}
+            element={<TaskRecord />}
+          />
+        </Route>
+        <Route
+          exact
+          path={`${linkType}/view-submission/:id`}
+          element={<ViewStudentSubmission />}
+        >
+          <Route
+            exact
+            path={`${linkType}/view-submission/:id`}
+            element={<ViewStudentSubmission />}
           />
         </Route>
         {/* Students Routes */}

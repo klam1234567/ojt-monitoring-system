@@ -12,7 +12,7 @@ const admin = [
   },
   {
     id: 2,
-    title: "Coordinator",
+    title: "Supervisor",
     icon: <User size={iconSize} />,
     path: "/admin/coordinator",
   },
@@ -43,20 +43,20 @@ const coordinator = [
     icon: <Home size={iconSize} />,
     path: "/admin",
   },
+  // {
+  //   id: 2,
+  //   title: "Master List",
+  //   icon: <Users size={iconSize} />,
+  //   path: "/admin/masterList",
+  // },
   {
     id: 2,
-    title: "Master List",
-    icon: <Users size={iconSize} />,
-    path: "/admin/masterList",
-  },
-  {
-    id: 3,
     title: "Tasks",
     icon: <FileText size={iconSize} />,
     path: "/admin/tasks",
   },
   {
-    id: 4,
+    id: 3,
     title: "Task Submitted",
     icon: <Book size={iconSize} />,
     path: "/admin/taskSubmitted",
@@ -80,7 +80,7 @@ const student = [
     id: 3,
     title: "Task Record",
     icon: <Users size={iconSize} />,
-    path: "/admin/taskRecord",
+    path: "/admin/task-record",
   },
 ]
 

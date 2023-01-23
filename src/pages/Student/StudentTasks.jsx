@@ -3,8 +3,10 @@ import { Layout, Table, PageModal } from "components"
 import {
   Months,
   filterByStudentUUID,
-  filteredBySection,
+  filterByStudentUUIDs,
+  filteredByCompany,
   MyDateString,
+  isCheckSubmittedTasks,
 } from "Utils/ReusableSyntax"
 import { Edit2, UploadCloud } from "react-feather"
 import swal from "sweetalert2"
@@ -12,14 +14,13 @@ import { app } from "config/firebase"
 
 //context api
 import { TaskContext } from "context/TasksProvider"
-import { StudentContext } from "context/StudentProvider"
+import { EnrollmentContext } from "context/EnrollmentProvider"
 import { AuthContext } from "context/auth"
 
 export default function StudentTasks() {
   // const submittedDocument = JSON.parse(localStorage.getItem("documents"))
-
   const { fetchTasks, fetchSubCollection } = useContext(TaskContext)
-  const { fetchStudent } = useContext(StudentContext)
+  const { fetchEnrollment } = useContext(EnrollmentContext)
   const context = useContext(AuthContext)
 
   const inputRef = useRef(null)
@@ -29,23 +30,33 @@ export default function StudentTasks() {
     toggle: false,
     id: "",
     taskName: "",
+    submitted: false,
   })
   const [file, setFile] = useState(null)
 
-  const filteredDocuments = filterByStudentUUID(fetchSubCollection, context.uid)
+  const filteredDocuments = filterByStudentUUIDs(
+    fetchSubCollection,
+    context.uid
+  )
 
-  const filteredByUID = filterByStudentUUID(fetchStudent, context.uid)
+  const filteredByUID = filterByStudentUUID(fetchEnrollment, context.uid)
 
-  const userSection = filteredBySection(fetchTasks, filteredByUID[0]?.section)
+  const studentTasks = filteredByCompany(fetchTasks, filteredByUID[0]?.orgsName)
+
+  // const filteredStudentTasks = newSetOfStudentTasks(
+  //   studentTasks,
+  //   filteredDocuments
+  // )
 
   const toggleModal = (id, taskName) => {
     if (id) {
-      setToggle({ toggle: true, id, taskName })
+      const isCheckTaskName = isCheckSubmittedTasks(filteredDocuments, taskName)
+      setToggle({ toggle: true, id, taskName, submitted: isCheckTaskName })
     }
   }
 
   const closeModal = () => {
-    setToggle({ toggle: false, id: "", taskName: "" })
+    setToggle({ toggle: false, id: "", taskName: "", submitted: false })
   }
 
   const onChange = (event) => {
@@ -67,7 +78,6 @@ export default function StudentTasks() {
     event.preventDefault()
     try {
       if (file === null) {
-        setToggle({ toggle: false, id: "", taskName: "" })
         swal.fire({
           title: "Warning!!",
           text: "there is no containing file, please try again",
@@ -102,11 +112,13 @@ export default function StudentTasks() {
                   remarks: "done",
                   score: 0,
                   dateSubmission: MyDateString,
+                  comments: "",
                 },
               })
 
+            setToggle({ toggle: false, id: "", taskName: "", submitted: false })
+
             if (response) {
-              setToggle({ toggle: false, id: "", taskName: "" })
               swal
                 .fire({
                   title: "Succesfully",
@@ -136,7 +148,7 @@ export default function StudentTasks() {
       headerName: "User Identification",
       width: 200,
       renderCell: (data) => {
-        return <span className="text-blue-500">{data.id}</span>
+        return <span className="text-blue-500">{data.row?.id}</span>
       },
     },
     {
@@ -207,61 +219,26 @@ export default function StudentTasks() {
         const deadlineDate = new Date(params.row?.deadline)
         const dateToday = new Date(MyDateString)
         const isCheckDeadline = dateToday >= deadlineDate
-
-        const checkStatus =
+        const isCheckSubmit =
           isCheckDeadline ||
-          filteredDocuments[0]?.documentDetails?.taskName ===
-            params.row?.taskName
-            ? true
-            : false
-
-        // delete data in coordinator row
-        // const Delete = (e) => {
-        //   e.stopPropagation() // don't select this row after clicking
-
-        //   swal
-        //     .fire({
-        //       title: "ARE YOU SURE?",
-        //       text: "are you sure to delete this data?",
-        //       icon: "warning",
-        //       showCancelButton: true,
-        //     })
-        //     .then(async (result) => {
-        //       if (result.isConfirmed) {
-        //         await deleteDocument("tasksDetails", params.row.id).then(() => {
-        //           swal.fire({
-        //             title: "Successfully Deleted",
-        //             text: "Please click yes to continue",
-        //             icon: "success",
-        //           })
-        //         })
-        //       } else {
-        //         swal.fire("Yay!", "your data is safe", "success")
-        //       }
-        //     })
-        // }
-
-        // update data in coordinator row
-        // const Update = (e) => {
-        //   e.stopPropagation() // don't select this row after clickin
-
-        //   if (params.row.id) {
-        //     navigate(`/admin/updateTasks?id=${params.row.id}`)
-        //   }
-
-        //   // updateToggleModal();
-        // }
+          isCheckSubmittedTasks(filteredDocuments, params.row.taskName)
 
         return (
           <div className="space-x-4">
             <button
               onClick={() => toggleModal(params.row?.id, params.row?.taskName)}
-              disabled={checkStatus}
+              disabled={isCheckSubmit}
               className={` ${
-                checkStatus ? "bg-slate-500" : "bg-slate-900"
-              } flex items-center gap-2 cursor-pointer cursor-pointer hover:bg-slate-600 transition-all text-white py-2 px-4 rounded-lg border-2`}
+                isCheckSubmit ? "bg-slate-500" : "bg-slate-900"
+              } cursor-pointer cursor-pointer hover:bg-slate-600 transition-all text-white py-2 px-4 rounded-lg border-2`}
             >
-              <Edit2 size="15" /> comply
+              {isCheckSubmit ? (
+                "submitted"
+              ) : (
+                <span className="flex items-center gap-2 ">
+                  <Edit2 size="15" /> comply
+                </span>
+              )}
             </button>
           </div>
         )
@@ -271,57 +248,61 @@ export default function StudentTasks() {
 
   const complyModal = (
     <PageModal open={isToggle.toggle} isClose={closeModal}>
-      <form>
-        <div className="flex items-center justify-center w-full mt-6">
-          <label
-            for="dropzone-file"
-            className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 white:hover:bg-bray-800 white:bg-gray-700 hover:bg-gray-100 white:border-gray-600 white:hover:border-gray-500 white:hover:bg-gray-600"
-          >
-            <div className="flex flex-col items-center justify-center pt-5 pb-6">
-              <UploadCloud className="text-gray-500 mb-3" size="40" />
-              <p className="mb-2 text-sm text-gray-500 white:text-gray-400">
-                <span className="font-semibold">Click to upload</span>
-              </p>
-              <p className="text-xs text-gray-500 white:text-gray-400">
-                PDf or DOCX
-              </p>
-            </div>
-            <input
-              ref={inputRef}
-              id="dropzone-file"
-              type="file"
-              className="hidden"
-              onChange={(event) => onChange(event)}
-              required
-            />
-          </label>
-        </div>
-        {file !== null && (
-          <div className="flex items-center justify-between mt-4 bg-slate-500 text-slate-800 text-sm font-semibold mr-2 px-3 py-2 rounded dark:bg-slate-200 dark:text-slate-800 mt-2">
-            {file.name}
-            {/* <Trash2
+      {!isToggle.submitted ? (
+        <form>
+          <div className="flex items-center justify-center w-full mt-6">
+            <label
+              htmlFor="dropzone-file"
+              className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 white:hover:bg-bray-800 white:bg-gray-700 hover:bg-gray-100 white:border-gray-600 white:hover:border-gray-500 white:hover:bg-gray-600"
+            >
+              <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                <UploadCloud className="text-gray-500 mb-3" size="40" />
+                <p className="mb-2 text-sm text-gray-500 white:text-gray-400">
+                  <span className="font-semibold">Click to upload</span>
+                </p>
+                <p className="text-xs text-gray-500 white:text-gray-400">
+                  PDf or DOCX
+                </p>
+              </div>
+              <input
+                ref={inputRef}
+                id="dropzone-file"
+                type="file"
+                className="hidden"
+                onChange={(event) => onChange(event)}
+                required
+              />
+            </label>
+          </div>
+          {file !== null && (
+            <div className="flex items-center justify-between mt-4 bg-slate-500 text-slate-800 text-sm font-semibold mr-2 px-3 py-2 rounded dark:bg-slate-200 dark:text-slate-800 mt-2">
+              {file.name}
+              {/* <Trash2
               onClick={removeFile}
               className="text-slate-900 hover:text-slate-500 transition-all cursor-pointer"
             /> */}
+            </div>
+          )}
+          <div className="flex gap-2 justify-end mt-4">
+            <button
+              onClick={removeFile}
+              type="button"
+              className="bg-slate-500 rounded-lg py-2 px-4 hover:bg-slate-800 transition-all text-white"
+            >
+              cancel
+            </button>
+            <button
+              onClick={(event) => onSubmit(event)}
+              type="button"
+              className="bg-slate-900 rounded-lg py-2 px-4 hover:bg-slate-600 transition-all text-white"
+            >
+              Upload file
+            </button>
           </div>
-        )}
-        <div className="flex gap-2 justify-end mt-4">
-          <button
-            onClick={removeFile}
-            type="button"
-            className="bg-slate-500 rounded-lg py-2 px-4 hover:bg-slate-800 transition-all text-white"
-          >
-            cancel
-          </button>
-          <button
-            onClick={(event) => onSubmit(event)}
-            type="button"
-            className="bg-slate-900 rounded-lg py-2 px-4 hover:bg-slate-600 transition-all text-white"
-          >
-            Upload file
-          </button>
-        </div>
-      </form>
+        </form>
+      ) : (
+        <div>you are already submitted a document</div>
+      )}
     </PageModal>
   )
 
@@ -331,7 +312,7 @@ export default function StudentTasks() {
       description="a list of tasks given to a student"
     >
       {complyModal}
-      <Table data={userSection} columns={columns} loading={false} />
+      <Table data={studentTasks} columns={columns} loading={false} />
     </Layout>
   )
 }

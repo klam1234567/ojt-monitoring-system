@@ -21,6 +21,7 @@ const TaskProvider = ({ children }) => {
     const db = getFirestore()
     const q = query(collection(db, "tasksDetails"))
     const snapshot = await getDocs(q)
+
     const data = snapshot.docs.map((doc) => ({
       ...doc.data(),
       id: doc.id,
@@ -30,8 +31,10 @@ const TaskProvider = ({ children }) => {
       const taskDetails = query(
         collection(db, `tasksDetails/${elem.id}/submittedDocuments`)
       )
+
       const submittedDocumentsDetails = await getDocs(taskDetails)
-      const docs = submittedDocumentsDetails.docs.map((doc) => ({
+
+      submittedDocumentsDetails.docs.map((doc) => ({
         ...doc.data(),
         id: doc.id,
       }))
@@ -41,7 +44,6 @@ const TaskProvider = ({ children }) => {
       )
 
       setSubCollection(taskArray)
-
       // localStorage.setItem("documents", JSON.stringify(docs))
     })
   }

@@ -9,7 +9,7 @@ import swal from "sweetalert2"
 //context api
 import { TaskContext } from "context/TasksProvider"
 
-export default function UpdateStudentGrades() {
+export default function ViewStudentSubmission() {
   const { fetchSubCollection } = useContext(TaskContext)
   const params = useLocation()
   const pathname = params.pathname
@@ -67,10 +67,10 @@ export default function UpdateStudentGrades() {
 
   return (
     <Layout
-      title="Update student grade"
-      description="coordinator can upgrade student grade"
+      title="Student submission details"
+      description="you can see here all student submitted information"
     >
-      <Back redirect="/admin/taskSubmitted" />
+      <Back redirect="/admin/task-record" />
       <div className="flex gap-3">
         <div className="flex-1">
           <object
@@ -179,6 +179,7 @@ export default function UpdateStudentGrades() {
               type="number"
               className="w-full"
               name="score"
+              disabled={true}
               onChange={(event) => setScore(event.target.value)}
               value={score}
             />
@@ -194,6 +195,7 @@ export default function UpdateStudentGrades() {
               className="w-full"
               name="comments"
               placeholder="comments"
+              disabled={true}
               rows={4}
               column={4}
               multiline

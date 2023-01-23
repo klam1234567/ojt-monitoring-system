@@ -17,6 +17,7 @@ import {
 
 const initialState = {
   coordinatorName: "",
+  company: "",
   contact: "",
   email: "",
   address: "",
@@ -28,10 +29,12 @@ export default function Coordinator() {
 
   const navigate = useNavigate()
 
-  const [{ coordinatorName, contact, email, address, password }, setState] =
-    useState(initialState)
+  const [
+    { coordinatorName, company, contact, email, address, password },
+    setState,
+  ] = useState(initialState)
 
-  const config = { coordinatorName, contact, email, address, password }
+  const config = { coordinatorName, company, contact, email, address, password }
 
   const { fetchCoordinator } = useContext(CoordinatorContext)
 
@@ -55,14 +58,13 @@ export default function Coordinator() {
     try {
       const credentials = await registerUser(email, password)
 
-      console.log(credentials)
-
       if (credentials) {
         // coordinator details that will save to firebase
         const config = {
           authId: credentials.user.uid,
           email: credentials.user.email,
           coordinatorName,
+          company,
           contact,
           address,
         }
@@ -117,7 +119,7 @@ export default function Coordinator() {
     },
     {
       field: "coordinatorName",
-      headerName: "Coordinator Name",
+      headerName: "Supervisor Name",
       width: 200,
     },
     {
@@ -234,7 +236,7 @@ export default function Coordinator() {
   return (
     <Fragment>
       {addModal}
-      <Layout title="Coordinator" description="a list of coordinator data">
+      <Layout title="Supervisor" description="a list of supervisor data">
         <div className="flex justify-end my-4">
           <button
             onClick={toggleModal}

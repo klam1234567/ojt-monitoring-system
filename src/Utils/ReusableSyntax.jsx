@@ -52,27 +52,63 @@ export const generateTaskCode = () => {
   return newTaskCode
 }
 
+export const filteredByStudentScore = (itemArray, uid) => {
+  return itemArray.filter((elem) => {
+    return elem.documentDetails.score !== 0
+  })
+}
+
 export const filteredByIDSubmittedTask = (itemArray, paramsId) => {
   return itemArray.filter((type) => {
     return type.id === paramsId
   })
 }
 
-export const filteredBySection = (itemArray, studentSection) => {
+export const filteredByCompany = (itemArray, studentSection) => {
   return itemArray.filter((type) => {
-    return type.section === studentSection
+    return type.company === studentSection
+  })
+}
+
+export const filterByStudentName = (itemArray, studentName) => {
+  return itemArray.filter((type) => {
+    return type.fullName === studentName
   })
 }
 
 export const filterByStudentUUID = (itemArray, uid) => {
   return itemArray.filter((type) => {
-    return type.authId === uid
+    return type.studentDetails[0]?.authId === uid
+  })
+}
+
+export const filterByStudentUUIDs = (itemArray, uid) => {
+  return itemArray.filter((type) => {
+    return type.studentDetails[0]?.authId === uid
+  })
+}
+
+export const filteredByEmail = (itemArray, email) => {
+  return itemArray.filter((type) => {
+    return type.coordEmail === email
   })
 }
 
 export const filterByUUID = (itemArray, uid) => {
   return itemArray.filter((type) => {
     return type.coordinatorUUID === uid
+  })
+}
+
+export const filterByCoordinatorUUIDs = (itemArray, uid) => {
+  return itemArray.filter((type) => {
+    return type.coordinatorUUID === uid
+  })
+}
+
+export const filterByCoordinatorUUID = (itemArray, uid) => {
+  return itemArray.filter((type) => {
+    return type.authId === uid
   })
 }
 
@@ -98,4 +134,11 @@ export const mergeByProperty = (target, source, prop) => {
       ? Object.assign(targetElement, sourceElement)
       : target.push(sourceElement)
   })
+}
+
+export const isCheckSubmittedTasks = (filteredDocuments, taskName) => {
+  const found = filteredDocuments.some(
+    (el) => el.documentDetails.taskName === taskName
+  )
+  return found
 }

@@ -2,16 +2,21 @@ import React from "react"
 import { Link, useLocation } from "react-router-dom"
 import { LogOut } from "react-feather"
 import { auth, signOut } from "config/firebase"
+import { useNavigate } from "react-router-dom"
 import rolesHook from "hooks/rolesHook"
 
 export default function Sidebar() {
   const query = useLocation()
+  const navigate = useNavigate()
 
   const { info, links } = rolesHook()
 
-  const logoutUser = () => {
-    signOut(auth)
-    localStorage.clear()
+  const logoutUser = async () => {
+    const response = await signOut(auth)
+    if (response) {
+      navigate("/")
+      localStorage.clear()
+    }
   }
 
   return (
@@ -26,7 +31,7 @@ export default function Sidebar() {
           <h1 className="font-bold">{info.name}</h1>
           <h2 className="text-sm">{info.email}</h2>
           <span className="bg-slate-500 text-slate-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-slate-200 dark:text-slate-800 mt-2">
-            {info.status}
+            {info.status === "coordinator" ? "supervisor" : info.status}
           </span>
         </div>
         <ul className="space-y-3 mt-10">

@@ -1,22 +1,23 @@
 import React, { useContext } from "react"
 import { Layout, Table } from "components"
-import { useNavigate } from "react-router-dom"
-import { filteredByEmail } from "Utils/ReusableSyntax"
 import { Download } from "react-feather"
+import { filterByStudentUUIDs } from "Utils/ReusableSyntax"
+import { useNavigate } from "react-router-dom"
 
 // context
 import { TaskContext } from "context/TasksProvider"
 import { AuthContext } from "context/auth"
 
-export default function TasksSubmitted() {
-  const context = useContext(AuthContext)
-  const navigate = useNavigate()
+export default function TaskRecord() {
   const { fetchSubCollection } = useContext(TaskContext)
-  const filteredTasks =
-    fetchSubCollection.length > 0 &&
-    filteredByEmail(fetchSubCollection, context.email)
+  const context = useContext(AuthContext)
 
-  //column example
+  const navigate = useNavigate()
+
+  const filteredDocuments =
+    fetchSubCollection.length > 0 &&
+    filterByStudentUUIDs(fetchSubCollection, context.uid)
+
   const columns = [
     {
       field: "id",
@@ -83,7 +84,7 @@ export default function TasksSubmitted() {
       width: 200,
       renderCell: (params) => {
         const redirectTo = () => {
-          navigate(`/admin/update-grade/${params.row.id}`)
+          navigate(`/admin/view-submission/${params.row.id}`)
         }
 
         return (
@@ -94,9 +95,6 @@ export default function TasksSubmitted() {
             >
               view
             </button>
-            {/* <button className="cursor-pointer cursor-pointer bg-slate-900 hover:bg-slate-600 transition-all text-white py-2 px-4 rounded-lg border-2">
-              Delete
-            </button> */}
           </div>
         )
       },
@@ -105,10 +103,10 @@ export default function TasksSubmitted() {
 
   return (
     <Layout
-      title="Tasks Submitted"
-      description="all the tasks submitted by the students"
+      title="Student Task Record"
+      description="this section you can see all student records"
     >
-      <Table data={filteredTasks} columns={columns} loading={false} />
+      <Table data={filteredDocuments} columns={columns} loading={false} />
     </Layout>
   )
 }

@@ -1,12 +1,12 @@
-import React from "react";
-import Box from "@mui/material/Box";
+import React from "react"
+import Box from "@mui/material/Box"
 import {
   DataGrid,
   GridToolbarContainer,
   GridToolbarColumnsButton,
   GridToolbarFilterButton,
   GridToolbarDensitySelector,
-} from "@mui/x-data-grid";
+} from "@mui/x-data-grid"
 
 function CustomToolbar() {
   return (
@@ -15,7 +15,7 @@ function CustomToolbar() {
       <GridToolbarFilterButton />
       <GridToolbarDensitySelector />
     </GridToolbarContainer>
-  );
+  )
 }
 
 export default function Table({ data, columns, loading }) {
@@ -35,5 +35,5 @@ export default function Table({ data, columns, loading }) {
         }}
       />
     </Box>
-  );
+  )
 }
