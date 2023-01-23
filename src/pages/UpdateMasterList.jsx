@@ -80,7 +80,7 @@ export default function UpdateMasterList() {
 
   useEffect(() => {
     paramsId[1] && setregisteredStudentId(paramsId[1])
-  }, [paramsId])
+  }, [paramsId]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Layout

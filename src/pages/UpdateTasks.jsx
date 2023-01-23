@@ -27,7 +27,7 @@ export default function UpdateTasks() {
 
   useEffect(() => {
     paramsId[1] && setTaskId(paramsId[1])
-  }, [paramsId])
+  }, [paramsId]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const onChange = (event) => {
     const { name, value } = event.target

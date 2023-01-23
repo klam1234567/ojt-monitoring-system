@@ -49,7 +49,7 @@ export default function UpdateCoordinator() {
 
   useEffect(() => {
     paramsId[1] && setStudentId(paramsId[1])
-  }, [paramsId])
+  }, [paramsId]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Layout

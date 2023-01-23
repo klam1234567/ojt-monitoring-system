@@ -45,7 +45,9 @@ export default function RolesHook() {
     })
   }
 
-  useEffect(fetchUserInformation, [userCount])
+  useEffect(() => {
+    fetchUserInformation()
+  }, [userCount]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return { info, links }
 }
