@@ -69,6 +69,7 @@ export default function TasksSubmitted() {
             <a
               href={params.row.documentDetails.fileUrl}
               target="_blank"
+              rel="noreferrer"
               className="bg-slate-900 hover:bg-slate-900 p-2 rounded-sm"
             >
               <Download size="15" className="text-white" />

@@ -10,7 +10,7 @@ import { CoordinatorContext } from "context/CoordinatorProvider"
 import { OrganizationContext } from "context/OrganizationProvider"
 import { EnrollmentContext } from "context/EnrollmentProvider"
 import { saveDoc, deleteDocument } from "config/firebase"
-import { eliminateDuplicates, filterByStudentName } from "Utils/ReusableSyntax"
+import { filterByStudentName } from "Utils/ReusableSyntax"
 import swal from "sweetalert2"
 
 const initialState = {
@@ -51,7 +51,9 @@ export default function EnrollmentModule() {
     setCoordinatorNames(fetchCoordinatorByEmail)
   }
 
-  useEffect(fetchCoordinatorNames, [coordEmail])
+  useEffect(() => {
+    fetchCoordinatorNames()
+  }, [coordEmail]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const onChange = (event) => {
     const { name, value } = event.target
