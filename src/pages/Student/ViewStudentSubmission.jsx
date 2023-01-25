@@ -203,14 +203,14 @@ export default function ViewStudentSubmission() {
               onChange={(event) => setComments(event.target.value)}
             />
           </div>
-          <div className="my-4 text-right">
+          {/* <div className="my-4 text-right">
             <button
               type="submit"
               className="bg-slate-900 rounded-lg py-2 px-4 hover:bg-slate-600 transition-all text-white"
             >
               save
             </button>
-          </div>
+          </div> */}
         </form>
       </div>
     </Layout>
