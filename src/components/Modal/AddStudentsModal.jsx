@@ -20,7 +20,7 @@ export default function AddStudentsModal({
     email,
     address,
     password,
-  } = config
+  } = config?.students
 
   return (
     <PageModal open={isToggle} isClose={toggleModal}>

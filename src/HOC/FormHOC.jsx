@@ -7,10 +7,12 @@ import {
   auth,
   saveDoc,
   updateDocument,
+  registerUser,
 } from "config/firebase"
 
 const ACTIONS = {
   save: "SAVE",
+  onRegister: "REGISTER",
   update: "UPDATE",
   DELETE: "DELETE",
 }
@@ -80,6 +82,44 @@ const FormHOC = (propState) => (entity) => (WrappedComponent) => {
       }
     }
 
+    const handleAuth = async (email, password, configData, userData) => {
+      try {
+        if (entity?.actionType === ACTIONS.onRegister) {
+          const credentials = await registerUser(email, password)
+
+          const config = {
+            authId: credentials.user.uid,
+            email: credentials.user.email,
+            ...configData,
+          }
+
+          const user = {
+            authId: credentials.user.uid,
+            email: credentials.user.email,
+            ...userData,
+          }
+
+          //firebase saved event user
+          config.email &&
+            config.authId &&
+            (await saveDoc(user, entity?.userCollection))
+          //firebase saved event
+          config.email &&
+            config.authId &&
+            (await saveDoc(config, entity?.dataCollection).then(() => {
+              swal.fire({
+                title: "Successfully Created",
+                text: "please click the okay button to continue",
+                icon: "success",
+              })
+            }))
+          clearState()
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
     const handleSubmit = (data, id) => {
       /**
        * if the entity componentName is equal to Login return Login function
@@ -115,6 +155,7 @@ const FormHOC = (propState) => (entity) => (WrappedComponent) => {
       <Fragment>
         <WrappedComponent
           {...state}
+          onAuth={handleAuth}
           clearState={clearState}
           onSubmit={handleSubmit}
           onChange={handleChange}

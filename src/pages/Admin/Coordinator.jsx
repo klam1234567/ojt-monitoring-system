@@ -1,5 +1,4 @@
 import React, { Fragment, useState, useContext } from "react"
-import swal from "sweetalert2"
 import { Plus } from "react-feather"
 import { Layout, Table, AddCoordinatorModal } from "components"
 import { useNavigate } from "react-router-dom"
@@ -7,13 +6,8 @@ import { useNavigate } from "react-router-dom"
 // context
 import { CoordinatorContext } from "context/CoordinatorProvider"
 
-//firebase
-import {
-  registerUser,
-  saveDoc,
-  // deleteDocument,
-  // deleteUserAuth,
-} from "config/firebase"
+//Higher Order Component
+import { FormHOC } from "HOC"
 
 const initialState = {
   coordinatorName: "",
@@ -24,23 +18,19 @@ const initialState = {
   password: "",
 }
 
-export default function Coordinator() {
+const entity = {
+  componentName: "coordinator",
+  userCollection: "userData",
+  dataCollection: "coordinatorData",
+  actionType: "REGISTER",
+}
+
+function Coordinator(props) {
   const [isToggle, setToggle] = useState(false)
 
   const navigate = useNavigate()
 
-  const [
-    { coordinatorName, company, contact, email, address, password },
-    setState,
-  ] = useState(initialState)
-
-  const config = { coordinatorName, company, contact, email, address, password }
-
   const { fetchCoordinator } = useContext(CoordinatorContext)
-
-  const clearState = () => {
-    setState(initialState)
-  }
 
   const toggleModal = () => {
     setToggle((isToggle) => !isToggle)
@@ -49,20 +39,18 @@ export default function Coordinator() {
   const onChange = (event) => {
     const { name, value } = event.target
 
-    setState((prevState) => ({ ...prevState, [name]: value }))
+    props.onChange(name, value)
   }
 
   const onSubmit = async (event) => {
     event.preventDefault()
 
     try {
-      const credentials = await registerUser(email, password)
+      const { coordinatorName, company, contact, email, address, password } =
+        props?.coordinator
 
-      if (credentials) {
-        // coordinator details that will save to firebase
+      if (email && password) {
         const config = {
-          authId: credentials.user.uid,
-          email: credentials.user.email,
           coordinatorName,
           company,
           contact,
@@ -70,28 +58,13 @@ export default function Coordinator() {
         }
 
         const userData = {
-          authId: credentials.user.uid,
-          email: credentials.user.email,
           name: coordinatorName,
           status: "coordinator",
         }
 
-        //firebase saved event userData
-        config.email && config.authId && (await saveDoc(userData, "userData"))
-
-        //firebase saved event
-        config.email &&
-          config.authId &&
-          saveDoc(config, "coordinatorData").then(() => {
-            swal.fire({
-              title: "Successfully Created",
-              text: "please click the okay button to continue",
-              icon: "success",
-            })
-          })
+        await props.onAuth(email, password, config, userData)
       }
 
-      clearState()
       setToggle(false)
     } catch (error) {
       console.log(error)
@@ -137,55 +110,18 @@ export default function Coordinator() {
       field: "address",
       headerName: "Address",
       width: 200,
-      // description: "This column has a value getter and is not sortable.",
-      // sortable: false,
-      // width: 160,
-      // valueGetter: (params) =>
-      //   `${params.row.contact || ""} ${params.row coordinatorName || ""}`,
     },
     {
       field: "action",
       headerName: "Actions",
       width: 200,
       renderCell: (params) => {
-        // delete data in coordinator row
-        // const Delete = (e) => {
-        //   e.stopPropagation() // don't select this row after clicking
-
-        //   swal
-        //     .fire({
-        //       title: "ARE YOU SURE?",
-        //       text: "are you sure to delete this data?",
-        //       icon: "warning",
-        //       showCancelButton: true,
-        //     })
-        //     .then(async (result) => {
-        //       if (result.isConfirmed) {
-        //         await deleteUserAuth(params.row?.authId)
-        //         await deleteDocument("coordinatorData", params.row.id).then(
-        //           () => {
-        //             swal.fire({
-        //               title: "Successfully Deleted",
-        //               text: "Please click yes to continue",
-        //               icon: "success",
-        //             })
-        //           }
-        //         )
-        //       } else {
-        //         swal.fire("Yay!", "your data is safe", "success")
-        //       }
-        //     })
-        // }
-
-        // update data in coordinator row
         const Update = (e) => {
           e.stopPropagation() // don't select this row after clickin
 
           if (params.row.id) {
             navigate(`/admin/updateCoordinator?id=${params.row.id}`)
           }
-
-          // updateToggleModal();
         }
 
         return (
@@ -196,42 +132,22 @@ export default function Coordinator() {
             >
               Edit
             </button>
-            {/* <button
-              className="cursor-pointer cursor-pointer bg-slate-900 hover:bg-slate-600 transition-all text-white py-2 px-4 rounded-lg border-2"
-              onClick={Delete}
-            >
-              Delete
-            </button> */}
           </div>
         )
       },
     },
   ]
 
-  // const updateModal = (
-  //   <UpdateCoordinatorModal
-  //     initialState={initialState}
-  //     isToggleUpdate={isToggleUpdate}
-  //     updateToggleModal={updateToggleModal}
-  //     config={config}
-  //     clearState={clearState}
-  //     onChange={onChange}
-  //   />
-  // );
-
   const addModal = (
     <AddCoordinatorModal
       isToggle={isToggle}
       toggleModal={toggleModal}
-      config={config}
-      clearState={clearState}
+      config={props}
+      clearState={props.clearState}
       onSubmit={onSubmit}
       onChange={onChange}
     />
   )
-
-  // // loading spinner before the data comes out
-  // const loading = fetchCoordinator.length <= 0;
 
   return (
     <Fragment>
@@ -250,3 +166,11 @@ export default function Coordinator() {
     </Fragment>
   )
 }
+
+const CustomCoordinator = () => {
+  const CoordinatorHOC = FormHOC(initialState)(entity)(Coordinator)
+
+  return <CoordinatorHOC />
+}
+
+export default CustomCoordinator

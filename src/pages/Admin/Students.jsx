@@ -1,5 +1,4 @@
 import React, { Fragment, useState, useContext } from "react"
-import swal from "sweetalert2"
 import { Plus } from "react-feather"
 import { Layout, Table, AddStudentsModal } from "components"
 import { useNavigate } from "react-router-dom"
@@ -7,13 +6,8 @@ import { useNavigate } from "react-router-dom"
 // context
 import { StudentContext } from "context/StudentProvider"
 
-//firebase
-import {
-  registerUser,
-  saveDoc,
-  // deleteDocument,
-  // deleteUserAuth,
-} from "config/firebase"
+//Higher Order Component
+import { FormHOC } from "HOC"
 
 const initialState = {
   schoolID: "",
@@ -26,21 +20,19 @@ const initialState = {
   password: "",
 }
 
-export default function Students() {
+const entity = {
+  componentName: "students",
+  userCollection: "userData",
+  dataCollection: "studentsData",
+  actionType: "REGISTER",
+}
+
+function Students(props) {
   const [isToggle, setToggle] = useState(false)
 
   const navigate = useNavigate()
 
-  const [
-    { schoolID, fullName, course, section, contact, email, address, password },
-    setState,
-  ] = useState(initialState)
-
   const { fetchStudent } = useContext(StudentContext)
-
-  const clearState = () => {
-    setState(initialState)
-  }
 
   const toggleModal = () => {
     setToggle((isToggle) => !isToggle)
@@ -49,20 +41,27 @@ export default function Students() {
   const onChange = (event) => {
     const { name, value } = event.target
 
-    setState((prevState) => ({ ...prevState, [name]: value }))
+    props.onChange(name, value)
   }
 
   const onSubmit = async (event) => {
     event.preventDefault()
     const courseValidator = /^([^0-9]*)$/
 
+    const {
+      schoolID,
+      fullName,
+      course,
+      contact,
+      section,
+      address,
+      email,
+      password,
+    } = props?.students
+
     try {
       if (courseValidator.test(course)) {
-        const credentials = await registerUser(email, password)
-
         const config = {
-          authId: credentials.user.uid,
-          email: credentials.user.email,
           schoolID,
           fullName,
           course,
@@ -72,32 +71,13 @@ export default function Students() {
         }
 
         const userData = {
-          authId: credentials.user.uid,
-          email: credentials.user.email,
           name: fullName,
           status: "student",
         }
-        //firebase saved event userData
-        config.email && config.authId && (await saveDoc(userData, "userData"))
 
-        config.email &&
-          config.authId &&
-          saveDoc(config, "studentsData").then(() => {
-            swal.fire({
-              title: "Successfully Created",
-              text: "please click the okay button to continue",
-              icon: "success",
-            })
-          })
-      } else {
-        swal.fire({
-          title: "Warning!!",
-          text: "course field has number",
-          icon: "warning",
-        })
+        await props.onAuth(email, password, config, userData)
       }
 
-      clearState()
       setToggle(false)
     } catch (error) {
       console.log(error)
@@ -147,54 +127,17 @@ export default function Students() {
       field: "email",
       headerName: "Email",
       width: 200,
-      // description: "This column has a value getter and is not sortable.",
-      // sortable: false,
-      // width: 160,
-      // valueGetter: (params) =>
-      //   `${params.row.contact || ""} ${params.row coordinatorName || ""}`,
     },
     {
       field: "address",
       headerName: "Address",
       width: 200,
-      // description: "This column has a value getter and is not sortable.",
-      // sortable: false,
-      // width: 160,
-      // valueGetter: (params) =>
-      //   `${params.row.contact || ""} ${params.row coordinatorName || ""}`,
     },
     {
       field: "action",
       headerName: "Actions",
       width: 200,
       renderCell: (params) => {
-        // delete data in coordinator row
-        // const Delete = (e) => {
-        //   e.stopPropagation() // don't select this row after clicking
-
-        //   swal
-        //     .fire({
-        //       title: "ARE YOU SURE?",
-        //       text: "are you sure to delete this data?",
-        //       icon: "warning",
-        //       showCancelButton: true,
-        //     })
-        //     .then(async (result) => {
-        //       if (result.isConfirmed) {
-        //         await deleteUserAuth(params.row.authId)
-        //         deleteDocument("studentsData", params.row.id).then(() => {
-        //           swal.fire({
-        //             title: "Successfully Deleted",
-        //             text: "Please click yes to continue",
-        //             icon: "success",
-        //           })
-        //         })
-        //       } else {
-        //         swal.fire("Yay!", "your data is safe", "success")
-        //       }
-        //     })
-        // }
-
         // update data in coordinator row
         const Update = (e) => {
           e.stopPropagation() // don't select this row after clickin
@@ -226,23 +169,12 @@ export default function Students() {
     },
   ]
 
-  const config = {
-    schoolID,
-    fullName,
-    course,
-    contact,
-    section,
-    email,
-    address,
-    password,
-  }
-
   const addModal = (
     <AddStudentsModal
       isToggle={isToggle}
       toggleModal={toggleModal}
-      config={config}
-      clearState={clearState}
+      config={props}
+      clearState={props.clearState}
       onSubmit={onSubmit}
       onChange={onChange}
     />
@@ -268,3 +200,11 @@ export default function Students() {
     </Fragment>
   )
 }
+
+const CustomStudents = () => {
+  const StudentsHOC = FormHOC(initialState)(entity)(Students)
+
+  return <StudentsHOC />
+}
+
+export default CustomStudents

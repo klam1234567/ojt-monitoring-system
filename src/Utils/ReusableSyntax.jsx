@@ -24,7 +24,16 @@ export const Months = [
   "December",
 ]
 
-export const sectionList = ["4-A", "4-B", "4-C", "4-D", "IT-A", "IT-B", "IT-C"]
+export const sectionList = [
+  "4-1",
+  "4-2",
+  "4-3",
+  "4-4",
+  "IT-1",
+  "IT-2",
+  "IT-3",
+  "IT-4",
+]
 
 //*Convert Array Object into Object
 export const objectAssign = (ObjectArray, obj) => {
