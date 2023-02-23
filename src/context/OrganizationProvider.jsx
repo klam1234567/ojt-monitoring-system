@@ -8,8 +8,6 @@ const OrganizationProvider = ({ children }) => {
   const [fetchSpecificOrg, setFetchSpecificOrg] = useState([])
   const [fetchOrganization, setOrganization] = useState([])
 
-  const updateId = localStorage.getItem("updateId")
-
   const fetchdata = () => {
     const document = app.firestore().collection("organizationData")
     return document.onSnapshot((snapshot) => {
