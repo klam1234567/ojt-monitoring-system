@@ -1,4 +1,10 @@
-import React, { useContext, useState, useEffect } from "react"
+import React, {
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+} from "react"
 import { MenuItem } from "@mui/material"
 import { TabPanel } from "@mui/lab"
 //import { useNavigate } from "react-router-dom"
@@ -9,9 +15,12 @@ import { StudentContext } from "context/StudentProvider"
 import { CoordinatorContext } from "context/CoordinatorProvider"
 import { OrganizationContext } from "context/OrganizationProvider"
 import { EnrollmentContext } from "context/EnrollmentProvider"
-import { saveDoc, deleteDocument } from "config/firebase"
+import { deleteDocument } from "config/firebase"
 import { filterByStudentName } from "Utils/ReusableSyntax"
 import swal from "sweetalert2"
+
+//Higher Order Component
+import { FormHOC } from "HOC"
 
 const initialState = {
   schoolYear: "",
@@ -21,13 +30,13 @@ const initialState = {
   orgsName: "",
 }
 
-export default function EnrollmentModule() {
-  const [{ schoolYear, studName, coordName, coordEmail, orgsName }, setState] =
-    useState(initialState)
+const entity = {
+  componentName: "submitEnrollment",
+  collectionName: "enrollmentModuleData",
+}
 
+function EnrollmentModule(props) {
   const [coordinatorNames, setCoordinatorNames] = useState(null)
-
-  //const navigate = useNavigate()
 
   const { fetchStudent } = useContext(StudentContext)
   const { fetchCoordinator } = useContext(CoordinatorContext)
@@ -40,68 +49,46 @@ export default function EnrollmentModule() {
 
   // const coordinatorName = fetchCoordinator.map((type) => type.coordinatorName)
   const coordinatorEmail = fetchCoordinator.map((type) => type.email)
-  const filteredStudent = filterByStudentName(fetchStudent, studName)
+
+  const filteredStudent = useMemo(() => {
+    return filterByStudentName(fetchStudent, props.submitEnrollment?.studName)
+  }, [props.submitEnrollment?.studName, fetchStudent])
+
   const orgName = fetchOrganization.map((type) => type.organizationName)
 
-  const fetchCoordinatorNames = () => {
-    const fetchCoordinatorByEmail = fetchCoordinator.filter(
-      (type) => type.email === coordEmail
+  const fetchCoordinatorNames = useCallback(async () => {
+    const fetchCoordinatorByEmail = await fetchCoordinator.filter(
+      (type) => type.email === props.submitEnrollment?.coordEmail
     )
 
     setCoordinatorNames(fetchCoordinatorByEmail)
-  }
+  }, [props.submitEnrollment?.coordEmail, fetchCoordinator])
 
   useEffect(() => {
     fetchCoordinatorNames()
-  }, [coordEmail]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [fetchCoordinatorNames])
 
   const onChange = (event) => {
     const { name, value } = event.target
-
-    setState((prevState) => ({ ...prevState, [name]: value }))
+    props.onChange(name, value)
   }
 
-  const clearState = () => {
-    setState(initialState)
-  }
-
-  const onSubmit = async (event) => {
+  const onSubmit = (event) => {
     event.preventDefault()
-    try {
-      const config = {
-        schoolYear,
-        studName,
-        coordName,
-        orgsName,
-        coordEmail,
-        enrolled: true,
-        studentDetails: filteredStudent,
-      }
+    const { schoolYear, studName, coordName, orgsName, coordEmail } =
+      props?.submitEnrollment
 
-      const response = await swal.fire({
-        title: "Opps!",
-        text: "would you like to save this file?",
-        icon: "question",
-        showCancelButton: true,
-      })
-
-      if (response.isConfirmed) {
-        config &&
-          saveDoc(config, "enrollmentModuleData").then(() => {
-            swal.fire({
-              title: "Successfully Created",
-              text: "please click the okay button to continue",
-              icon: "success",
-            })
-          })
-
-        clearState()
-
-        return false
-      }
-    } catch (error) {
-      console.log(error)
+    const config = {
+      schoolYear,
+      studName,
+      coordName,
+      orgsName,
+      coordEmail,
+      enrolled: true,
+      studentDetails: filteredStudent,
     }
+
+    props.onSubmit(config)
   }
 
   //column example
@@ -225,13 +212,13 @@ export default function EnrollmentModule() {
                 type="text"
                 className="w-full"
                 name="schoolYear"
-                value={schoolYear}
+                value={props.submitEnrollment?.schoolYear}
                 onChange={(event) => onChange(event)}
                 label="School Year"
               />
               <SelectMenu
                 name="studName"
-                value={studName}
+                value={props.submitEnrollment?.studName}
                 onChange={(event) => onChange(event)}
                 title="Students"
               >
@@ -257,7 +244,7 @@ export default function EnrollmentModule() {
             <div className="flex gap-4 my-4">
               <SelectMenu
                 name="coordEmail"
-                value={coordEmail}
+                value={props.submitEnrollment?.coordEmail}
                 onChange={(event) => onChange(event)}
                 title="Supervisor Email"
               >
@@ -269,7 +256,7 @@ export default function EnrollmentModule() {
               </SelectMenu>
               <SelectMenu
                 name="coordName"
-                value={coordName}
+                value={props.submitEnrollment?.coordName}
                 onChange={(event) => onChange(event)}
                 title="Supervisor"
               >
@@ -282,7 +269,7 @@ export default function EnrollmentModule() {
               </SelectMenu>
               <SelectMenu
                 name="orgsName"
-                value={orgsName}
+                value={props.submitEnrollment?.orgsName}
                 onChange={(event) => onChange(event)}
                 title="Organization"
               >
@@ -296,7 +283,7 @@ export default function EnrollmentModule() {
             <div className="text-white flex gap-2 justify-end mt-4">
               <button
                 type="button"
-                onClick={clearState}
+                onClick={props.clearState}
                 className="bg-slate-500 rounded-lg py-2 px-4 hover:bg-slate-800 transition-all"
               >
                 cancel
@@ -314,3 +301,11 @@ export default function EnrollmentModule() {
     </Layout>
   )
 }
+
+const CustomEnrollmentModule = () => {
+  const EnrollmentModuleHOC = FormHOC(initialState)(entity)(EnrollmentModule)
+
+  return <EnrollmentModuleHOC />
+}
+
+export default CustomEnrollmentModule

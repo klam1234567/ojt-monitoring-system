@@ -8,7 +8,10 @@ import { useNavigate } from "react-router-dom"
 import { OrganizationContext } from "context/OrganizationProvider"
 
 //firebase
-import { saveDoc, deleteDocument } from "config/firebase"
+import { deleteDocument } from "config/firebase"
+
+//Higher Order Components
+import { FormHOC } from "HOC"
 
 const initialState = {
   organizationName: "",
@@ -18,35 +21,17 @@ const initialState = {
   companyAddress: "",
 }
 
-export default function Organization() {
+const entity = {
+  componentName: "organization",
+  collectionName: "organizationData",
+}
+
+function Organization(props) {
   const [isToggle, setToggle] = useState(false)
 
   const navigate = useNavigate()
 
-  const [
-    {
-      organizationName,
-      companyBackground,
-      contactPerson,
-      contactNumber,
-      companyAddress,
-    },
-    setState,
-  ] = useState(initialState)
-
-  const config = {
-    organizationName,
-    companyBackground,
-    contactPerson,
-    contactNumber,
-    companyAddress,
-  }
-
   const { fetchOrganization } = useContext(OrganizationContext)
-
-  const clearState = () => {
-    setState(initialState)
-  }
 
   const toggleModal = () => {
     setToggle((isToggle) => !isToggle)
@@ -55,35 +40,31 @@ export default function Organization() {
   const onChange = (event) => {
     const { name, value } = event.target
 
-    setState((prevState) => ({ ...prevState, [name]: value }))
+    props.onChange(name, value)
   }
 
-  const onSubmit = async (event) => {
+  const onSubmit = (event) => {
     event.preventDefault()
 
-    try {
-      const config = {
-        organizationName,
-        companyBackground,
-        contactPerson,
-        contactNumber,
-        companyAddress,
-      }
+    const {
+      organizationName,
+      companyBackground,
+      contactPerson,
+      contactNumber,
+      companyAddress,
+    } = props?.organization
 
-      config &&
-        saveDoc(config, "organizationData").then(() => {
-          swal.fire({
-            title: "Successfully Created",
-            text: "please click the okay button to continue",
-            icon: "success",
-          })
-        })
-
-      clearState()
-      setToggle(false)
-    } catch (error) {
-      console.log(error)
+    const config = {
+      organizationName,
+      companyBackground,
+      contactPerson,
+      contactNumber,
+      companyAddress,
     }
+
+    props.onSubmit(config)
+
+    setToggle(false)
   }
 
   //column example
@@ -183,8 +164,8 @@ export default function Organization() {
     <AddOrganization
       isToggle={isToggle}
       toggleModal={toggleModal}
-      config={config}
-      clearState={clearState}
+      config={props?.organization}
+      clearState={props?.clearState}
       onSubmit={onSubmit}
       onChange={onChange}
     />
@@ -210,3 +191,11 @@ export default function Organization() {
     </Fragment>
   )
 }
+
+const CustomOrganization = () => {
+  const OrganizationHOC = FormHOC(initialState)(entity)(Organization)
+
+  return <OrganizationHOC />
+}
+
+export default CustomOrganization

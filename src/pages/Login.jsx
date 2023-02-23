@@ -1,50 +1,27 @@
-import React, { useState, useContext } from "react"
+import React, { useContext } from "react"
 import { AuthContext } from "context/auth"
-import { signInWithEmailAndPassword, auth } from "config/firebase"
 import { Card } from "components"
 import { Navigate } from "react-router-dom"
-import swal from "sweetalert2"
+
+//Higher order component
+import { FormHOC } from "HOC"
 
 const initialState = {
   email: "",
   password: "",
 }
 
-export default function Login() {
-  const [{ email, password }, setState] = useState(initialState)
-
+function Login(props) {
   const context = useContext(AuthContext)
 
   const onChange = (event) => {
     const { name, value } = event.target
-    setState((prevState) => ({ ...prevState, [name]: value }))
+    props.onChange(name, value)
   }
 
   const onSubmit = async (event) => {
     event.preventDefault()
-
-    try {
-      const response = await signInWithEmailAndPassword(auth, email, password)
-
-      if (response) {
-        const { email } = response?.user
-        localStorage.setItem("email", email)
-
-        swal.fire({
-          title: "Success!",
-          text: "successfully login click okay to continue",
-          icon: "success",
-        })
-      }
-    } catch (error) {
-      if ((error.code = "auth/user-not-found")) {
-        swal.fire({
-          title: "Oops!",
-          text: "this account still not registered please try again",
-          icon: "warning",
-        })
-      }
-    }
+    props.onSubmit()
   }
 
   if (context) {
@@ -83,7 +60,11 @@ export default function Login() {
                 </h3>
                 <p className="text-gray-500">Please sign in to your account.</p>
               </div>
-              <form className="space-y-8" onSubmit={(event) => onSubmit(event)}>
+              <form
+                className="space-y-8"
+                onSubmit={onSubmit}
+                onChange={(event) => onChange(event)}
+              >
                 <div className="space-y-3">
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-gray-700 tracking-wide">
@@ -92,9 +73,7 @@ export default function Login() {
                     <input
                       type="email"
                       className="w-full text-base px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-gray-400"
-                      value={email}
                       name="email"
-                      onChange={(event) => onChange(event)}
                       placeholder="mail@gmail.com"
                       required
                     />
@@ -106,9 +85,7 @@ export default function Login() {
                     <input
                       type="password"
                       className="w-full content-center text-base px-4 py-2 border  border-gray-300 rounded-lg focus:outline-none focus:border-gray-400"
-                      value={password}
                       name="password"
-                      onChange={(event) => onChange(event)}
                       placeholder="Enter your password"
                       required
                     />
@@ -145,3 +122,12 @@ export default function Login() {
     </section>
   )
 }
+
+const LoginHOC = () => {
+  const entity = { componentName: "Login" }
+  const UpdatedComponent = FormHOC(initialState)(entity)(Login)
+
+  return <UpdatedComponent />
+}
+
+export default LoginHOC
