@@ -2,7 +2,18 @@ import { useState, Fragment } from "react"
 import swal from "sweetalert2"
 
 //Firebase functions
-import { signInWithEmailAndPassword, auth, saveDoc } from "config/firebase"
+import {
+  signInWithEmailAndPassword,
+  auth,
+  saveDoc,
+  updateDocument,
+} from "config/firebase"
+
+const ACTIONS = {
+  save: "SAVE",
+  update: "UPDATE",
+  DELETE: "DELETE",
+}
 
 const FormHOC = (propState) => (entity) => (WrappedComponent) => {
   const HOC = () => {
@@ -69,16 +80,26 @@ const FormHOC = (propState) => (entity) => (WrappedComponent) => {
       }
     }
 
-    const handleSubmit = (data) => {
+    const handleSubmit = (data, id) => {
       /**
        * if the entity componentName is equal to Login return Login function
-       * otherwise run saveData
+       * otherwise run with actionType
        */
       if (entity?.componentName === "Login") {
         Login()
       }
 
-      saveData(data)
+      if (entity?.actionType === ACTIONS.save) {
+        saveData(data)
+      }
+
+      if (entity?.actionType === ACTIONS.update) {
+        updateDocument(entity?.collectionName, data, id)
+      }
+
+      //console.log("note save data")
+
+      //saveData(data)
     }
 
     const handleChange = (name, value) => {

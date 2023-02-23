@@ -4,9 +4,10 @@ import { app } from "../config/firebase"
 const CoordinatorContext = createContext()
 
 const CoordinatorProvider = ({ children }) => {
-  const [coordinatorId, setcoordinatorId] = useState("")
   const [fetchSpecificCoord, setFetchSpecificCoord] = useState([])
   const [fetchCoordinator, setCoordinator] = useState([])
+
+  const updateId = localStorage.getItem("updateId")
 
   const fetchdata = () => {
     const document = app.firestore().collection("coordinatorData")
@@ -24,11 +25,11 @@ const CoordinatorProvider = ({ children }) => {
   useEffect(fetchdata, [])
 
   const fetchSpecificCoordinator = () => {
-    if (coordinatorId) {
+    if (updateId) {
       const document = app
         .firestore()
         .collection("coordinatorData")
-        .doc(coordinatorId)
+        .doc(updateId)
       return document.onSnapshot((snapshot) => {
         const items_array = []
         if (snapshot) {
@@ -39,16 +40,14 @@ const CoordinatorProvider = ({ children }) => {
     }
   }
 
-  useEffect(fetchSpecificCoordinator, [coordinatorId])
+  useEffect(fetchSpecificCoordinator, [updateId])
 
   return (
     <CoordinatorContext.Provider
       value={{
         fetchSpecificCoord,
         fetchCoordinator,
-        setcoordinatorId,
         setFetchSpecificCoord,
-        coordinatorId,
       }}
     >
       {children}

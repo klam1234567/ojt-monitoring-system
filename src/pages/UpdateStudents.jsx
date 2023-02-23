@@ -1,12 +1,14 @@
-import React, { useState, useEffect, useContext } from "react"
+import React, { useEffect, useContext } from "react"
 import { StudentContext } from "context/StudentProvider"
 import { useLocation } from "react-router-dom"
 import { Layout, Textbox, Back } from "components"
-import { updateDocument } from "config/firebase"
 import { Link } from "react-router-dom"
 
 // Utils
 import { objectAssign } from "Utils/ReusableSyntax"
+
+//Higher Order Component
+import { FormHOC } from "HOC"
 
 const initialState = {
   schoolID: "",
@@ -17,24 +19,31 @@ const initialState = {
   address: "",
 }
 
-export default function UpdateCoordinator() {
+const entity = {
+  componentName: "updateStudent",
+  collectionName: "studentsData",
+  actionType: "UPDATE",
+}
+
+function UpdateStudents(props) {
   const params = useLocation()
   const paramsId = params.search.split("=")
 
-  const { setStudentId, fetchSpecificStudent } = useContext(StudentContext)
+  const { fetchSpecificStudent } = useContext(StudentContext)
 
   fetchSpecificStudent && objectAssign(fetchSpecificStudent, initialState)
 
-  const [{ schoolID, fullName, course, email, address }, setState] =
-    useState(initialState)
-
   const onChange = (event) => {
     const { name, value } = event.target
-    setState((prevState) => ({ ...prevState, [name]: value }))
+    props.onChange(name, value)
+    // setState((prevState) => ({ ...prevState, [name]: value }))
   }
 
   const onSubmit = (event) => {
     event.preventDefault()
+
+    const { schoolID, fullName, course, email, address, id } =
+      props?.updateStudent
 
     const config = {
       schoolID,
@@ -44,12 +53,15 @@ export default function UpdateCoordinator() {
       address,
     }
 
-    updateDocument("studentsData", config, paramsId[1])
+    props.onSubmit(config, id)
+
+    // updateDocument("studentsData", config, paramsId[1])
   }
 
   useEffect(() => {
-    paramsId[1] && setStudentId(paramsId[1])
-  }, [paramsId]) // eslint-disable-line react-hooks/exhaustive-deps
+    // paramsId[1] && setStudentId(paramsId[1])
+    paramsId[1] && localStorage.setItem("updateId", paramsId[1])
+  }, [paramsId])
 
   return (
     <Layout
@@ -63,7 +75,7 @@ export default function UpdateCoordinator() {
             type="text"
             className="w-full"
             name="schoolID"
-            value={schoolID}
+            value={props.updateStudent?.schoolID}
             onChange={(event) => onChange(event)}
             label="School ID Number"
             disabled
@@ -72,7 +84,7 @@ export default function UpdateCoordinator() {
             type="text"
             className="w-full"
             name="fullName"
-            value={fullName}
+            value={props.updateStudent?.fullName}
             onChange={(event) => onChange(event)}
             label="Full Name"
           />
@@ -82,7 +94,7 @@ export default function UpdateCoordinator() {
             type="text"
             className="w-full"
             name="course"
-            value={course}
+            value={props.updateStudent?.course}
             onChange={(event) => onChange(event)}
             label="Course"
           />
@@ -90,7 +102,7 @@ export default function UpdateCoordinator() {
             type="email"
             className="w-full"
             name="email"
-            value={email}
+            value={props.updateStudent?.email}
             onChange={(event) => onChange(event)}
             label="Email"
             disabled
@@ -101,7 +113,7 @@ export default function UpdateCoordinator() {
             type="text"
             className="w-full"
             name="address"
-            value={address}
+            value={props.updateStudent?.address}
             onChange={(event) => onChange(event)}
             label="Address"
           />
@@ -124,3 +136,11 @@ export default function UpdateCoordinator() {
     </Layout>
   )
 }
+
+const CustomUpdateStudents = () => {
+  const UpdateStudentHOC = FormHOC(initialState)(entity)(UpdateStudents)
+
+  return <UpdateStudentHOC />
+}
+
+export default CustomUpdateStudents

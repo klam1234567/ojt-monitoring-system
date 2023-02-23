@@ -1,11 +1,13 @@
-import React, { useState, useEffect, useContext } from "react"
+import React, { useEffect, useContext } from "react"
 import { CoordinatorContext } from "context/CoordinatorProvider"
 import { Layout, Textbox, Back } from "components"
-import { updateDocument } from "config/firebase"
 import { Link, useLocation } from "react-router-dom"
 
 // Utils
 import { objectAssign } from "Utils/ReusableSyntax"
+
+//Higher Order Component
+import { FormHOC } from "HOC"
 
 const initialState = {
   authId: "",
@@ -15,25 +17,31 @@ const initialState = {
   address: "",
 }
 
-export default function UpdateCoordinator() {
+const entity = {
+  componentName: "updateCoordinator",
+  collectionName: "coordinatorData",
+  actionType: "UPDATE",
+}
+
+function UpdateCoordinator(props) {
   const params = useLocation()
   const paramsId = params.search.split("=")
 
-  const { setcoordinatorId, fetchSpecificCoord } =
-    useContext(CoordinatorContext)
+  const { fetchSpecificCoord } = useContext(CoordinatorContext)
 
   fetchSpecificCoord && objectAssign(fetchSpecificCoord, initialState)
 
-  const [{ authId, coordinatorName, contact, email, address }, setState] =
-    useState(initialState)
-
   const onChange = (event) => {
     const { name, value } = event.target
-    setState((prevState) => ({ ...prevState, [name]: value }))
+    props.onChange(name, value)
+    // setState((prevState) => ({ ...prevState, [name]: value }))
   }
 
   const onSubmit = (event) => {
     event.preventDefault()
+
+    const { authId, coordinatorName, contact, email, address, id } =
+      props?.updateCoordinator
 
     const config = {
       authId,
@@ -43,12 +51,13 @@ export default function UpdateCoordinator() {
       address,
     }
 
-    updateDocument("coordinatorData", config, paramsId[1])
+    props.onSubmit(config, id)
   }
 
   useEffect(() => {
-    paramsId[1] && setcoordinatorId(paramsId[1])
-  }, [paramsId]) // eslint-disable-line react-hooks/exhaustive-deps
+    // paramsId[1] && setcoordinatorId(paramsId[1])
+    paramsId[1] && localStorage.setItem("updateId", paramsId[1])
+  }, [paramsId])
 
   return (
     <Layout
@@ -62,7 +71,7 @@ export default function UpdateCoordinator() {
             type="text"
             className="w-full"
             name="coordinatorName"
-            value={coordinatorName}
+            value={props.updateCoordinator?.coordinatorName}
             onChange={(event) => onChange(event)}
             label="Coordinate Name"
           />
@@ -70,7 +79,7 @@ export default function UpdateCoordinator() {
             type="number"
             className="w-full"
             name="contact"
-            value={contact}
+            value={props.updateCoordinator?.contact}
             onChange={(event) => onChange(event)}
             label="Contact"
           />
@@ -81,7 +90,7 @@ export default function UpdateCoordinator() {
             disabled
             className="w-full"
             name="email"
-            value={email}
+            value={props.updateCoordinator?.email}
             onChange={(event) => onChange(event)}
             label="Email"
           />
@@ -89,7 +98,7 @@ export default function UpdateCoordinator() {
             type="text"
             className="w-full"
             name="address"
-            value={address}
+            value={props.updateCoordinator?.address}
             onChange={(event) => onChange(event)}
             label="Address"
           />
@@ -112,3 +121,11 @@ export default function UpdateCoordinator() {
     </Layout>
   )
 }
+
+const CustomerUpdateCoordinator = () => {
+  const UpdateCoordinatorHOC = FormHOC(initialState)(entity)(UpdateCoordinator)
+
+  return <UpdateCoordinatorHOC />
+}
+
+export default CustomerUpdateCoordinator

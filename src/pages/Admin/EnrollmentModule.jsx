@@ -33,6 +33,7 @@ const initialState = {
 const entity = {
   componentName: "submitEnrollment",
   collectionName: "enrollmentModuleData",
+  actionType: "SAVE",
 }
 
 function EnrollmentModule(props) {

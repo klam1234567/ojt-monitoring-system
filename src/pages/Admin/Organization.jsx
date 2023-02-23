@@ -24,6 +24,7 @@ const initialState = {
 const entity = {
   componentName: "organization",
   collectionName: "organizationData",
+  actionType: "SAVE",
 }
 
 function Organization(props) {

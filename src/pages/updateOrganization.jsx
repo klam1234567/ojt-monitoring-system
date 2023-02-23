@@ -1,12 +1,14 @@
-import React, { useState, useEffect, useContext } from "react"
+import React, { useContext, useEffect } from "react"
 import { OrganizationContext } from "context/OrganizationProvider"
 import { useLocation } from "react-router-dom"
 import { Layout, Textbox, Back } from "components"
-import { updateDocument } from "config/firebase"
 import { Link } from "react-router-dom"
 
 // Utils
 import { objectAssign } from "Utils/ReusableSyntax"
+
+//Higher Order Component
+import { FormHOC } from "HOC"
 
 const initialState = {
   organizationName: "",
@@ -16,33 +18,35 @@ const initialState = {
   companyAddress: "",
 }
 
-export default function UpdateCoordinator() {
+const entity = {
+  componentName: "updateCoordinator",
+  collectionName: "organizationData",
+  actionType: "UPDATE",
+}
+
+function UpdateOrganization(props) {
   const params = useLocation()
   const paramsId = params.search.split("=")
 
-  const { setOrganizationId, fetchSpecificOrg } =
-    useContext(OrganizationContext)
+  const { fetchSpecificOrg } = useContext(OrganizationContext)
 
   fetchSpecificOrg && objectAssign(fetchSpecificOrg, initialState)
 
-  const [
-    {
+  const onChange = (event) => {
+    const { name, value } = event.target
+    props.onChange(name, value)
+  }
+
+  const onSubmit = (event) => {
+    event.preventDefault()
+    const {
       organizationName,
       companyBackground,
       contactPerson,
       contactNumber,
       companyAddress,
-    },
-    setState,
-  ] = useState(initialState)
-
-  const onChange = (event) => {
-    const { name, value } = event.target
-    setState((prevState) => ({ ...prevState, [name]: value }))
-  }
-
-  const onSubmit = (event) => {
-    event.preventDefault()
+      id,
+    } = props?.updateCoordinator
 
     const config = {
       organizationName,
@@ -52,12 +56,12 @@ export default function UpdateCoordinator() {
       companyAddress,
     }
 
-    updateDocument("organizationData", config, paramsId[1])
+    props.onSubmit(config, id)
   }
 
   useEffect(() => {
-    paramsId[1] && setOrganizationId(paramsId[1])
-  }, [paramsId]) // eslint-disable-line react-hooks/exhaustive-deps
+    paramsId[1] && localStorage.setItem("updateId", paramsId[1])
+  }, [paramsId])
 
   return (
     <Layout
@@ -71,7 +75,7 @@ export default function UpdateCoordinator() {
             type="text"
             className="w-full"
             name="organizationName"
-            value={organizationName}
+            value={props.updateCoordinator?.organizationName}
             label="Organization Name"
             onChange={(event) => onChange(event)}
           />
@@ -81,7 +85,7 @@ export default function UpdateCoordinator() {
             type="text"
             className="w-full"
             name="companyBackground"
-            value={companyBackground}
+            value={props.updateCoordinator?.companyBackground}
             label="Company Background"
             multiline
             rows={4}
@@ -94,7 +98,7 @@ export default function UpdateCoordinator() {
             type="text"
             className="w-full"
             name="contactPerson"
-            value={contactPerson}
+            value={props.updateCoordinator?.contactPerson}
             label="Contact Person"
             onChange={(event) => onChange(event)}
           />
@@ -102,7 +106,7 @@ export default function UpdateCoordinator() {
             type="number"
             className="w-full"
             name="contactNumber"
-            value={contactNumber}
+            value={props.updateCoordinator?.contactNumber}
             label="Contact Number"
             onChange={(event) => onChange(event)}
           />
@@ -112,7 +116,7 @@ export default function UpdateCoordinator() {
             type="text"
             className="w-full"
             name="companyAddress"
-            value={companyAddress}
+            value={props.updateCoordinator?.companyAddress}
             label="Company Address"
             onChange={(event) => onChange(event)}
           />
@@ -135,3 +139,12 @@ export default function UpdateCoordinator() {
     </Layout>
   )
 }
+
+const CustomUpdateOrganization = () => {
+  const UpdateOrganizationHOC =
+    FormHOC(initialState)(entity)(UpdateOrganization)
+
+  return <UpdateOrganizationHOC />
+}
+
+export default CustomUpdateOrganization
