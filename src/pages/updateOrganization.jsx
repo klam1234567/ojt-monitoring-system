@@ -28,7 +28,7 @@ function UpdateOrganization(props) {
   const params = useLocation()
   const paramsId = params.search.split("=")
 
-  const { fetchSpecificOrg } = useContext(OrganizationContext)
+  const { fetchSpecificOrg, setOrgId } = useContext(OrganizationContext)
 
   fetchSpecificOrg && objectAssign(fetchSpecificOrg, initialState)
 
@@ -59,9 +59,18 @@ function UpdateOrganization(props) {
     props.onSubmit(config, id)
   }
 
+  const fetchOrgId = () => {
+    paramsId.length > 0 && setOrgId(paramsId[1])
+  }
+
   useEffect(() => {
-    paramsId[1] && localStorage.setItem("updateId", paramsId[1])
+    fetchOrgId()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [paramsId])
+
+  // useEffect(() => {
+  //   paramsId[1] && localStorage.setItem("updateId", paramsId[1])
+  // }, [paramsId])
 
   return (
     <Layout

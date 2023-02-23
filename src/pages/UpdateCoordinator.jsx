@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from "react"
+import React, { useContext, useEffect } from "react"
 import { CoordinatorContext } from "context/CoordinatorProvider"
 import { Layout, Textbox, Back } from "components"
 import { Link, useLocation } from "react-router-dom"
@@ -27,7 +27,8 @@ function UpdateCoordinator(props) {
   const params = useLocation()
   const paramsId = params.search.split("=")
 
-  const { fetchSpecificCoord } = useContext(CoordinatorContext)
+  const { setCoordinatorId, fetchSpecificCoord } =
+    useContext(CoordinatorContext)
 
   fetchSpecificCoord && objectAssign(fetchSpecificCoord, initialState)
 
@@ -54,10 +55,19 @@ function UpdateCoordinator(props) {
     props.onSubmit(config, id)
   }
 
+  const fetchCoordinatorId = () => {
+    paramsId.length > 0 && setCoordinatorId(paramsId[1])
+  }
+
   useEffect(() => {
-    // paramsId[1] && setcoordinatorId(paramsId[1])
-    paramsId[1] && localStorage.setItem("updateId", paramsId[1])
+    fetchCoordinatorId()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [paramsId])
+
+  // useEffect(() => {
+  //   // paramsId[1] && setcoordinatorId(paramsId[1])
+  //   paramsId[1] && localStorage.setItem("updateId", paramsId[1])
+  // }, [paramsId])
 
   return (
     <Layout

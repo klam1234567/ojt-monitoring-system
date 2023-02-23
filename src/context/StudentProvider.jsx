@@ -4,10 +4,9 @@ import { app } from "../config/firebase"
 const StudentContext = createContext()
 
 const StudentProvider = ({ children }) => {
+  const [studentId, setStudentId] = useState("")
   const [fetchSpecificStudent, setFetchSpecificStudent] = useState([])
   const [fetchStudent, setStudent] = useState([])
-
-  const updateId = localStorage.getItem("updateId")
 
   const fetchdata = () => {
     const document = app.firestore().collection("studentsData")
@@ -25,8 +24,8 @@ const StudentProvider = ({ children }) => {
   useEffect(fetchdata, [])
 
   const fetchSpecificStudents = () => {
-    if (updateId) {
-      const document = app.firestore().collection("studentsData").doc(updateId)
+    if (studentId) {
+      const document = app.firestore().collection("studentsData").doc(studentId)
       return document.onSnapshot((snapshot) => {
         const items_array = []
         if (snapshot) {
@@ -37,7 +36,7 @@ const StudentProvider = ({ children }) => {
     }
   }
 
-  useEffect(fetchSpecificStudents, [updateId])
+  useEffect(fetchSpecificStudents, [studentId])
 
   return (
     <StudentContext.Provider
@@ -45,6 +44,7 @@ const StudentProvider = ({ children }) => {
         fetchSpecificStudent,
         setFetchSpecificStudent,
         fetchStudent,
+        setStudentId,
       }}
     >
       {children}

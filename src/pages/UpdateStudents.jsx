@@ -29,7 +29,7 @@ function UpdateStudents(props) {
   const params = useLocation()
   const paramsId = params.search.split("=")
 
-  const { fetchSpecificStudent } = useContext(StudentContext)
+  const { setStudentId, fetchSpecificStudent } = useContext(StudentContext)
 
   fetchSpecificStudent && objectAssign(fetchSpecificStudent, initialState)
 
@@ -58,10 +58,19 @@ function UpdateStudents(props) {
     // updateDocument("studentsData", config, paramsId[1])
   }
 
+  const fetchStudentId = () => {
+    paramsId.length > 0 && setStudentId(paramsId[1])
+  }
+
   useEffect(() => {
-    // paramsId[1] && setStudentId(paramsId[1])
-    paramsId[1] && localStorage.setItem("updateId", paramsId[1])
+    fetchStudentId()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [paramsId])
+
+  // useEffect(() => {
+  //   // paramsId[1] && setStudentId(paramsId[1])
+  //   paramsId[1] && localStorage.setItem("updateId", paramsId[1])
+  // }, [paramsId])
 
   return (
     <Layout

@@ -4,6 +4,7 @@ import { app } from "../config/firebase"
 const OrganizationContext = createContext()
 
 const OrganizationProvider = ({ children }) => {
+  const [orgId, setOrgId] = useState("")
   const [fetchSpecificOrg, setFetchSpecificOrg] = useState([])
   const [fetchOrganization, setOrganization] = useState([])
 
@@ -25,11 +26,8 @@ const OrganizationProvider = ({ children }) => {
   useEffect(fetchdata, [])
 
   const fetchSpecificOrganization = () => {
-    if (updateId) {
-      const document = app
-        .firestore()
-        .collection("organizationData")
-        .doc(updateId)
+    if (orgId) {
+      const document = app.firestore().collection("organizationData").doc(orgId)
       return document.onSnapshot((snapshot) => {
         const items_array = []
         if (snapshot) {
@@ -40,7 +38,7 @@ const OrganizationProvider = ({ children }) => {
     }
   }
 
-  useEffect(fetchSpecificOrganization, [updateId])
+  useEffect(fetchSpecificOrganization, [orgId])
 
   return (
     <OrganizationContext.Provider
@@ -48,6 +46,7 @@ const OrganizationProvider = ({ children }) => {
         fetchSpecificOrg,
         setFetchSpecificOrg,
         fetchOrganization,
+        setOrgId,
       }}
     >
       {children}
