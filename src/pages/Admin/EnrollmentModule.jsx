@@ -15,9 +15,7 @@ import { StudentContext } from "context/StudentProvider"
 import { CoordinatorContext } from "context/CoordinatorProvider"
 import { OrganizationContext } from "context/OrganizationProvider"
 import { EnrollmentContext } from "context/EnrollmentProvider"
-import { deleteDocument } from "config/firebase"
 import { filterByStudentName } from "Utils/ReusableSyntax"
-import swal from "sweetalert2"
 
 //Higher Order Component
 import { FormHOC } from "HOC"
@@ -141,30 +139,7 @@ function EnrollmentModule(props) {
         // delete data in coordinator row
         const Delete = (e) => {
           e.stopPropagation() // don't select this row after clicking
-
-          swal
-            .fire({
-              title: "ARE YOU SURE?",
-              text: "are you sure to delete this data?",
-              icon: "warning",
-              showCancelButton: true,
-            })
-            .then(async (result) => {
-              if (result.isConfirmed) {
-                await deleteDocument(
-                  "enrollmentModuleData",
-                  params.row.id
-                ).then(() => {
-                  swal.fire({
-                    title: "Successfully Deleted",
-                    text: "Please click yes to continue",
-                    icon: "success",
-                  })
-                })
-              } else {
-                swal.fire("Yay!", "your data is safe", "success")
-              }
-            })
+          props.onDelete(params.row.id)
         }
 
         // update data in coordinator row

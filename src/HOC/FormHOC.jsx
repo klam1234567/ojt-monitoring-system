@@ -8,6 +8,7 @@ import {
   saveDoc,
   updateDocument,
   registerUser,
+  deleteDocument,
 } from "config/firebase"
 
 const ACTIONS = {
@@ -120,6 +121,29 @@ const FormHOC = (propState) => (entity) => (WrappedComponent) => {
       }
     }
 
+    const handleDelete = (id) => {
+      swal
+        .fire({
+          title: "ARE YOU SURE?",
+          text: "are you sure to delete this data?",
+          icon: "warning",
+          showCancelButton: true,
+        })
+        .then(async (result) => {
+          if (result.isConfirmed) {
+            await deleteDocument(entity?.collectionName, id).then(() => {
+              swal.fire({
+                title: "Successfully Deleted",
+                text: "Please click yes to continue",
+                icon: "success",
+              })
+            })
+          } else {
+            swal.fire("Yay!", "your data is safe", "success")
+          }
+        })
+    }
+
     const handleSubmit = (data, id) => {
       /**
        * if the entity componentName is equal to Login return Login function
@@ -158,6 +182,7 @@ const FormHOC = (propState) => (entity) => (WrappedComponent) => {
           onAuth={handleAuth}
           clearState={clearState}
           onSubmit={handleSubmit}
+          onDelete={handleDelete}
           onChange={handleChange}
         />
       </Fragment>
