@@ -1,11 +1,13 @@
-import React, { useState, useEffect, useContext } from "react"
+import React, { useEffect, useContext } from "react"
 import { useLocation } from "react-router-dom"
 import { TaskContext } from "context/TasksProvider"
 import { Layout, Back, Textbox } from "components"
-import { updateDocument } from "config/firebase"
 
 //Utils
 import { objectAssign } from "Utils/ReusableSyntax"
+
+//Higher Order Component
+import { FormHOC } from "HOC"
 
 const initialState = {
   taskCode: "",
@@ -14,10 +16,13 @@ const initialState = {
   description: "",
 }
 
-export default function UpdateTasks() {
-  const [{ taskCode, taskName, deadline, description }, setState] =
-    useState(initialState)
+const entity = {
+  componentName: "updateTasks",
+  collectionName: "tasksDetails",
+  actionType: "UPDATE",
+}
 
+function UpdateTasks(props) {
   const params = useLocation()
   const paramsId = params.search.split("=")
 
@@ -32,13 +37,15 @@ export default function UpdateTasks() {
   const onChange = (event) => {
     const { name, value } = event.target
 
-    setState((prevState) => ({ ...prevState, [name]: value }))
+    props.onChange(name, value)
   }
 
   const onSubmit = (event) => {
     event.preventDefault()
 
     try {
+      const { taskCode, taskName, deadline, description } = props?.updateTasks
+
       const config = {
         taskCode,
         taskName,
@@ -46,7 +53,7 @@ export default function UpdateTasks() {
         description,
       }
 
-      updateDocument("tasksDetails", config, paramsId[1])
+      props.onSubmit(config, paramsId[1])
     } catch (error) {
       console.log(error)
     }
@@ -65,7 +72,7 @@ export default function UpdateTasks() {
             type="text"
             className="w-full"
             name="taskCode"
-            value={taskCode}
+            value={props.updateTasks?.taskCode}
             onChange={(event) => onChange(event)}
             disabled={true}
             label="Task Code"
@@ -74,7 +81,7 @@ export default function UpdateTasks() {
             type="text"
             className="w-full"
             name="taskName"
-            value={taskName}
+            value={props.updateTasks?.taskName}
             onChange={(event) => onChange(event)}
             label="Task Name"
           />
@@ -82,7 +89,7 @@ export default function UpdateTasks() {
             type="date"
             className="w-full"
             name="deadline"
-            value={deadline}
+            value={props.updateTasks?.deadline}
             onChange={(event) => onChange(event)}
           />
         </div>
@@ -91,7 +98,7 @@ export default function UpdateTasks() {
             type="text"
             className="w-full"
             name="description"
-            value={description}
+            value={props.updateTasks?.description}
             onChange={(event) => onChange(event)}
             rows={4}
             column={4}
@@ -111,3 +118,11 @@ export default function UpdateTasks() {
     </Layout>
   )
 }
+
+const CustomUpdateTasks = () => {
+  const UpdateTasksHOC = FormHOC(initialState)(entity)(UpdateTasks)
+
+  return <UpdateTasksHOC />
+}
+
+export default CustomUpdateTasks

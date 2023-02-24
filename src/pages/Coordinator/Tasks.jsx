@@ -1,16 +1,17 @@
-import React, { Fragment, useState, useContext } from "react"
+import React, { Fragment, useContext } from "react"
 import { TabPanel } from "@mui/lab"
 import { Layout, Tabs, Textbox, Table } from "components"
 import { generateTaskCode, Months } from "Utils/ReusableSyntax"
-import { saveDoc, deleteDocument } from "config/firebase"
 import { useNavigate } from "react-router-dom"
 import { filterByCoordinatorUUID, filterByUUID } from "Utils/ReusableSyntax"
-import swal from "sweetalert2"
 
 //context api
 import { AuthContext } from "context/auth"
 import { TaskContext } from "context/TasksProvider"
 import { CoordinatorContext } from "context/CoordinatorProvider"
+
+//Higher Order Component
+import { FormHOC } from "HOC"
 
 const initialState = {
   taskCode: generateTaskCode(),
@@ -19,10 +20,13 @@ const initialState = {
   description: "",
 }
 
-export default function Tasks() {
-  const [{ taskCode, taskName, deadline, description }, setState] =
-    useState(initialState)
+const entity = {
+  componentName: "tasks",
+  collectionName: "tasksDetails",
+  actionType: "SAVE",
+}
 
+function Tasks(props) {
   const navigate = useNavigate()
   const context = useContext(AuthContext)
   const { fetchCoordinator } = useContext(CoordinatorContext)
@@ -35,17 +39,17 @@ export default function Tasks() {
     context.uid
   )
 
-  const clearState = () => setState({ ...initialState })
-
   const onChange = (event) => {
     const { name, value } = event.target
 
-    setState((prevState) => ({ ...prevState, [name]: value }))
+    props.onChange(name, value)
   }
 
   const onSubmit = async (event) => {
     event.preventDefault()
     try {
+      const { taskCode, taskName, deadline, description } = props?.tasks
+
       const config = {
         coordinatorEmail: context.email,
         coordinatorUUID: context.uid,
@@ -57,29 +61,7 @@ export default function Tasks() {
         deadlineStatus: "active",
       }
 
-      const response = await swal.fire({
-        title: "Opps!",
-        text: "would you like to save this file?",
-        icon: "question",
-        showCancelButton: true,
-      })
-
-      if (response.isConfirmed) {
-        config &&
-          saveDoc(config, "tasksDetails").then(async () => {
-            const result = await swal.fire({
-              title: "Successfully Created",
-              text: "please click the okay button to continue",
-              icon: "success",
-            })
-
-            result.isConfirmed && window.location.reload()
-          })
-
-        clearState()
-
-        return false
-      }
+      props.onSubmit(config)
     } catch (error) {
       console.log(error)
     }
@@ -151,26 +133,7 @@ export default function Tasks() {
         const Delete = (e) => {
           e.stopPropagation() // don't select this row after clicking
 
-          swal
-            .fire({
-              title: "ARE YOU SURE?",
-              text: "are you sure to delete this data?",
-              icon: "warning",
-              showCancelButton: true,
-            })
-            .then(async (result) => {
-              if (result.isConfirmed) {
-                await deleteDocument("tasksDetails", params.row.id).then(() => {
-                  swal.fire({
-                    title: "Successfully Deleted",
-                    text: "Please click yes to continue",
-                    icon: "success",
-                  })
-                })
-              } else {
-                swal.fire("Yay!", "your data is safe", "success")
-              }
-            })
+          props.onDelete(params.row.id)
         }
 
         // update data in coordinator row
@@ -214,7 +177,7 @@ export default function Tasks() {
             className="w-full"
             name="taskCode"
             disabled={true}
-            value={taskCode}
+            value={props.tasks?.taskCode}
             onChange={(event) => onChange(event)}
             label="Task Code"
           />
@@ -222,7 +185,7 @@ export default function Tasks() {
             type="text"
             className="w-full"
             name="taskName"
-            value={taskName}
+            value={props.tasks?.taskName}
             onChange={(event) => onChange(event)}
             label="Task Name"
           />
@@ -251,7 +214,7 @@ export default function Tasks() {
           <Textbox
             type="date"
             className="w-full"
-            value={deadline}
+            value={props.tasks?.deadline}
             onChange={(event) => onChange(event)}
             name="deadline"
           />
@@ -261,7 +224,7 @@ export default function Tasks() {
             type="text"
             className="w-full"
             name="description"
-            value={description}
+            value={props.tasks?.description}
             onChange={(event) => onChange(event)}
             rows={4}
             column={4}
@@ -272,7 +235,7 @@ export default function Tasks() {
         <div className="text-white flex gap-2 justify-end mt-4">
           <button
             type="button"
-            onClick={clearState}
+            onClick={props.clearState}
             className="bg-slate-500 rounded-lg py-2 px-4 hover:bg-slate-800 transition-all"
           >
             cancel
@@ -301,3 +264,11 @@ export default function Tasks() {
     </Layout>
   )
 }
+
+const CustomTasks = () => {
+  const TasksHOC = FormHOC(initialState)(entity)(Tasks)
+
+  return <TasksHOC />
+}
+
+export default CustomTasks
