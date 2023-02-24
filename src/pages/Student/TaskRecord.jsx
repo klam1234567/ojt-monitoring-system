@@ -15,8 +15,7 @@ export default function TaskRecord() {
   const navigate = useNavigate()
 
   const filteredDocuments =
-    fetchSubCollection.length > 0 &&
-    filterByStudentUUIDs(fetchSubCollection, context.uid)
+    fetchSubCollection && filterByStudentUUIDs(fetchSubCollection, context?.uid)
 
   const columns = [
     {

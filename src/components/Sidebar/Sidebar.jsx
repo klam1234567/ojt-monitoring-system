@@ -12,11 +12,9 @@ export default function Sidebar() {
   const { info, links } = rolesHook()
 
   const logoutUser = async () => {
-    const response = await signOut(auth)
-    if (response) {
-      navigate("/")
-      localStorage.clear()
-    }
+    await signOut(auth)
+    navigate("/")
+    localStorage.clear()
   }
 
   return (
