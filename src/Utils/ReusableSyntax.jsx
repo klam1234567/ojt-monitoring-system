@@ -25,14 +25,14 @@ export const Months = [
 ]
 
 export const sectionList = [
-  "4-1",
-  "4-2",
-  "4-3",
-  "4-4",
-  "IT-1",
-  "IT-2",
-  "IT-3",
-  "IT-4",
+  "FA1-BSIT4-1",
+  "FA1-BSIT4-2",
+  "FA1-BSIT4-3",
+  "FA1-BSIT4-4",
+  "FA2-BSIT4-1",
+  "FA2-BSIT4-2",
+  "FA2-BSIT4-3",
+  "FA2-BSIT4-4",
 ]
 
 //*Convert Array Object into Object
