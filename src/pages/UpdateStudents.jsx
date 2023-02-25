@@ -3,6 +3,7 @@ import { StudentContext } from "context/StudentProvider"
 import { useLocation } from "react-router-dom"
 import { Layout, Textbox, Back } from "components"
 import { Link } from "react-router-dom"
+import { ACTIONS } from "types"
 
 // Utils
 import { objectAssign } from "Utils/ReusableSyntax"
@@ -28,8 +29,11 @@ const entity = {
 function UpdateStudents(props) {
   const params = useLocation()
   const paramsId = params.search.split("=")
+  const id = paramsId[1]
 
-  const { setStudentId, fetchSpecificStudent } = useContext(StudentContext)
+  const { state, fetchSpecificStudent, dispatch } = useContext(StudentContext)
+
+  console.log(state)
 
   fetchSpecificStudent && objectAssign(fetchSpecificStudent, initialState)
 
@@ -58,19 +62,10 @@ function UpdateStudents(props) {
     // updateDocument("studentsData", config, paramsId[1])
   }
 
-  const fetchStudentId = () => {
-    paramsId.length > 0 && setStudentId(paramsId[1])
-  }
-
   useEffect(() => {
-    fetchStudentId()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [paramsId])
-
-  // useEffect(() => {
-  //   // paramsId[1] && setStudentId(paramsId[1])
-  //   paramsId[1] && localStorage.setItem("updateId", paramsId[1])
-  // }, [paramsId])
+    // fetchStudentId()
+    id && dispatch({ type: ACTIONS.GETONE, payload: { id } })
+  }, [id, dispatch])
 
   return (
     <Layout

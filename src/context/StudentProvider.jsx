@@ -1,10 +1,10 @@
-import React, { createContext, useEffect, useState } from "react"
+import React, { createContext, useEffect, useState, useReducer } from "react"
 import { app } from "../config/firebase"
+import { ACTIONS } from "types"
 
 const StudentContext = createContext()
 
 const StudentProvider = ({ children }) => {
-  const [studentId, setStudentId] = useState("")
   const [fetchSpecificStudent, setFetchSpecificStudent] = useState([])
   const [fetchStudent, setStudent] = useState([])
 
@@ -23,9 +23,20 @@ const StudentProvider = ({ children }) => {
 
   useEffect(fetchdata, [])
 
-  const fetchSpecificStudents = () => {
-    if (studentId) {
-      const document = app.firestore().collection("studentsData").doc(studentId)
+  // useEffect(fetchSpecificStudents, [])
+
+  const reducer = (state, action) => {
+    switch (action.type) {
+      case ACTIONS.GETONE:
+        return [...state, fetchSpecificStudents(action.payload?.id, state)]
+      default:
+        return state
+    }
+  }
+
+  const fetchSpecificStudents = (id, state) => {
+    if (id) {
+      const document = app.firestore().collection("studentsData").doc(id)
       return document.onSnapshot((snapshot) => {
         const items_array = []
         if (snapshot) {
@@ -36,7 +47,7 @@ const StudentProvider = ({ children }) => {
     }
   }
 
-  useEffect(fetchSpecificStudents, [studentId])
+  const [state, dispatch] = useReducer(reducer, [])
 
   return (
     <StudentContext.Provider
@@ -44,7 +55,8 @@ const StudentProvider = ({ children }) => {
         fetchSpecificStudent,
         setFetchSpecificStudent,
         fetchStudent,
-        setStudentId,
+        dispatch,
+        state,
       }}
     >
       {children}

@@ -1,10 +1,10 @@
-import React, { createContext, useEffect, useState } from "react"
+import React, { createContext, useEffect, useState, useReducer } from "react"
 import { app } from "../config/firebase"
+import { ACTIONS } from "types"
 
 const CoordinatorContext = createContext()
 
 const CoordinatorProvider = ({ children }) => {
-  const [coordinatorId, setCoordinatorId] = useState("")
   const [fetchSpecificCoord, setFetchSpecificCoord] = useState([])
   const [fetchCoordinator, setCoordinator] = useState([])
 
@@ -23,12 +23,18 @@ const CoordinatorProvider = ({ children }) => {
 
   useEffect(fetchdata, [])
 
-  const fetchSpecificCoordinator = () => {
-    if (coordinatorId) {
-      const document = app
-        .firestore()
-        .collection("coordinatorData")
-        .doc(coordinatorId)
+  const reducer = (state, action) => {
+    switch (action.type) {
+      case ACTIONS.GETONE:
+        return [...state, fetchSpecificCoordinator(action.payload?.id)]
+      default:
+        return state
+    }
+  }
+
+  const fetchSpecificCoordinator = (id) => {
+    if (id) {
+      const document = app.firestore().collection("coordinatorData").doc(id)
       return document.onSnapshot((snapshot) => {
         const items_array = []
         if (snapshot) {
@@ -39,7 +45,7 @@ const CoordinatorProvider = ({ children }) => {
     }
   }
 
-  useEffect(fetchSpecificCoordinator, [coordinatorId])
+  const [state, dispatch] = useReducer(reducer, [])
 
   return (
     <CoordinatorContext.Provider
@@ -47,7 +53,8 @@ const CoordinatorProvider = ({ children }) => {
         fetchSpecificCoord,
         fetchCoordinator,
         setFetchSpecificCoord,
-        setCoordinatorId,
+        dispatch,
+        state,
       }}
     >
       {children}

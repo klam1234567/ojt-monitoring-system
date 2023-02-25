@@ -1,4 +1,4 @@
-import React, { createContext, useEffect } from "react"
+import React, { createContext, useEffect, useReducer } from "react"
 import {
   app,
   getFirestore,
@@ -7,11 +7,11 @@ import {
   query,
 } from "../config/firebase"
 import { useState } from "react"
+import { ACTIONS } from "types"
 
 const TaskContext = createContext()
 
 const TaskProvider = ({ children }) => {
-  const [taskId, setTaskId] = useState("")
   const [fetchOneTask, setFetchOneTask] = useState([])
   const [fetchSubCollection, setSubCollection] = useState([])
   const [fetchTasks, setFetchTasks] = useState([])
@@ -67,9 +67,18 @@ const TaskProvider = ({ children }) => {
 
   useEffect(fetchdata, [])
 
-  const fetchSpecificTasks = () => {
-    if (taskId) {
-      const document = app.firestore().collection("tasksDetails").doc(taskId)
+  const reducer = (state, action) => {
+    switch (action.type) {
+      case ACTIONS.GETONE:
+        return [...state, fetchSpecificTasks(action.payload?.id)]
+      default:
+        return state
+    }
+  }
+
+  const fetchSpecificTasks = (id) => {
+    if (id) {
+      const document = app.firestore().collection("tasksDetails").doc(id)
       return document.onSnapshot((snapshot) => {
         const items_array = []
         if (snapshot) {
@@ -80,13 +89,15 @@ const TaskProvider = ({ children }) => {
     }
   }
 
-  useEffect(fetchSpecificTasks, [taskId])
+  //useEffect(fetchSpecificTasks, [taskId])
+
+  const [state, dispatch] = useReducer(reducer, [])
 
   return (
     <TaskContext.Provider
       value={{
-        taskId,
-        setTaskId,
+        state,
+        dispatch,
         fetchOneTask,
         fetchTasks,
         fetchSubCollection,

@@ -1,10 +1,10 @@
-import React, { createContext, useEffect, useState } from "react"
+import React, { createContext, useEffect, useState, useReducer } from "react"
 import { app } from "../config/firebase"
+import { ACTIONS } from "types"
 
 const OrganizationContext = createContext()
 
 const OrganizationProvider = ({ children }) => {
-  const [orgId, setOrgId] = useState("")
   const [fetchSpecificOrg, setFetchSpecificOrg] = useState([])
   const [fetchOrganization, setOrganization] = useState([])
 
@@ -23,9 +23,18 @@ const OrganizationProvider = ({ children }) => {
 
   useEffect(fetchdata, [])
 
-  const fetchSpecificOrganization = () => {
-    if (orgId) {
-      const document = app.firestore().collection("organizationData").doc(orgId)
+  const reducer = (state, action) => {
+    switch (action.type) {
+      case ACTIONS.GETONE:
+        return [...state, fetchSpecificOrganization(action.payload?.id)]
+      default:
+        return state
+    }
+  }
+
+  const fetchSpecificOrganization = (id) => {
+    if (id) {
+      const document = app.firestore().collection("organizationData").doc(id)
       return document.onSnapshot((snapshot) => {
         const items_array = []
         if (snapshot) {
@@ -36,7 +45,9 @@ const OrganizationProvider = ({ children }) => {
     }
   }
 
-  useEffect(fetchSpecificOrganization, [orgId])
+  const [state, dispatch] = useReducer(reducer, [])
+
+  // useEffect(fetchSpecificOrganization, [orgId])
 
   return (
     <OrganizationContext.Provider
@@ -44,7 +55,8 @@ const OrganizationProvider = ({ children }) => {
         fetchSpecificOrg,
         setFetchSpecificOrg,
         fetchOrganization,
-        setOrgId,
+        dispatch,
+        state,
       }}
     >
       {children}

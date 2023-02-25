@@ -2,6 +2,7 @@ import React, { useContext, useEffect } from "react"
 import { CoordinatorContext } from "context/CoordinatorProvider"
 import { Layout, Textbox, Back } from "components"
 import { Link, useLocation } from "react-router-dom"
+import { ACTIONS } from "types"
 
 // Utils
 import { objectAssign } from "Utils/ReusableSyntax"
@@ -26,9 +27,9 @@ const entity = {
 function UpdateCoordinator(props) {
   const params = useLocation()
   const paramsId = params.search.split("=")
+  const id = paramsId[1]
 
-  const { setCoordinatorId, fetchSpecificCoord } =
-    useContext(CoordinatorContext)
+  const { fetchSpecificCoord, dispatch } = useContext(CoordinatorContext)
 
   fetchSpecificCoord && objectAssign(fetchSpecificCoord, initialState)
 
@@ -55,19 +56,9 @@ function UpdateCoordinator(props) {
     props.onSubmit(config, id)
   }
 
-  const fetchCoordinatorId = () => {
-    paramsId.length > 0 && setCoordinatorId(paramsId[1])
-  }
-
   useEffect(() => {
-    fetchCoordinatorId()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [paramsId])
-
-  // useEffect(() => {
-  //   // paramsId[1] && setcoordinatorId(paramsId[1])
-  //   paramsId[1] && localStorage.setItem("updateId", paramsId[1])
-  // }, [paramsId])
+    dispatch({ type: ACTIONS.GETONE, payload: { id } })
+  }, [id, dispatch])
 
   return (
     <Layout

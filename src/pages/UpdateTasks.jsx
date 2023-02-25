@@ -2,6 +2,7 @@ import React, { useEffect, useContext } from "react"
 import { useLocation } from "react-router-dom"
 import { TaskContext } from "context/TasksProvider"
 import { Layout, Back, Textbox } from "components"
+import { ACTIONS } from "types"
 
 //Utils
 import { objectAssign } from "Utils/ReusableSyntax"
@@ -25,14 +26,15 @@ const entity = {
 function UpdateTasks(props) {
   const params = useLocation()
   const paramsId = params.search.split("=")
+  const id = paramsId[1]
 
-  const { setTaskId, fetchOneTask } = useContext(TaskContext)
+  const { dispatch, fetchOneTask } = useContext(TaskContext)
 
   fetchOneTask && objectAssign(fetchOneTask, initialState)
 
   useEffect(() => {
-    paramsId[1] && setTaskId(paramsId[1])
-  }, [paramsId]) // eslint-disable-line react-hooks/exhaustive-deps
+    id && dispatch({ type: ACTIONS.GETONE, payload: { id } })
+  }, [id, dispatch]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const onChange = (event) => {
     const { name, value } = event.target

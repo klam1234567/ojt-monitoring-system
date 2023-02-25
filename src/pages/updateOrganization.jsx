@@ -3,6 +3,7 @@ import { OrganizationContext } from "context/OrganizationProvider"
 import { useLocation } from "react-router-dom"
 import { Layout, Textbox, Back } from "components"
 import { Link } from "react-router-dom"
+import { ACTIONS } from "types"
 
 // Utils
 import { objectAssign } from "Utils/ReusableSyntax"
@@ -27,8 +28,8 @@ const entity = {
 function UpdateOrganization(props) {
   const params = useLocation()
   const paramsId = params.search.split("=")
-
-  const { fetchSpecificOrg, setOrgId } = useContext(OrganizationContext)
+  const id = paramsId[1]
+  const { fetchSpecificOrg, dispatch } = useContext(OrganizationContext)
 
   fetchSpecificOrg && objectAssign(fetchSpecificOrg, initialState)
 
@@ -59,18 +60,9 @@ function UpdateOrganization(props) {
     props.onSubmit(config, id)
   }
 
-  const fetchOrgId = () => {
-    paramsId.length > 0 && setOrgId(paramsId[1])
-  }
-
   useEffect(() => {
-    fetchOrgId()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [paramsId])
-
-  // useEffect(() => {
-  //   paramsId[1] && localStorage.setItem("updateId", paramsId[1])
-  // }, [paramsId])
+    id && dispatch({ type: ACTIONS.GETONE, payload: { id } })
+  }, [id, dispatch])
 
   return (
     <Layout
