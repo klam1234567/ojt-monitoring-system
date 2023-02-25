@@ -12,7 +12,7 @@ const admin = [
   },
   {
     id: 2,
-    title: "Supervisor",
+    title: "Company Coordinator",
     icon: <User size={iconSize} />,
     path: "/admin/coordinator",
   },

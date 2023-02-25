@@ -92,7 +92,7 @@ function Coordinator(props) {
     },
     {
       field: "coordinatorName",
-      headerName: "Supervisor Name",
+      headerName: "Coordinator Name",
       width: 200,
     },
     {

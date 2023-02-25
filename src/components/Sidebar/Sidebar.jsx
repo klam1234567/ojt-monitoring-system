@@ -29,7 +29,7 @@ export default function Sidebar() {
           <h1 className="font-bold">{info.name}</h1>
           <h2 className="text-sm">{info.email}</h2>
           <span className="bg-slate-500 text-slate-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-slate-200 dark:text-slate-800 mt-2">
-            {info.status === "coordinator" ? "supervisor" : info.status}
+            {info.status}
           </span>
         </div>
         <ul className="space-y-3 mt-10">
