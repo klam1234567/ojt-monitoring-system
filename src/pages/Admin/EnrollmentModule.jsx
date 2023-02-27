@@ -181,7 +181,11 @@ function EnrollmentModule(props) {
     <Layout title="Enrollment Module" description="a list of enrollment module">
       <Tabs tabName={tabName}>
         <TabPanel value="1">
-          <Table data={fetchEnrollment} columns={columns} loading={false} />
+          <Table
+            data={fetchEnrollment}
+            columns={columns}
+            loading={props?.loading}
+          />
         </TabPanel>
         <TabPanel value="2">
           <form onSubmit={(event) => onSubmit(event)}>

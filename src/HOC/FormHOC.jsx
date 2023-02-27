@@ -134,6 +134,7 @@ const FormHOC = (propState) => (entity) => (WrappedComponent) => {
         })
         .then(async (result) => {
           if (result.isConfirmed) {
+            setIsLoading(true)
             await deleteDocument(entity?.collectionName, id).then(() => {
               swal.fire({
                 title: "Successfully Deleted",
@@ -141,6 +142,7 @@ const FormHOC = (propState) => (entity) => (WrappedComponent) => {
                 icon: "success",
               })
             })
+            setIsLoading(false)
           } else {
             swal.fire("Yay!", "your data is safe", "success")
           }
