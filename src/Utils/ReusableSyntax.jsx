@@ -43,7 +43,9 @@ export const objectAssign = (ObjectArray, obj) => {
 }
 
 export const coordinatorName = (fetchCoordinator, coordEmail) => {
-  return fetchCoordinator.filter((type) => type.email === coordEmail)
+  return fetchCoordinator.filter((type) => {
+    return type.coordEmail === coordEmail
+  })
 }
 
 export const generateTaskCode = () => {

@@ -98,7 +98,7 @@ export default function AdminDashboard() {
     },
     {
       id: 2,
-      title: "Recored Tasks",
+      title: "Recorded Tasks",
       icon: <FilePlus />,
       counter: gradedTasks,
     },
