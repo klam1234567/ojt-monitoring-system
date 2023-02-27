@@ -177,6 +177,7 @@ function Students(props) {
       clearState={props.clearState}
       onSubmit={onSubmit}
       onChange={onChange}
+      loading={props?.loading}
     />
   )
 

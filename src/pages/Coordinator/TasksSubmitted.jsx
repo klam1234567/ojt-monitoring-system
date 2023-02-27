@@ -17,8 +17,6 @@ export default function TasksSubmitted() {
     fetchSubCollection.length > 0 &&
     filteredByEmail(fetchSubCollection, context.email)
 
-  console.log(filteredTasks)
-
   //column example
   const columns = [
     {

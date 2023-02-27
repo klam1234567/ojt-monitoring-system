@@ -30,7 +30,7 @@ export default function UpdateStudentGrades() {
     event.preventDefault()
 
     try {
-      if (score !== 0) {
+      if (score <= 100) {
         const config = {
           documentDetails: {
             ...filteredData[0]?.documentDetails,
@@ -59,6 +59,12 @@ export default function UpdateStudentGrades() {
                 }
               })
           })
+      } else {
+        swal.fire({
+          title: "Warning",
+          text: "score does not exceed 100",
+          icon: "warning",
+        })
       }
     } catch (error) {
       console.log(error)

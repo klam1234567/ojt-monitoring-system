@@ -6,6 +6,7 @@ import {
   filterByStudentUUIDs,
   filteredByStudentScore,
   filterByUUID,
+  coordinatorName,
 } from "Utils/ReusableSyntax"
 
 // context api
@@ -31,6 +32,7 @@ export default function AdminDashboard() {
 
   const isStudentGraded = filteredByStudentScore(filteredDocuments)
   const tasksPerUser = filterByUUID(fetchTasks, context.uid)
+  const tasksSubmitted = coordinatorName(fetchSubCollection, context?.email)
 
   const gradedTasks = isStudentGraded.length
   const student = fetchStudent.length
@@ -38,8 +40,10 @@ export default function AdminDashboard() {
   const organization = fetchOrganization.length
   const tasks = tasksPerUser.length
   const registeredStudents = fetchRegisteredStudent.length
-  const taskSubmitted = fetchSubCollection.length
+  const taskSubmitted = tasksSubmitted.length
   const studentTaskSubmitted = filteredDocuments.length
+
+  console.log(taskSubmitted)
 
   const { info } = rolesHook()
 

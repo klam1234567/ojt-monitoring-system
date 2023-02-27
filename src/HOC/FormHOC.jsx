@@ -21,6 +21,7 @@ const ACTIONS = {
 const FormHOC = (propState) => (entity) => (WrappedComponent) => {
   const HOC = () => {
     const [state, setState] = useState({ [entity?.componentName]: propState })
+    const [isLoading, setIsLoading] = useState(false)
 
     const clearState = () => {
       setState({
@@ -85,6 +86,7 @@ const FormHOC = (propState) => (entity) => (WrappedComponent) => {
 
     const handleAuth = async (email, password, configData, userData) => {
       try {
+        setIsLoading(true)
         if (entity?.actionType === ACTIONS.onRegister) {
           const credentials = await registerUser(email, password)
 
@@ -115,6 +117,7 @@ const FormHOC = (propState) => (entity) => (WrappedComponent) => {
               })
             }))
           clearState()
+          setIsLoading(false)
         }
       } catch (error) {
         console.log(error)
@@ -184,6 +187,7 @@ const FormHOC = (propState) => (entity) => (WrappedComponent) => {
           onSubmit={handleSubmit}
           onDelete={handleDelete}
           onChange={handleChange}
+          loading={isLoading}
         />
       </Fragment>
     )
