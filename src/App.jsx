@@ -22,6 +22,7 @@ import {
   UpdateStudentGrade,
   TaskRecord,
   ViewStudentSubmission,
+  UpdateEnrollmentModule,
 } from "./pages"
 
 function App() {
@@ -103,6 +104,17 @@ function App() {
             exact
             path={`${linkType}/updateOrganization`}
             element={<UpdateOrganization />}
+          />
+        </Route>
+        <Route
+          exact
+          path={`${linkType}/updateEnrollment`}
+          element={<PrivateRoute />}
+        >
+          <Route
+            exact
+            path={`${linkType}/updateEnrollment`}
+            element={<UpdateEnrollmentModule />}
           />
         </Route>
         {/* Administrator Routes */}

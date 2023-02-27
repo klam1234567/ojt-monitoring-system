@@ -13,6 +13,8 @@ import { CoordinatorContext } from "context/CoordinatorProvider"
 //Higher Order Component
 import { FormHOC } from "HOC"
 
+import { deleteWithSubCollection } from "config/firebase"
+
 const initialState = {
   taskCode: generateTaskCode(),
   taskName: "",
@@ -132,8 +134,8 @@ function Tasks(props) {
         // delete data in coordinator row
         const Delete = (e) => {
           e.stopPropagation() // don't select this row after clicking
-
-          props.onDelete(params.row.id)
+          deleteWithSubCollection(params.row.id)
+          //props.onDelete(params.row.id)
         }
 
         // update data in coordinator row

@@ -34,6 +34,7 @@ export default function AddStudentsModal({
             value={schoolID}
             label="School ID Number"
             onChange={(event) => onChange(event)}
+            required
           />
           <Textbox
             type="text"
@@ -42,11 +43,13 @@ export default function AddStudentsModal({
             value={fullName}
             label="Full Name"
             onChange={(event) => onChange(event)}
+            required
           />
           <SelectMenu
             name="section"
             value={section}
             onChange={(event) => onChange(event)}
+            required
             title="Section"
           >
             {sectionList.map((type, index) => (
@@ -64,6 +67,7 @@ export default function AddStudentsModal({
             value={course}
             label="Course"
             onChange={(event) => onChange(event)}
+            required
           />
           <Textbox
             type="text"
@@ -72,6 +76,7 @@ export default function AddStudentsModal({
             value={contact}
             label="Contact"
             onChange={(event) => onChange(event)}
+            required
           />
         </div>
         <div className="flex gap-5 my-4">
@@ -82,6 +87,7 @@ export default function AddStudentsModal({
             value={email}
             label="Email"
             onChange={(event) => onChange(event)}
+            required
           />
           <Textbox
             type="text"
@@ -90,6 +96,7 @@ export default function AddStudentsModal({
             value={address}
             label="Address"
             onChange={(event) => onChange(event)}
+            required
           />
         </div>
         <div className="w-full my-4">
@@ -100,6 +107,7 @@ export default function AddStudentsModal({
             value={password}
             label="Password"
             onChange={(event) => onChange(event)}
+            required
           />
         </div>
         <div className="text-white flex gap-2 justify-end mt-4">

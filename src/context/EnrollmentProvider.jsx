@@ -1,10 +1,10 @@
-import React, { createContext, useEffect, useState } from "react"
+import React, { createContext, useEffect, useState, useReducer } from "react"
 import { app } from "../config/firebase"
+import { ACTIONS } from "types"
 
 const EnrollmentContext = createContext()
 
 const EnrollmentProvider = ({ children }) => {
-  const [enrollmentId, setEnrollmentId] = useState("")
   const [fetchSpecificEnroll, setFetchSpecificEnroll] = useState([])
   const [fetchEnrollment, setEnrollment] = useState([])
 
@@ -23,12 +23,23 @@ const EnrollmentProvider = ({ children }) => {
 
   useEffect(fetchdata, [])
 
-  const fetchSpecificEnrollment = () => {
-    if (enrollmentId) {
+  const reducer = (state, action) => {
+    switch (action.type) {
+      case ACTIONS.GETONE:
+        return [...state, fetchSpecificEnrollment(action.payload?.id)]
+      default:
+        return state
+    }
+  }
+
+  const fetchSpecificEnrollment = (id) => {
+    console.log(id)
+
+    if (id) {
       const document = app
         .firestore()
         .collection("enrollmentModuleData")
-        .doc(enrollmentId)
+        .doc(id)
       return document.onSnapshot((snapshot) => {
         const items_array = []
         if (snapshot) {
@@ -39,16 +50,18 @@ const EnrollmentProvider = ({ children }) => {
     }
   }
 
-  useEffect(fetchSpecificEnrollment, [enrollmentId])
+  const [state, dispatch] = useReducer(reducer, [])
+
+  // useEffect(fetchSpecificEnrollment, [enrollmentId])
 
   return (
     <EnrollmentContext.Provider
       value={{
         fetchSpecificEnroll,
         fetchEnrollment,
-        setEnrollmentId,
         setFetchSpecificEnroll,
-        enrollmentId,
+        dispatch,
+        state,
       }}
     >
       {children}

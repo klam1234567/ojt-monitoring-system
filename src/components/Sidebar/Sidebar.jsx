@@ -1,13 +1,21 @@
-import React from "react"
+import React, { useContext } from "react"
 import { Link, useLocation } from "react-router-dom"
-import { LogOut } from "react-feather"
+import { LogOut, Trash } from "react-feather"
 import { auth, signOut } from "config/firebase"
 import { useNavigate } from "react-router-dom"
 import rolesHook from "hooks/rolesHook"
+import swal from "sweetalert2"
+
+//context api
+import { AuthContext } from "context/auth"
+
+//firebase functions
+import { deleteUserAuth } from "config/firebase"
 
 export default function Sidebar() {
   const query = useLocation()
   const navigate = useNavigate()
+  const context = useContext(AuthContext)
 
   const { info, links } = rolesHook()
 
@@ -16,6 +24,27 @@ export default function Sidebar() {
     navigate("/")
     localStorage.clear()
   }
+
+  const deleteAccount = () => {
+    try {
+      if (context.uid) {
+        const isCheckCollection =
+          info.status === "coordinator" ? "coordinatorData" : "studentsData"
+
+        deleteUserAuth(context?.uid, isCheckCollection)
+      }
+    } catch (error) {
+      console.log(error)
+      swal.fire({
+        title: "Warning!",
+        text: "something went wrong!!!",
+        icon: "warning",
+      })
+    }
+  }
+
+  const isCheckStatus =
+    info.status === "coordinator" || info.status === "student"
 
   return (
     <section className="w-1/4">
@@ -50,6 +79,19 @@ export default function Sidebar() {
               </li>
             )
           })}
+          <li>
+            {isCheckStatus && (
+              <div
+                onClick={deleteAccount}
+                className={`text-slate-600 hover:text-white flex items-center hover:text-white hover:bg-slate-800 cursor-pointer transition-all rounded-sm py-2`}
+              >
+                <i className="mx-2 ml-3">
+                  <Trash size="18" />
+                </i>
+                <span className="text-sm">Delete account</span>
+              </div>
+            )}
+          </li>
           <li>
             <div
               onClick={logoutUser}

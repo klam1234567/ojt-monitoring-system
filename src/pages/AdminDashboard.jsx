@@ -5,6 +5,7 @@ import rolesHook from "hooks/rolesHook"
 import {
   filterByStudentUUIDs,
   filteredByStudentScore,
+  filterByUUID,
 } from "Utils/ReusableSyntax"
 
 // context api
@@ -29,12 +30,13 @@ export default function AdminDashboard() {
   )
 
   const isStudentGraded = filteredByStudentScore(filteredDocuments)
+  const tasksPerUser = filterByUUID(fetchTasks, context.uid)
 
   const gradedTasks = isStudentGraded.length
   const student = fetchStudent.length
   const coordinator = fetchCoordinator.length
   const organization = fetchOrganization.length
-  const tasks = fetchTasks.length
+  const tasks = tasksPerUser.length
   const registeredStudents = fetchRegisteredStudent.length
   const taskSubmitted = fetchSubCollection.length
   const studentTaskSubmitted = filteredDocuments.length

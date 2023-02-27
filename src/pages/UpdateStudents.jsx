@@ -17,6 +17,7 @@ const initialState = {
   course: "",
   contact: 0,
   email: "",
+  section: "",
   address: "",
 }
 
@@ -31,9 +32,7 @@ function UpdateStudents(props) {
   const paramsId = params.search.split("=")
   const id = paramsId[1]
 
-  const { state, fetchSpecificStudent, dispatch } = useContext(StudentContext)
-
-  console.log(state)
+  const { fetchSpecificStudent, dispatch } = useContext(StudentContext)
 
   fetchSpecificStudent && objectAssign(fetchSpecificStudent, initialState)
 
@@ -46,7 +45,7 @@ function UpdateStudents(props) {
   const onSubmit = (event) => {
     event.preventDefault()
 
-    const { schoolID, fullName, course, email, address, id } =
+    const { schoolID, fullName, course, email, section, address, id } =
       props?.updateStudent
 
     const config = {
@@ -54,6 +53,7 @@ function UpdateStudents(props) {
       fullName,
       course,
       email,
+      section,
       address,
     }
 
@@ -110,6 +110,14 @@ function UpdateStudents(props) {
             onChange={(event) => onChange(event)}
             label="Email"
             disabled
+          />
+          <Textbox
+            type="text"
+            className="w-full"
+            name="section"
+            value={props.updateStudent?.section}
+            onChange={(event) => onChange(event)}
+            label="Section"
           />
         </div>
         <div className="w-full">

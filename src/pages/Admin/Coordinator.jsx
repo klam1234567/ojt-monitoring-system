@@ -102,6 +102,12 @@ function Coordinator(props) {
       width: 150,
     },
     {
+      field: "company",
+      headerName: "Company",
+      type: "string",
+      width: 150,
+    },
+    {
       field: "email",
       headerName: "Email",
       width: 200,

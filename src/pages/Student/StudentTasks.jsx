@@ -11,6 +11,7 @@ import {
 import { Edit2, UploadCloud } from "react-feather"
 import swal from "sweetalert2"
 import { app } from "config/firebase"
+import CircularProgress from "@mui/material/CircularProgress"
 
 //context api
 import { TaskContext } from "context/TasksProvider"
@@ -33,6 +34,7 @@ export default function StudentTasks() {
     submitted: false,
   })
   const [file, setFile] = useState(null)
+  const [isLoading, setLoading] = useState(false)
 
   const filteredDocuments = filterByStudentUUIDs(
     fetchSubCollection,
@@ -89,6 +91,8 @@ export default function StudentTasks() {
 
       const userDetails = JSON.parse(localStorage.getItem("user_details"))
 
+      setLoading(true)
+
       const storageRef = app.storage().ref()
       const fileRef = storageRef.child(`submitted_documents/${file.name}`)
       await fileRef.put(file)
@@ -126,6 +130,7 @@ export default function StudentTasks() {
                   icon: "success",
                 })
                 .then((response) => {
+                  setLoading(false)
                   if (response.isConfirmed) {
                     window.location.reload()
                   }
@@ -248,7 +253,11 @@ export default function StudentTasks() {
 
   const complyModal = (
     <PageModal open={isToggle.toggle} isClose={closeModal}>
-      {!isToggle.submitted ? (
+      {isLoading ? (
+        <div className="flex items-center justify-center">
+          <CircularProgress />
+        </div>
+      ) : !isToggle.submitted ? (
         <form>
           <div className="flex items-center justify-center w-full mt-6">
             <label
@@ -278,9 +287,9 @@ export default function StudentTasks() {
             <div className="flex items-center justify-between mt-4 bg-slate-500 text-slate-800 text-sm font-semibold mr-2 px-3 py-2 rounded dark:bg-slate-200 dark:text-slate-800 mt-2">
               {file.name}
               {/* <Trash2
-              onClick={removeFile}
-              className="text-slate-900 hover:text-slate-500 transition-all cursor-pointer"
-            /> */}
+                onClick={removeFile}
+                className="text-slate-900 hover:text-slate-500 transition-all cursor-pointer"
+              /> */}
             </div>
           )}
           <div className="flex gap-2 justify-end mt-4">

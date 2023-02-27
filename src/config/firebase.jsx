@@ -18,6 +18,7 @@ import {
   query,
   setDoc,
   getDocs,
+  getDoc,
   FieldValue,
 } from "firebase/firestore"
 import "firebase/compat/storage"
@@ -64,8 +65,106 @@ const updateDocument = async (collectionName, config, id) => {
   }
 }
 
+const fetchDataByDocId = async (collection, id) => {
+  try {
+    await app
+      .firestore()
+      .collection(collection)
+      .where("authId", "==", id)
+      .get()
+      .then((data) => {
+        data.docs.forEach(async (elem) => {
+          elem.ref.delete()
+        })
+      })
+
+    const response = app
+      .firestore()
+      .collection("userData")
+      .where("authId", "==", id)
+
+    await response.get().then((snapshot) => {
+      snapshot.docs.forEach(async (el) => {
+        el.ref.delete().then(async () => {
+          await auth.currentUser.delete(id)
+          swal
+            .fire({
+              title: "Account Deleted",
+              text: "sucessfully deleted account",
+              icon: "success",
+            })
+            .then((result) => {
+              if (result.isConfirmed) {
+                window.location.href("/")
+              }
+            })
+        })
+      })
+    })
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 // deleting authenticated user
-const deleteUserAuth = async (id) => await auth.currentUser.delete(id)
+const deleteUserAuth = (id, collection) => {
+  swal
+    .fire({
+      title: "ARE YOU SURE",
+      text: "are you sure to delete this account?",
+      icon: "warning",
+      showCancelButton: true,
+    })
+    .then(async (result) => {
+      if (result.isConfirmed) {
+        fetchDataByDocId(collection, id)
+      }
+    })
+}
+
+// delete tasks with sub collection
+const deleteWithSubCollection = async (id) => {
+  try {
+    const response = await swal.fire({
+      title: "ARE YOU SURE",
+      text: "are you sure to delete this task?",
+      icon: "warning",
+      showCancelButton: true,
+    })
+
+    if (response.isConfirmed) {
+      const collectionName = "tasksDetails"
+
+      const db = getFirestore()
+      const q = doc(db, collectionName, id)
+      const snapshot = await getDoc(q)
+
+      await deleteDocument(collectionName, snapshot.id)
+
+      const taskDetails = query(
+        collection(db, `${collectionName}/${snapshot.id}/submittedDocuments`)
+      )
+
+      const submittedDocumentsDetails = await getDocs(taskDetails)
+
+      submittedDocumentsDetails.docs.map(
+        async (doc) =>
+          await deleteDocument(
+            `${collectionName}/${snapshot.id}/submittedDocuments`,
+            doc.id
+          )
+      )
+
+      swal.fire({
+        title: "Successfully Delete",
+        text: "please click ok to proceed",
+        icon: "success",
+      })
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
 
 // deleting each specific document or data in the firebase firestore
 const deleteDocument = async (collection, docId) =>
@@ -126,4 +225,5 @@ export {
   signInWithEmailAndPassword,
   signOut,
   FieldValue,
+  deleteWithSubCollection,
 }

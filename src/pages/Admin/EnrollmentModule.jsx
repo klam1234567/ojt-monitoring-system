@@ -7,13 +7,13 @@ import React, {
 } from "react"
 import { MenuItem } from "@mui/material"
 import { TabPanel } from "@mui/lab"
-//import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import { Layout, Tabs, Textbox, SelectMenu, Table } from "components"
 
 // context api
 import { StudentContext } from "context/StudentProvider"
 import { CoordinatorContext } from "context/CoordinatorProvider"
-import { OrganizationContext } from "context/OrganizationProvider"
+// import { OrganizationContext } from "context/OrganizationProvider"
 import { EnrollmentContext } from "context/EnrollmentProvider"
 import { filterByStudentName } from "Utils/ReusableSyntax"
 
@@ -39,8 +39,10 @@ function EnrollmentModule(props) {
 
   const { fetchStudent } = useContext(StudentContext)
   const { fetchCoordinator } = useContext(CoordinatorContext)
-  const { fetchOrganization } = useContext(OrganizationContext)
+  // const { fetchOrganization } = useContext(OrganizationContext)
   const { fetchEnrollment } = useContext(EnrollmentContext)
+
+  const navigate = useNavigate()
 
   const studentName = fetchStudent.map((type) => type.fullName)
   // const sectionList = fetchStudent.map((type) => type.section)
@@ -53,7 +55,7 @@ function EnrollmentModule(props) {
     return filterByStudentName(fetchStudent, props.submitEnrollment?.studName)
   }, [props.submitEnrollment?.studName, fetchStudent])
 
-  const orgName = fetchOrganization.map((type) => type.organizationName)
+  // const orgName = fetchOrganization.map((type) => type.organizationName)
 
   const fetchCoordinatorNames = useCallback(async () => {
     const fetchCoordinatorByEmail = await fetchCoordinator.filter(
@@ -143,24 +145,24 @@ function EnrollmentModule(props) {
         }
 
         // update data in coordinator row
-        // const Update = (e) => {
-        //   e.stopPropagation() // don't select this row after clickin
+        const Update = (e) => {
+          e.stopPropagation() // don't select this row after clickin
 
-        //   if (params.row.id) {
-        //     navigate(`/updateCoordinator?id=${params.row.id}`)
-        //   }
+          if (params.row.id) {
+            navigate(`/admin/updateEnrollment?id=${params.row.id}`)
+          }
 
-        //   // updateToggleModal();
-        // }
+          // updateToggleModal();
+        }
 
         return (
           <div className="space-x-4">
-            {/* <button
+            <button
               className="cursor-pointer bg-slate-600 hover:bg-slate-800 transition-all text-white py-2 px-4 rounded-lg border-2"
               onClick={Update}
             >
               Edit
-            </button> */}
+            </button>
             <button
               className="cursor-pointer cursor-pointer bg-slate-900 hover:bg-slate-600 transition-all text-white py-2 px-4 rounded-lg border-2"
               onClick={Delete}
@@ -249,11 +251,12 @@ function EnrollmentModule(props) {
                 onChange={(event) => onChange(event)}
                 title="Organization"
               >
-                {orgName.map((type, index) => (
-                  <MenuItem key={index} value={type}>
-                    {type}
-                  </MenuItem>
-                ))}
+                {coordinatorNames !== null &&
+                  coordinatorNames.map((type, index) => (
+                    <MenuItem key={index} value={type.company}>
+                      {type.company}
+                    </MenuItem>
+                  ))}
               </SelectMenu>
             </div>
             <div className="text-white flex gap-2 justify-end mt-4">

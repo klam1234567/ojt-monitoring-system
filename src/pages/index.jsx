@@ -9,6 +9,7 @@ export { default as Organization } from "./Admin/Organization"
 export { default as UpdateCoordinator } from "./UpdateCoordinator"
 export { default as UpdateStudents } from "./UpdateStudents"
 export { default as UpdateOrganization } from "./updateOrganization"
+export { default as UpdateEnrollmentModule } from "./UpdateEnrollmentModule"
 
 // coordinator page
 export { default as MasterList } from "./Coordinator/MasterList"

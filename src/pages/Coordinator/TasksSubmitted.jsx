@@ -12,9 +12,12 @@ export default function TasksSubmitted() {
   const context = useContext(AuthContext)
   const navigate = useNavigate()
   const { fetchSubCollection } = useContext(TaskContext)
+
   const filteredTasks =
     fetchSubCollection.length > 0 &&
     filteredByEmail(fetchSubCollection, context.email)
+
+  console.log(filteredTasks)
 
   //column example
   const columns = [
