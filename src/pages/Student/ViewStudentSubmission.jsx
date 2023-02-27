@@ -60,16 +60,15 @@ export default function ViewStudentSubmission() {
                 </div>
                 <div className="flex items-center gap-2 mt-4">
                   <Avatar
-                    alt="Remy Sharp"
                     className="bg-slate-900"
                     sx={{
                       width: 30,
                       height: 30,
-                      fontSize: 14,
+                      fontSize: 16,
                       bgcolor: lightBlue[900],
                     }}
                   >
-                    S
+                    {supervisor.charAt(0)}
                   </Avatar>
                   <span className="font-bold text-sm">{supervisor}</span>
                 </div>
