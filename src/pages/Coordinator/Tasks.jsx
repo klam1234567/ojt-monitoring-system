@@ -1,9 +1,10 @@
-import React, { Fragment, useContext } from "react"
+import React, { Fragment, useContext, useState } from "react"
 import { TabPanel } from "@mui/lab"
 import { Layout, Tabs, Textbox, Table } from "components"
 import { generateTaskCode, Months } from "Utils/ReusableSyntax"
 import { useNavigate } from "react-router-dom"
 import { filterByCoordinatorUUID, filterByUUID } from "Utils/ReusableSyntax"
+import ReactQuill from "react-quill"
 
 //context api
 import { AuthContext } from "context/auth"
@@ -41,6 +42,8 @@ function Tasks(props) {
     context.uid
   )
 
+  const [convertedText, setConvertedText] = useState("")
+
   const onChange = (event) => {
     const { name, value } = event.target
 
@@ -50,7 +53,7 @@ function Tasks(props) {
   const onSubmit = async (event) => {
     event.preventDefault()
     try {
-      const { taskCode, taskName, deadline, description } = props?.tasks
+      const { taskCode, taskName, deadline } = props?.tasks
 
       const config = {
         coordinatorEmail: context.email,
@@ -59,7 +62,7 @@ function Tasks(props) {
         taskName,
         company: filteredSupervisor[0]?.company,
         deadline,
-        description,
+        description: convertedText,
         deadlineStatus: "active",
       }
 
@@ -96,11 +99,11 @@ function Tasks(props) {
       type: "string",
       width: 150,
     },
-    {
-      field: "description",
-      headerName: "Description",
-      width: 200,
-    },
+    // {
+    //   field: "description",
+    //   headerName: "Description",
+    //   width: 200,
+    // },
     {
       field: "deadline",
       headerName: "Deadline",
@@ -222,7 +225,22 @@ function Tasks(props) {
           />
         </div>
         <div className="w-full">
-          <Textbox
+          <div>
+            <ReactQuill
+              theme="snow"
+              value={convertedText}
+              onChange={setConvertedText}
+              placeholder="task description"
+              style={{
+                border: 1,
+                borderColor: "#d3c4c4",
+                minHeight: "100%",
+                height: "200px",
+                borderRadius: "5px",
+              }}
+            />
+          </div>
+          {/* <Textbox
             type="text"
             className="w-full"
             name="description"
@@ -232,9 +250,9 @@ function Tasks(props) {
             column={4}
             multiline
             label="Description"
-          />
+          /> */}
         </div>
-        <div className="text-white flex gap-2 justify-end mt-4">
+        <div className="text-white flex gap-2 justify-end mt-16">
           <button
             type="button"
             onClick={props.clearState}

@@ -30,6 +30,8 @@ export default function AdminDashboard() {
     context.uid
   )
 
+  console.log(fetchSubCollection)
+
   const isStudentGraded = filteredByStudentScore(filteredDocuments)
   const tasksPerUser = filterByUUID(fetchTasks, context.uid)
   const tasksSubmitted = coordinatorName(fetchSubCollection, context?.email)
@@ -42,8 +44,6 @@ export default function AdminDashboard() {
   const registeredStudents = fetchRegisteredStudent.length
   const taskSubmitted = tasksSubmitted.length
   const studentTaskSubmitted = filteredDocuments.length
-
-  console.log(taskSubmitted)
 
   const { info } = rolesHook()
 
@@ -92,7 +92,7 @@ export default function AdminDashboard() {
   const statisticalCardStudent = [
     {
       id: 1,
-      title: "My Tasks",
+      title: "Submitted Tasks",
       icon: <FileText />,
       counter: studentTaskSubmitted,
     },

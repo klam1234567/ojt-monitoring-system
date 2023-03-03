@@ -148,8 +148,9 @@ export const mergeByProperty = (target, source, prop) => {
 }
 
 export const isCheckSubmittedTasks = (filteredDocuments, taskName) => {
-  const found = filteredDocuments.some(
-    (el) => el.documentDetails.taskName === taskName
-  )
+  const found = filteredDocuments.some((el) => {
+    console.log(el.documentDetails.taskName, taskName)
+    return el.documentDetails.taskName === taskName
+  })
   return found
 }

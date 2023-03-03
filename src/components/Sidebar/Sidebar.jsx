@@ -55,13 +55,13 @@ export default function Sidebar() {
             className="rounded-full w-44 h-44 border-2 border-gray-500 object-cover mb-4"
             alt=""
           />
-          <h1 className="font-bold">{info.name}</h1>
+          <h1 className="font-bold text-lg">{info.name}</h1>
           <h2 className="text-sm">{info.email}</h2>
           <span className="bg-slate-500 text-slate-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-slate-200 dark:text-slate-800 mt-2">
             {info.status}
           </span>
         </div>
-        <ul className="space-y-3 mt-10">
+        <ul className="space-y-3 mt-10 list-none">
           {links.map((type) => {
             return (
               <li key={type.id}>
@@ -71,7 +71,7 @@ export default function Sidebar() {
                     type.path === query.pathname
                       ? "bg-slate-800 text-white"
                       : "text-slate-600"
-                  } flex items-center hover:text-white hover:bg-slate-800 cursor-pointer transition-all rounded-sm py-2`}
+                  } flex items-center hover:text-white hover:bg-slate-800 cursor-pointer transition-all rounded-sm py-2 no-underline`}
                 >
                   <i className="mx-2 ml-3">{type.icon}</i>
                   <span className="text-sm">{type.title}</span>

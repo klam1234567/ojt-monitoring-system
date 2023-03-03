@@ -1,8 +1,9 @@
-import React, { useEffect, useContext } from "react"
+import React, { useEffect, useContext, useState } from "react"
 import { useLocation } from "react-router-dom"
 import { TaskContext } from "context/TasksProvider"
 import { Layout, Back, Textbox } from "components"
 import { ACTIONS } from "types"
+import ReactQuill from "react-quill"
 
 //Utils
 import { objectAssign } from "Utils/ReusableSyntax"
@@ -28,7 +29,10 @@ function UpdateTasks(props) {
   const paramsId = params.search.split("=")
   const id = paramsId[1]
 
+  const { taskCode, taskName, deadline, description } = props?.updateTasks
+
   const { dispatch, fetchOneTask } = useContext(TaskContext)
+  const [convertedText, setConvertedText] = useState(description)
 
   fetchOneTask && objectAssign(fetchOneTask, initialState)
 
@@ -46,13 +50,11 @@ function UpdateTasks(props) {
     event.preventDefault()
 
     try {
-      const { taskCode, taskName, deadline, description } = props?.updateTasks
-
       const config = {
         taskCode,
         taskName,
         deadline,
-        description,
+        description: convertedText,
       }
 
       props.onSubmit(config, paramsId[1])
@@ -96,7 +98,22 @@ function UpdateTasks(props) {
           />
         </div>
         <div className="w-full">
-          <Textbox
+          <div>
+            <ReactQuill
+              theme="snow"
+              value={convertedText}
+              onChange={setConvertedText}
+              placeholder="task description"
+              style={{
+                border: 1,
+                borderColor: "#d3c4c4",
+                minHeight: "100%",
+                height: "200px",
+                borderRadius: "5px",
+              }}
+            />
+          </div>
+          {/* <Textbox
             type="text"
             className="w-full"
             name="description"
@@ -106,9 +123,9 @@ function UpdateTasks(props) {
             column={4}
             multiline
             label="Description"
-          />
+          /> */}
         </div>
-        <div className="text-white flex gap-2 justify-end mt-4">
+        <div className="text-white flex gap-2 justify-end mt-16">
           <button
             type="submit"
             className="bg-slate-900 rounded-lg py-2 px-4 hover:bg-slate-600 transition-all"

@@ -23,6 +23,7 @@ import {
   TaskRecord,
   ViewStudentSubmission,
   UpdateEnrollmentModule,
+  TaskDescription,
 } from "./pages"
 
 function App() {
@@ -215,6 +216,17 @@ function App() {
             exact
             path={`${linkType}/view-submission/:id`}
             element={<ViewStudentSubmission />}
+          />
+        </Route>
+        <Route
+          exact
+          path={`${linkType}/view-task`}
+          element={<TaskDescription />}
+        >
+          <Route
+            exact
+            path={`${linkType}/view-task`}
+            element={<TaskDescription />}
           />
         </Route>
         {/* Students Routes */}

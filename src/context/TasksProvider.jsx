@@ -1,11 +1,5 @@
 import React, { createContext, useEffect, useReducer } from "react"
-import {
-  app,
-  getFirestore,
-  getDocs,
-  collection,
-  query,
-} from "../config/firebase"
+import { app, getDocs, collection, query, db } from "../config/firebase"
 import { useState } from "react"
 import { ACTIONS } from "types"
 
@@ -16,41 +10,29 @@ const TaskProvider = ({ children }) => {
   const [fetchSubCollection, setSubCollection] = useState([])
   const [fetchTasks, setFetchTasks] = useState([])
 
-  const fetchDataSubCollection = async () => {
-    const taskArray = []
-    const db = getFirestore()
-    const q = query(collection(db, "tasksDetails"))
-    const snapshot = await getDocs(q)
+  const fetchDataSubCollection = () => {
+    const document = app.firestore().collection("tasksDetails")
+    return document.onSnapshot((snapshot) => {
+      const tasksArray = []
 
-    const data = snapshot.docs.map((doc) => ({
-      ...doc.data(),
-      id: doc.id,
-    }))
+      snapshot.forEach(async (result) => {
+        const taskDetails = query(
+          collection(db, `tasksDetails/${result.id}/submittedDocuments`)
+        )
 
-    data.map(async (elem) => {
-      const taskDetails = query(
-        collection(db, `tasksDetails/${elem.id}/submittedDocuments`)
-      )
+        const submittedDocumentsDetails = await getDocs(taskDetails)
 
-      const submittedDocumentsDetails = await getDocs(taskDetails)
-
-      submittedDocumentsDetails.docs.map((doc) => ({
-        ...doc.data(),
-        id: doc.id,
-      }))
-
-      submittedDocumentsDetails.docs.map((doc) =>
-        taskArray.push({ ...doc.data(), id: doc.id })
-      )
-
-      setSubCollection(taskArray)
-      // localStorage.setItem("documents", JSON.stringify(docs))
+        submittedDocumentsDetails.docs.forEach((elem) => {
+          if (elem) {
+            tasksArray.push({ ...elem.data(), id: elem.id })
+          }
+          setSubCollection(tasksArray)
+        })
+      })
     })
   }
 
-  useEffect(() => {
-    fetchDataSubCollection()
-  }, [])
+  useEffect(fetchDataSubCollection, [])
 
   const fetchdata = () => {
     const document = app.firestore().collection("tasksDetails")
@@ -72,7 +54,7 @@ const TaskProvider = ({ children }) => {
       case ACTIONS.GETONE:
         return [...state, fetchSpecificTasks(action.payload?.id)]
       default:
-        return state
+        return { ...state }
     }
   }
 

@@ -1,10 +1,11 @@
-import React, { useContext, useState } from "react"
+import React, { useContext, useState, useMemo } from "react"
 import { Layout } from "components"
 import { useLocation } from "react-router-dom"
 import { filteredByIDSubmittedTask } from "Utils/ReusableSyntax"
 import { Textbox, Back } from "components"
 import { app } from "config/firebase"
 import swal from "sweetalert2"
+import ReactQuill from "react-quill"
 
 //context api
 import { TaskContext } from "context/TasksProvider"
@@ -16,10 +17,9 @@ export default function UpdateStudentGrades() {
   const paramsId = pathname.split("/")
   const submittedDocumentsId = paramsId[3]
 
-  const filteredData = filteredByIDSubmittedTask(
-    fetchSubCollection,
-    submittedDocumentsId
-  )
+  const filteredData = useMemo(() => {
+    return filteredByIDSubmittedTask(fetchSubCollection, submittedDocumentsId)
+  }, [submittedDocumentsId, fetchSubCollection])
 
   const [score, setScore] = useState(filteredData[0]?.documentDetails?.score)
   const [comments, setComments] = useState(
@@ -195,7 +195,22 @@ export default function UpdateStudentGrades() {
                 Comments
               </label>
             </aside>
-            <Textbox
+            <div>
+              <ReactQuill
+                theme="snow"
+                value={comments}
+                onChange={setComments}
+                placeholder="comments"
+                style={{
+                  border: 1,
+                  borderColor: "#d3c4c4",
+                  minHeight: "100%",
+                  height: "200px",
+                  borderRadius: "5px",
+                }}
+              />
+            </div>
+            {/* <Textbox
               type="number"
               className="w-full"
               name="comments"
@@ -205,9 +220,9 @@ export default function UpdateStudentGrades() {
               multiline
               value={comments}
               onChange={(event) => setComments(event.target.value)}
-            />
+            /> */}
           </div>
-          <div className="my-4 text-right">
+          <div className="mt-14 text-right">
             <button
               type="submit"
               className="bg-slate-900 rounded-lg py-2 px-4 hover:bg-slate-600 transition-all text-white"

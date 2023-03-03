@@ -68,11 +68,14 @@ export default function ViewStudentSubmission() {
                       bgcolor: lightBlue[900],
                     }}
                   >
-                    {supervisor.charAt(0)}
+                    {supervisor && supervisor[0]}
                   </Avatar>
                   <span className="font-bold text-sm">{supervisor}</span>
                 </div>
-                <p className="mt-2 text-gray-500 text-sm">{comments}</p>
+                <div
+                  className="mt-6 text-gray-500"
+                  dangerouslySetInnerHTML={{ __html: comments }}
+                />
               </aside>
             </Fragment>
           ) : (
