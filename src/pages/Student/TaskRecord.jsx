@@ -30,12 +30,18 @@ export default function TaskRecord() {
       field: "studName",
       headerName: "Student Name",
       width: 200,
+      renderCell: (params) => {
+        return <span>{params.row.userDetails.fullName}</span>
+      },
     },
     {
-      field: "orgsName",
-      headerName: "Organization Name",
+      field: "section",
+      headerName: "Section Name",
       type: "string",
       width: 150,
+      renderCell: (params) => {
+        return <span>{params.row.userDetails.section}</span>
+      },
     },
     {
       field: "taskName",

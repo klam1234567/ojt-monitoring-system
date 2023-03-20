@@ -1,15 +1,17 @@
 import React, { Fragment, useContext, useState } from "react"
 import { TabPanel } from "@mui/lab"
-import { Layout, Tabs, Textbox, Table } from "components"
+import { MenuItem } from "@mui/material"
+import { Layout, Tabs, Textbox, Table, SelectMenu } from "components"
 import { generateTaskCode, Months } from "Utils/ReusableSyntax"
 import { useNavigate } from "react-router-dom"
-import { filterByCoordinatorUUID, filterByUUID } from "Utils/ReusableSyntax"
+import { sectionList } from "Utils/ReusableSyntax"
+// import { filterByCoordinatorUUID, filterByUUID } from "Utils/ReusableSyntax"
 import ReactQuill from "react-quill"
 
 //context api
 import { AuthContext } from "context/auth"
 import { TaskContext } from "context/TasksProvider"
-import { CoordinatorContext } from "context/CoordinatorProvider"
+// import { CoordinatorContext } from "context/CoordinatorProvider"
 
 //Higher Order Component
 import { FormHOC } from "HOC"
@@ -21,6 +23,7 @@ const initialState = {
   taskName: "",
   deadline: "",
   description: "",
+  section: "",
 }
 
 const entity = {
@@ -32,15 +35,15 @@ const entity = {
 function Tasks(props) {
   const navigate = useNavigate()
   const context = useContext(AuthContext)
-  const { fetchCoordinator } = useContext(CoordinatorContext)
+  // const { fetchCoordinator } = useContext(CoordinatorContext)
   const { fetchTasks } = useContext(TaskContext)
 
-  const filteredTasks = filterByUUID(fetchTasks, context.uid)
+  // const filteredTasks = filterByUUID(fetchTasks, context.uid)
 
-  const filteredSupervisor = filterByCoordinatorUUID(
-    fetchCoordinator,
-    context.uid
-  )
+  // const filteredSupervisor = filterByCoordinatorUUID(
+  //   fetchCoordinator,
+  //   context.uid
+  // )
 
   const [convertedText, setConvertedText] = useState("")
 
@@ -53,18 +56,21 @@ function Tasks(props) {
   const onSubmit = async (event) => {
     event.preventDefault()
     try {
-      const { taskCode, taskName, deadline } = props?.tasks
+      const { taskCode, taskName, deadline, section } = props?.tasks
 
       const config = {
-        coordinatorEmail: context.email,
-        coordinatorUUID: context.uid,
+        email: context.email,
+        ownerUUID: context.uid,
         taskCode,
         taskName,
-        company: filteredSupervisor[0]?.company,
+        section,
+        // company: filteredSupervisor[0]?.company,
         deadline,
         description: convertedText,
         deadlineStatus: "active",
       }
+
+      // console.log(config)
 
       props.onSubmit(config)
     } catch (error) {
@@ -84,18 +90,18 @@ function Tasks(props) {
     },
     {
       field: "taskCode",
-      headerName: "Task Code",
+      headerName: "Accomplishment Code",
       width: 200,
     },
     {
       field: "taskName",
-      headerName: "Task Name",
+      headerName: "Accomplishment Name",
       type: "string",
       width: 150,
     },
     {
-      field: "company",
-      headerName: "Company Name",
+      field: "section",
+      headerName: "Section Name",
       type: "string",
       width: 150,
     },
@@ -174,7 +180,7 @@ function Tasks(props) {
 
   const add_new_trainee = (
     <Fragment>
-      <h1 className="font-bold text-2xl mb-4">Add new task</h1>
+      <h1 className="font-bold text-2xl mb-4">Add new Accomplishment</h1>
       <form onSubmit={(event) => onSubmit(event)}>
         <div className="flex gap-4 my-4">
           <Textbox
@@ -184,7 +190,7 @@ function Tasks(props) {
             disabled={true}
             value={props.tasks?.taskCode}
             onChange={(event) => onChange(event)}
-            label="Task Code"
+            label="Accomplishment Code"
           />
           <Textbox
             type="text"
@@ -192,30 +198,30 @@ function Tasks(props) {
             name="taskName"
             value={props.tasks?.taskName}
             onChange={(event) => onChange(event)}
-            label="Task Name"
+            label="Accomplishment Name"
           />
         </div>
         <div className="flex gap-4 my-4">
-          {/* <SelectMenu
+          <SelectMenu
             name="section"
             title="Section"
             onChange={(event) => onChange(event)}
           >
-            {filteredRegisteredStudent.map((type, index) => (
-              <MenuItem key={index} value={type.section}>
-                {type.section}
+            {sectionList.map((type, index) => (
+              <MenuItem key={index} value={type}>
+                {type}
               </MenuItem>
             ))}
-          </SelectMenu> */}
-          <Textbox
+          </SelectMenu>
+          {/* <Textbox
             type="text"
             className="w-full"
             name="orgsName"
             disabled={true}
             value={filteredSupervisor[0]?.company}
             onChange={(event) => onChange(event)}
-            label="Task Name"
-          />
+            label="Accomplishment Name"
+          /> */}
           <Textbox
             type="date"
             className="w-full"
@@ -230,7 +236,7 @@ function Tasks(props) {
               theme="snow"
               value={convertedText}
               onChange={setConvertedText}
-              placeholder="task description"
+              placeholder="Accomplishment description"
               style={{
                 border: 1,
                 borderColor: "#d3c4c4",
@@ -271,13 +277,16 @@ function Tasks(props) {
     </Fragment>
   )
 
-  const tabName = ["Task List", "Add New Task"]
+  const tabName = ["Accomplishment List", "Add New Accomplishment"]
 
   return (
-    <Layout title="Tasks" description="a list of tasks assigned by coordinator">
+    <Layout
+      title="Accomplishment"
+      description="a list of accomplishment assigned by coordinator"
+    >
       <Tabs tabName={tabName}>
         <TabPanel value="1">
-          <Table data={filteredTasks} columns={columns} loading={false} />
+          <Table data={fetchTasks} columns={columns} loading={false} />
         </TabPanel>
         <TabPanel value="2">{add_new_trainee}</TabPanel>
       </Tabs>

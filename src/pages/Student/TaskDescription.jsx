@@ -33,7 +33,7 @@ const initialState = {
   taskName: "",
   deadline: "",
   description: "",
-  coordinatorEmail: "",
+  email: "",
 }
 
 export default function TaskDescription() {
@@ -52,6 +52,8 @@ export default function TaskDescription() {
   const id = paramsId[1]
 
   fetchOneTask && objectAssign(fetchOneTask, initialState)
+
+  console.log(initialState)
 
   const filteredDocuments =
     fetchSubCollection.length > 0 &&
@@ -107,7 +109,8 @@ export default function TaskDescription() {
               .collection("submittedDocuments")
               .add({
                 documentid: id,
-                ...userDetails?.studentInfo[0],
+                ownerEmail: initialState.email,
+                userDetails: userDetails?.studentInfo[0],
                 documentDetails: {
                   taskName: initialState.taskName,
                   fileUrl,
@@ -124,17 +127,13 @@ export default function TaskDescription() {
             setToggle(false)
 
             if (response) {
-              swal
-                .fire({
-                  title: "Succesfully",
-                  text: "Succesfully submitted task",
-                  icon: "success",
-                })
-                .then((response) => {
-                  if (response.isConfirmed) {
-                    window.location.href("/admin/studentTask")
-                  }
-                })
+              swal.fire({
+                title: "Succesfully",
+                text: "Succesfully submitted task",
+                icon: "success",
+              })
+
+              window.location.href("/admin/studentTask")
             }
           }
         })
@@ -238,11 +237,9 @@ export default function TaskDescription() {
                 bgcolor: lightBlue[900],
               }}
             >
-              {initialState.coordinatorEmail.charAt(0)}
+              {initialState.email?.charAt(0)}
             </Avatar>
-            <span className="font-bold text-sm">
-              {initialState.coordinatorEmail}
-            </span>
+            <span className="font-bold text-sm">{initialState.email}</span>
           </div>
           <div
             className="mt-6 px-6"

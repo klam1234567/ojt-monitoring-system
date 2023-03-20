@@ -3,27 +3,28 @@ import { Layout, Table } from "components"
 import {
   Months,
   filterByStudentUUID,
-  filteredByCompany,
+  filteredBySection,
 } from "Utils/ReusableSyntax"
 import { File } from "react-feather"
 import { useNavigate } from "react-router-dom"
 
 //context api
 import { TaskContext } from "context/TasksProvider"
-import { EnrollmentContext } from "context/EnrollmentProvider"
+// import { EnrollmentContext } from "context/EnrollmentProvider"
+import { StudentContext } from "context/StudentProvider"
 import { AuthContext } from "context/auth"
 
 export default function StudentTasks() {
   // const submittedDocument = JSON.parse(localStorage.getItem("documents"))
   const { fetchTasks } = useContext(TaskContext)
-  const { fetchEnrollment } = useContext(EnrollmentContext)
+  const { fetchStudent } = useContext(StudentContext)
   const context = useContext(AuthContext)
 
   const navigate = useNavigate()
 
-  const filteredByUID = filterByStudentUUID(fetchEnrollment, context.uid)
+  const filteredByUID = filterByStudentUUID(fetchStudent, context.uid)
 
-  const studentTasks = filteredByCompany(fetchTasks, filteredByUID[0]?.orgsName)
+  const studentTasks = filteredBySection(fetchTasks, filteredByUID[0]?.section)
 
   // const filteredStudentTasks = newSetOfStudentTasks(
   //   studentTasks,

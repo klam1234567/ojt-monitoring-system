@@ -18,7 +18,10 @@ export default function UpdateStudentGrades() {
   const submittedDocumentsId = paramsId[3]
 
   const filteredData = useMemo(() => {
-    return filteredByIDSubmittedTask(fetchSubCollection, submittedDocumentsId)
+    return (
+      fetchSubCollection.length > 0 &&
+      filteredByIDSubmittedTask(fetchSubCollection, submittedDocumentsId)
+    )
   }, [submittedDocumentsId, fetchSubCollection])
 
   const [score, setScore] = useState(filteredData[0]?.documentDetails?.score)
@@ -108,7 +111,7 @@ export default function UpdateStudentGrades() {
               className="w-full"
               id="schoolID"
               name="schoolID"
-              value={filteredData[0]?.studentDetails[0]?.schoolID}
+              value={filteredData[0]?.userDetails?.schoolID}
             />
           </div>
           <div className="mt-3">
@@ -122,7 +125,7 @@ export default function UpdateStudentGrades() {
               disabled={true}
               className="w-full"
               name="fullName"
-              value={filteredData[0]?.studentDetails[0]?.fullName}
+              value={filteredData[0]?.userDetails?.fullName}
             />
           </div>
           <div className="mt-3">
@@ -134,7 +137,7 @@ export default function UpdateStudentGrades() {
               disabled={true}
               className="w-full"
               name="email"
-              value={filteredData[0]?.studentDetails[0]?.email}
+              value={filteredData[0]?.userDetails?.email}
             />
           </div>
           <div className="mt-3">
@@ -146,7 +149,7 @@ export default function UpdateStudentGrades() {
               disabled={true}
               className="w-full"
               name="course"
-              value={filteredData[0]?.studentDetails[0]?.course}
+              value={filteredData[0]?.userDetails?.course}
             />
           </div>
           <div className="mt-3">
@@ -160,7 +163,7 @@ export default function UpdateStudentGrades() {
               disabled={true}
               className="w-full"
               name="section"
-              value={filteredData[0]?.studentDetails[0]?.section}
+              value={filteredData[0]?.userDetails?.section}
             />
           </div>
           <div className="mt-3">

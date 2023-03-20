@@ -71,13 +71,13 @@ export const filteredByStudentScore = (itemArray, uid) => {
 
 export const filteredByIDSubmittedTask = (itemArray, paramsId) => {
   return itemArray.filter((type) => {
-    return type.id === paramsId
+    return type?.id === paramsId
   })
 }
 
-export const filteredByCompany = (itemArray, studentSection) => {
+export const filteredBySection = (itemArray, studentSection) => {
   return itemArray.filter((type) => {
-    return type.company === studentSection
+    return type.section === studentSection
   })
 }
 
@@ -89,19 +89,19 @@ export const filterByStudentName = (itemArray, studentName) => {
 
 export const filterByStudentUUID = (itemArray, uid) => {
   return itemArray.filter((type) => {
-    return type.studentDetails[0]?.authId === uid
+    return type.id === uid
   })
 }
 
 export const filterByStudentUUIDs = (itemArray, uid) => {
   return itemArray.filter((type) => {
-    return type.studentDetails[0]?.authId === uid
+    return type.userDetails.authId === uid
   })
 }
 
 export const filteredByEmail = (itemArray, email) => {
   return itemArray.filter((type) => {
-    return type.coordEmail === email
+    return type.ownerEmail === email
   })
 }
 

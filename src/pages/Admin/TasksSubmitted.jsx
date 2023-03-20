@@ -18,10 +18,12 @@ export default function TasksSubmitted() {
     fetchSubCollection.length > 0 &&
     filteredByEmail(fetchSubCollection, context.email)
 
+  console.log(fetchSubCollection)
+
   //column example
   const columns = [
     {
-      field: "id",
+      field: "documentid",
       headerName: "User Identification",
       width: 200,
       renderCell: (data) => {
@@ -32,12 +34,18 @@ export default function TasksSubmitted() {
       field: "studName",
       headerName: "Student Name",
       width: 200,
+      renderCell: (params) => {
+        return <span>{params?.row?.userDetails?.fullName}</span>
+      },
     },
     {
-      field: "orgsName",
-      headerName: "Organization Name",
+      field: "section",
+      headerName: "Section Name",
       type: "string",
       width: 150,
+      renderCell: (params) => {
+        return <span>{params?.row?.userDetails?.section}</span>
+      },
     },
     {
       field: "taskName",
@@ -108,8 +116,8 @@ export default function TasksSubmitted() {
 
   return (
     <Layout
-      title="Tasks Submitted"
-      description="all the tasks submitted by the students"
+      title="Submitted Accomplishment"
+      description="all the accomplishment submitted by the students"
     >
       <Table data={filteredTasks} columns={columns} loading={false} />
     </Layout>
