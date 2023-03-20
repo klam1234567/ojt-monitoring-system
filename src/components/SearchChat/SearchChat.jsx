@@ -11,6 +11,7 @@ import {
   getDoc,
 } from "firebase/firestore"
 import { db } from "config/firebase"
+import swal from "sweetalert2"
 
 //context
 import { AuthContext } from "context/auth"
@@ -27,11 +28,24 @@ export default function SearchChat() {
 
     try {
       const querySnapshot = await getDocs(q)
-      querySnapshot.forEach((doc) => {
-        setUser(doc.data())
-      })
+      querySnapshot
+        .forEach((doc) => {
+          setUser(doc.data())
+        })
+        .catch(() => {
+          swal.fire({
+            title: "Warning!",
+            text: "user not found",
+            icon: "warning",
+          })
+        })
     } catch (err) {
       setError(true)
+      swal.fire({
+        title: "Warning!",
+        text: "user not found",
+        icon: "warning",
+      })
     }
   }
 
@@ -83,6 +97,8 @@ export default function SearchChat() {
     setUser(null)
     setEmail("")
   }
+
+  console.log(error)
 
   return (
     <div className="search">

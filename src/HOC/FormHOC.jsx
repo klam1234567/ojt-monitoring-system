@@ -216,7 +216,7 @@ const FormHOC = (propState) => (entity) => (WrappedComponent) => {
       //saveData(data)
     }
 
-    const handleFileOnChange = async (files) => {
+    const handleFileOnChange = async (files, email, uuid) => {
       try {
         if (files.length) {
           let inputFile = files[0]
@@ -257,7 +257,11 @@ const FormHOC = (propState) => (entity) => (WrappedComponent) => {
 
             parsedData.forEach(async (el) => {
               if (el.schoolYear !== "") {
-                const config = { ...el }
+                const config = {
+                  ...el,
+                  coordinatorEmail: email,
+                  coordinatorUUID: uuid,
+                }
 
                 if (response.isConfirmed) {
                   config &&
