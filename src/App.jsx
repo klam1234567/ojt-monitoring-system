@@ -24,6 +24,7 @@ import {
   ViewStudentSubmission,
   UpdateEnrollmentModule,
   TaskDescription,
+  Message,
 } from "./pages"
 
 function App() {
@@ -33,6 +34,9 @@ function App() {
     <Router>
       <Routes>
         <Route exact path="/" element={<Login />} />
+        <Route exact path={`${linkType}/message`} element={<PrivateRoute />}>
+          <Route exact path={`${linkType}/message`} element={<Message />} />
+        </Route>
 
         {/* Administrator Routes */}
         <Route exact path={linkType} element={<PrivateRoute />}>

@@ -1,7 +1,12 @@
-import React, { Fragment, useState, useContext } from "react"
-import { Plus } from "react-feather"
-import { Layout, Table, AddStudentsModal } from "components"
+import React, { Fragment, useState, useContext, useEffect } from "react"
+import { Plus, Download } from "react-feather"
+import { MenuItem } from "@mui/material"
+import { Layout, Table, AddStudentsModal, SelectMenu } from "components"
+import { sectionList } from "Utils/ReusableSyntax"
 import { useNavigate } from "react-router-dom"
+
+//download csv
+import { CSVLink } from "react-csv"
 
 // context
 import { StudentContext } from "context/StudentProvider"
@@ -27,12 +32,64 @@ const entity = {
   actionType: "REGISTER",
 }
 
+const headers = [
+  {
+    label: "id",
+    key: "id",
+  },
+  {
+    label: "schoolID",
+    key: "schoolID",
+  },
+  {
+    label: "fullName",
+    key: "fullName",
+  },
+  {
+    label: "course",
+    key: "course",
+  },
+  {
+    label: "contact",
+    key: "contact",
+  },
+  {
+    label: "section",
+    key: "section",
+  },
+  {
+    label: "email",
+    key: "email",
+  },
+  {
+    label: "address",
+    key: "address",
+  },
+]
+
 function Students(props) {
   const [isToggle, setToggle] = useState(false)
+  const [section, setSelect] = useState("")
+  const [data, setData] = useState([])
 
   const navigate = useNavigate()
 
   const { fetchStudent } = useContext(StudentContext)
+
+  const filter = () => {
+    const filtered = fetchStudent.filter((el) => {
+      return el.section === section
+    })
+
+    setData(filtered)
+  }
+
+  useEffect(filter, [section, fetchStudent])
+
+  const resetValue = () => {
+    setData([])
+    setSelect("")
+  }
 
   const toggleModal = () => {
     setToggle((isToggle) => !isToggle)
@@ -181,22 +238,56 @@ function Students(props) {
     />
   )
 
-  // // loading spinner before the data comes out
-  // const loading = fetchCoordinator.length <= 0;
-
   return (
     <Fragment>
       {addModal}
       <Layout title="Students" description="a list of student data">
-        <div className="flex justify-end my-4">
+        <div className="flex justify-end gap-3 my-4">
+          <SelectMenu
+            name="section"
+            value={section}
+            onChange={(event) => setSelect(event.target.value)}
+            required
+            title="Section"
+          >
+            <div className="flex justify-end ">
+              <button
+                type="button"
+                onClick={resetValue}
+                className="bg-slate-900 hover:bg-slate-800 p-2 px-4 m-4 text-white rounded-sm"
+              >
+                Reset value
+              </button>
+            </div>
+            {sectionList.map((type, index) => (
+              <MenuItem key={index} value={type}>
+                {type}
+              </MenuItem>
+            ))}
+          </SelectMenu>
+          <CSVLink
+            style={{ textDecoration: "none" }}
+            data={data.length > 0 ? data : fetchStudent}
+            headers={headers}
+            filename="download.csv"
+          >
+            <button className="w-48 h-full bg-slate-900 rounded-lg flex items-center justify-center py-1.5 px-3 gap-2 text-white hover:bg-slate-600 transition-all">
+              <Download size="18" />
+              Download CSV
+            </button>
+          </CSVLink>
           <button
             onClick={toggleModal}
-            className="bg-slate-900 rounded-lg flex items-center justify-center py-1.5 px-3 gap-2 text-white hover:bg-slate-600 transition-all"
+            className="w-48  bg-slate-900 rounded-lg flex items-center justify-center py-1.5 px-3 gap-2 text-white hover:bg-slate-600 transition-all"
           >
-            <Plus size="18" />
+            <Plus size="18" /> add student
           </button>
         </div>
-        <Table data={fetchStudent} columns={columns} loading={false} />
+        <Table
+          data={data.length > 0 ? data : fetchStudent}
+          columns={columns}
+          loading={false}
+        />
       </Layout>
     </Fragment>
   )

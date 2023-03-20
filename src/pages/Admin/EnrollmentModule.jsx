@@ -4,11 +4,13 @@ import React, {
   useEffect,
   useCallback,
   useMemo,
+  useRef,
 } from "react"
 import { MenuItem } from "@mui/material"
 import { TabPanel } from "@mui/lab"
 import { useNavigate } from "react-router-dom"
 import { Layout, Tabs, Textbox, SelectMenu, Table } from "components"
+import { FilePlus } from "react-feather"
 
 // context api
 import { StudentContext } from "context/StudentProvider"
@@ -42,6 +44,8 @@ function EnrollmentModule(props) {
   // const { fetchOrganization } = useContext(OrganizationContext)
   const { fetchEnrollment } = useContext(EnrollmentContext)
 
+  const inputRef = useRef(null)
+
   const navigate = useNavigate()
 
   const studentName = fetchStudent.map((type) => type.fullName)
@@ -72,6 +76,12 @@ function EnrollmentModule(props) {
   const onChange = (event) => {
     const { name, value } = event.target
     props.onChange(name, value)
+  }
+
+  const onChangeFile = (event) => {
+    const { files } = event.target
+
+    props.handleFileOnChange(files)
   }
 
   const onSubmit = (event) => {
@@ -181,6 +191,33 @@ function EnrollmentModule(props) {
     <Layout title="Enrollment Module" description="a list of enrollment module">
       <Tabs tabName={tabName}>
         <TabPanel value="1">
+          <div className="flex justify-end mb-4">
+            <label
+              htmlFor="dropzone-file"
+              className="cursor-pointer cursor-pointer bg-slate-900 hover:bg-slate-600 transition-all text-white rounded-lg px-4 pb-2"
+            >
+              <div className="flex items-center justify-center gap-2 pt-2">
+                <FilePlus size="15" />
+                <span>import csv</span>
+              </div>
+              <input
+                accept=".csv"
+                ref={inputRef}
+                id="dropzone-file"
+                type="file"
+                className="hidden"
+                onChange={(event) => onChangeFile(event)}
+                required
+              />
+            </label>
+          </div>
+
+          {/* <button
+            className="cursor-pointer cursor-pointer bg-slate-900 hover:bg-slate-600 transition-all text-white py-2 px-4 rounded-lg border-2"
+            onClick={props?.parseCsv}
+          >
+            parse data
+          </button> */}
           <Table
             data={fetchEnrollment}
             columns={columns}

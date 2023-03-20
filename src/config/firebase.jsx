@@ -20,6 +20,7 @@ import {
   getDocs,
   getDoc,
   FieldValue,
+  where,
 } from "firebase/firestore"
 import "firebase/compat/storage"
 
@@ -226,4 +227,5 @@ export {
   signOut,
   FieldValue,
   deleteWithSubCollection,
+  where,
 }

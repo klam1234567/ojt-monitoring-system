@@ -1,6 +1,7 @@
 import React from "react"
 import ReactDOM from "react-dom/client"
 import "styles/index.css"
+import "styles/sass.scss"
 import App from "./App"
 import "react-quill/dist/quill.snow.css"
 
@@ -12,26 +13,29 @@ import { EnrollmentProvider } from "context/EnrollmentProvider"
 import { RegisteredStudentProvider } from "context/RegisteredStudentProvider"
 import { TaskProvider } from "context/TasksProvider"
 import { AuthProvider } from "context/auth"
+import { ChatContextProvider } from "context/ChatContext"
 
 const root = ReactDOM.createRoot(document.getElementById("root"))
 root.render(
   <React.StrictMode>
     <AuthProvider>
-      <TaskProvider>
-        <RegisteredStudentProvider>
-          <EnrollmentProvider>
-            <UserProvider>
-              <OrganizationProvider>
-                <StudentProvider>
-                  <CoordinatorProvider>
-                    <App />
-                  </CoordinatorProvider>
-                </StudentProvider>
-              </OrganizationProvider>
-            </UserProvider>
-          </EnrollmentProvider>
-        </RegisteredStudentProvider>
-      </TaskProvider>
+      <ChatContextProvider>
+        <TaskProvider>
+          <RegisteredStudentProvider>
+            <EnrollmentProvider>
+              <UserProvider>
+                <OrganizationProvider>
+                  <StudentProvider>
+                    <CoordinatorProvider>
+                      <App />
+                    </CoordinatorProvider>
+                  </StudentProvider>
+                </OrganizationProvider>
+              </UserProvider>
+            </EnrollmentProvider>
+          </RegisteredStudentProvider>
+        </TaskProvider>
+      </ChatContextProvider>
     </AuthProvider>
   </React.StrictMode>
 )

@@ -15,3 +15,12 @@ export { default as AddOrganization } from "./Modal/AddOrganization"
 
 export { default as Layout } from "./Layout/Layout"
 export { default as PrivateRoute } from "./Layout/PrivateRoute"
+
+//Chat
+export { default as ChatSidebar } from "./ChatSidebar/ChatSidebar"
+export { default as Chat } from "./Chat/Chat"
+export { default as Message } from "./Message/Message"
+export { default as Messages } from "./Message/Messages"
+export { default as SearchChat } from "./SearchChat/SearchChat"
+export { default as Chats } from "./Chats/Chats"
+export { default as ChatInput } from "./ChatInput/ChatInput"
