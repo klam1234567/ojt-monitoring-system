@@ -16,7 +16,7 @@ export default function Barchart({ student, coordinator, organization }) {
       value: student,
     },
     {
-      name: "Supervisor",
+      name: "Company Coordinator",
       value: coordinator,
     },
     {
