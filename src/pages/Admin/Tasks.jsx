@@ -5,7 +5,7 @@ import { Layout, Tabs, Textbox, Table, SelectMenu } from "components"
 import { generateTaskCode, Months } from "Utils/ReusableSyntax"
 import { useNavigate } from "react-router-dom"
 import { sectionList } from "Utils/ReusableSyntax"
-// import { filterByCoordinatorUUID, filterByUUID } from "Utils/ReusableSyntax"
+import { filterByOwnerIdTask } from "Utils/ReusableSyntax"
 import ReactQuill from "react-quill"
 
 //context api
@@ -37,6 +37,11 @@ function Tasks(props) {
   const context = useContext(AuthContext)
   // const { fetchCoordinator } = useContext(CoordinatorContext)
   const { fetchTasks } = useContext(TaskContext)
+  const filteredTask = filterByOwnerIdTask(fetchTasks, context.uid)
+
+  console.log(fetchTasks)
+
+  const isCurrentLogged = context.email === "demo@admin.com"
 
   // const filteredTasks = filterByUUID(fetchTasks, context.uid)
 
@@ -57,6 +62,7 @@ function Tasks(props) {
     event.preventDefault()
     try {
       const { taskCode, taskName, deadline, section } = props?.tasks
+      const isCheckStatus = isCurrentLogged ? "admin" : "coordinator"
 
       const config = {
         email: context.email,
@@ -64,6 +70,8 @@ function Tasks(props) {
         taskCode,
         taskName,
         section,
+        ownerStatus: isCheckStatus,
+        taskStatus: isCurrentLogged ? "WAR" : "TASK",
         // company: filteredSupervisor[0]?.company,
         deadline,
         description: convertedText,
@@ -80,22 +88,25 @@ function Tasks(props) {
 
   //column example
   const columns = [
+    // {
+    //   field: "id",
+    //   headerName: "User Identification",
+    //   width: 200,
+    //   renderCell: (data) => {
+    //     return <span className="text-blue-500">{data.id}</span>
+    //   },
+    // },
     {
-      field: "id",
-      headerName: "User Identification",
+      field: "taskCode",
+      headerName: `${isCurrentLogged ? "Accomplishment Code" : "Task Code"}`,
       width: 200,
       renderCell: (data) => {
-        return <span className="text-blue-500">{data.id}</span>
+        return <span className="text-blue-500">{data.row?.taskCode}</span>
       },
     },
     {
-      field: "taskCode",
-      headerName: "Accomplishment Code",
-      width: 200,
-    },
-    {
       field: "taskName",
-      headerName: "Accomplishment Name",
+      headerName: `${isCurrentLogged ? "Accomplishment Name" : "Task Name"}`,
       type: "string",
       width: 150,
     },
@@ -105,11 +116,30 @@ function Tasks(props) {
       type: "string",
       width: 150,
     },
-    // {
-    //   field: "description",
-    //   headerName: "Description",
-    //   width: 200,
-    // },
+    {
+      field: "taskStatus",
+      headerName: "Type",
+      width: 200,
+      renderCell: (data) => {
+        return (
+          <span className="text-slate-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-slate-200 dark:text-slate-800 mt-2">
+            {data.row?.taskStatus}
+          </span>
+        )
+      },
+    },
+    {
+      field: "ownerStatus",
+      headerName: "Status",
+      width: 200,
+      renderCell: (data) => {
+        return (
+          <span className="text-slate-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-slate-200 dark:text-slate-800 mt-2">
+            {data.row?.ownerStatus}
+          </span>
+        )
+      },
+    },
     {
       field: "deadline",
       headerName: "Deadline",
@@ -180,7 +210,9 @@ function Tasks(props) {
 
   const add_new_trainee = (
     <Fragment>
-      <h1 className="font-bold text-2xl mb-4">Add new Accomplishment</h1>
+      <h1 className="font-bold text-2xl mb-4">
+        {isCurrentLogged ? "Add new Accomplishment" : "Add New Task"}
+      </h1>
       <form onSubmit={(event) => onSubmit(event)}>
         <div className="flex gap-4 my-4">
           <Textbox
@@ -190,7 +222,7 @@ function Tasks(props) {
             disabled={true}
             value={props.tasks?.taskCode}
             onChange={(event) => onChange(event)}
-            label="Accomplishment Code"
+            label={isCurrentLogged ? "Accomplishment Code" : "Task Code"}
           />
           <Textbox
             type="text"
@@ -198,7 +230,7 @@ function Tasks(props) {
             name="taskName"
             value={props.tasks?.taskName}
             onChange={(event) => onChange(event)}
-            label="Accomplishment Name"
+            label={isCurrentLogged ? "Accomplishment Name" : "Task Name"}
           />
         </div>
         <div className="flex gap-4 my-4">
@@ -236,7 +268,11 @@ function Tasks(props) {
               theme="snow"
               value={convertedText}
               onChange={setConvertedText}
-              placeholder="Accomplishment description"
+              placeholder={
+                isCurrentLogged
+                  ? "Accomplishment description"
+                  : "Task description"
+              }
               style={{
                 border: 1,
                 borderColor: "#d3c4c4",
@@ -277,16 +313,17 @@ function Tasks(props) {
     </Fragment>
   )
 
-  const tabName = ["Accomplishment List", "Add New Accomplishment"]
+  const adminTabName = ["Accomplishment List", "Add New Accomplishment"]
+  const coordinatorTabName = ["Task Lists", "Add New Task"]
 
   return (
     <Layout
       title="Accomplishment"
       description="a list of accomplishment assigned by coordinator"
     >
-      <Tabs tabName={tabName}>
+      <Tabs tabName={isCurrentLogged ? adminTabName : coordinatorTabName}>
         <TabPanel value="1">
-          <Table data={fetchTasks} columns={columns} loading={false} />
+          <Table data={filteredTask} columns={columns} loading={false} />
         </TabPanel>
         <TabPanel value="2">{add_new_trainee}</TabPanel>
       </Tabs>

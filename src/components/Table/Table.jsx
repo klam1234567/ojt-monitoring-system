@@ -18,7 +18,12 @@ function CustomToolbar() {
   )
 }
 
-export default function Table({ data, columns, loading }) {
+export default function Table({
+  columnVisibilityModel,
+  data,
+  columns,
+  loading,
+}) {
   return (
     <Box sx={{ height: 400, width: "100%" }}>
       <DataGrid
@@ -27,6 +32,7 @@ export default function Table({ data, columns, loading }) {
         pageSize={5}
         rowsPerPageOptions={[5]}
         // checkboxSelection
+        columnVisibilityModel={columnVisibilityModel}
         disableSelectionOnClick
         experimentalFeatures={{ newEditingApi: true }}
         loading={loading}

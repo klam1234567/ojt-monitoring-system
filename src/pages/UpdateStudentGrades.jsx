@@ -1,8 +1,9 @@
 import React, { useContext, useState, useMemo } from "react"
+import { ChevronLeft } from "react-feather"
 import { Layout } from "components"
-import { useLocation } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 import { filteredByIDSubmittedTask } from "Utils/ReusableSyntax"
-import { Textbox, Back } from "components"
+import { Textbox } from "components"
 import { app } from "config/firebase"
 import swal from "sweetalert2"
 import ReactQuill from "react-quill"
@@ -12,7 +13,9 @@ import { TaskContext } from "context/TasksProvider"
 
 export default function UpdateStudentGrades() {
   const { fetchSubCollection } = useContext(TaskContext)
+
   const params = useLocation()
+  const navigate = useNavigate()
   const pathname = params.pathname
   const paramsId = pathname.split("/")
   const submittedDocumentsId = paramsId[3]
@@ -79,7 +82,13 @@ export default function UpdateStudentGrades() {
       title="Update student grade"
       description="coordinator can upgrade student grade"
     >
-      <Back redirect="/admin/taskSubmitted" />
+      <div
+        className="flex items-center gap-2 mb-4 cursor-pointer"
+        onClick={() => navigate(-1)}
+      >
+        <ChevronLeft />
+        <span className="text-md font-bold">Back</span>
+      </div>
       <div className="flex gap-3">
         <div className="flex-1">
           <object
@@ -181,16 +190,22 @@ export default function UpdateStudentGrades() {
             />
           </div>
           <div className="mt-3">
-            <aside className="mb-2">
-              <label className="font-bold text-sm text-slate-500">Score</label>
-            </aside>
-            <Textbox
-              type="number"
-              className="w-full"
-              name="score"
-              onChange={(event) => setScore(event.target.value)}
-              value={score}
-            />
+            {filteredData[0]?.taskStatus === "WAR" ? null : (
+              <>
+                <aside className="mb-2">
+                  <label className="font-bold text-sm text-slate-500">
+                    Score
+                  </label>
+                </aside>
+                <Textbox
+                  type="number"
+                  className="w-full"
+                  name="score"
+                  onChange={(event) => setScore(event.target.value)}
+                  value={score}
+                />
+              </>
+            )}
           </div>
           <div className="mt-3">
             <aside className="mb-2">

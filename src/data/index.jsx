@@ -1,5 +1,5 @@
 import React from "react"
-import { Home, User, Users, Book, FileText, Mail } from "react-feather"
+import { Home, User, Users, Book, FileText, Mail, Archive } from "react-feather"
 
 const iconSize = 18
 
@@ -34,20 +34,20 @@ const admin = [
     icon: <Book size={iconSize} />,
     path: "/admin/taskSubmitted",
   },
-  // {
-  //   id: 4,
-  //   title: "Enrollment Module",
-  //   icon: <Book size={iconSize} />,
-  //   path: "/admin/enrollmentModule",
-  // },
   {
     id: 6,
+    title: "Student Submitted Task",
+    icon: <Archive size={iconSize} />,
+    path: "/admin/view-submission",
+  },
+  {
+    id: 7,
     title: "Organization",
     icon: <FileText size={iconSize} />,
     path: "/admin/organization",
   },
   {
-    id: 7,
+    id: 8,
     title: "Message",
     icon: <Mail size={iconSize} />,
     path: "/admin/message",
@@ -67,9 +67,20 @@ const coordinator = [
     icon: <Users size={iconSize} />,
     path: "/admin/masterList",
   },
-
   {
     id: 3,
+    title: "Tasks",
+    icon: <FileText size={iconSize} />,
+    path: "/admin/tasks",
+  },
+  {
+    id: 4,
+    title: "Submitted Tasks",
+    icon: <Book size={iconSize} />,
+    path: "/admin/taskSubmitted",
+  },
+  {
+    id: 5,
     title: "Message",
     icon: <Mail size={iconSize} />,
     path: "/admin/message",

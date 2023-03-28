@@ -23,7 +23,9 @@ export default function ViewStudentSubmission() {
     submittedDocumentsId
   )
 
-  const supervisor = filteredData[0]?.coordEmail
+  console.log(filteredData)
+
+  const supervisor = filteredData[0]?.ownerEmail
   const score = filteredData[0]?.documentDetails?.score
   const comments = filteredData[0]?.documentDetails?.comments
 
@@ -49,15 +51,17 @@ export default function ViewStudentSubmission() {
           </object>
         </div>
         <form className="flex-1 leading-5">
-          {score !== 0 ? (
+          {comments ? (
             <Fragment>
               <aside className="shadow-lg border-2 border-slate-200 rounded-lg background-white mx-8 p-8">
-                <div className="flex items-center justify-between transition-all text-center  text-white">
-                  <h1 className="font-bold text-2xl text-black">Feedback</h1>
-                  <span className="bg-blue-500 rounded-sm p-2 text-sm">
-                    {score}/100
-                  </span>
-                </div>
+                {score !== 0 && (
+                  <div className="flex items-center justify-between transition-all text-center  text-white">
+                    <h1 className="font-bold text-2xl text-black">Feedback</h1>
+                    <span className="bg-blue-500 rounded-sm p-2 text-sm">
+                      {score}/100
+                    </span>
+                  </div>
+                )}
                 <div className="flex items-center gap-2 mt-4">
                   <Avatar
                     className="bg-slate-900"

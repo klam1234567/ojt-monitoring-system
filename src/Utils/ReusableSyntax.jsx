@@ -42,6 +42,12 @@ export const objectAssign = (ObjectArray, obj) => {
   })
 }
 
+export const filterByOwnerIdTask = (array, id) => {
+  return array.filter((el) => {
+    return el.ownerUUID === id
+  })
+}
+
 export const coordinatorName = (fetchCoordinator, coordEmail) => {
   return fetchCoordinator.filter((type) => {
     return type.coordEmail === coordEmail
@@ -61,6 +67,12 @@ export const generateTaskCode = () => {
   )}`
 
   return newTaskCode
+}
+
+export const filteredSubmission = (itemArray) => {
+  return itemArray.filter((obj) => {
+    return obj.taskStatus === "TASK" && obj.ownerEmail !== "demo@admin.com"
+  })
 }
 
 export const filteredByStudentScore = (itemArray, uid) => {

@@ -17,6 +17,9 @@ import { TaskContext } from "context/TasksProvider"
 import { RegisteredStudentContext } from "context/RegisteredStudentProvider"
 import { AuthContext } from "context/auth"
 
+function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1)
+}
 export default function AdminDashboard() {
   const { fetchStudent } = useContext(StudentContext)
   const { fetchCoordinator } = useContext(CoordinatorContext)
@@ -194,7 +197,7 @@ export default function AdminDashboard() {
 
   return (
     <Layout
-      title="Dashboard"
+      title={`${capitalizeFirstLetter(info.status)} Dashboard`}
       description="this section you will see the summary of every data and barchart"
     >
       {info.status === "admin" && admin}

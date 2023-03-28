@@ -1,11 +1,4 @@
-import {
-  useContext,
-  useEffect,
-  Fragment,
-  useState,
-  useRef,
-  useMemo,
-} from "react"
+import { useContext, useEffect, Fragment, useState, useRef } from "react"
 import { useLocation } from "react-router-dom"
 import { Layout, PageModal, Back } from "components"
 import { ACTIONS } from "types"
@@ -33,6 +26,8 @@ const initialState = {
   taskName: "",
   deadline: "",
   description: "",
+  ownerStatus: "",
+  taskStatus: "",
   email: "",
 }
 
@@ -53,15 +48,15 @@ export default function TaskDescription() {
 
   fetchOneTask && objectAssign(fetchOneTask, initialState)
 
-  console.log(initialState)
-
   const filteredDocuments =
     fetchSubCollection.length > 0 &&
     filterByStudentUUIDs(fetchSubCollection, context.uid)
 
-  const isCheckSubmit = useMemo(() => {
-    return filteredDocuments[0]?.documentDetails.status === "submitted"
-  }, [filteredDocuments])
+  // const isCheckSubmit = useMemo(() => {
+  //   return filteredDocuments[0]?.documentDetails.status === "submitted"
+  // }, [filteredDocuments])
+
+  console.log(filteredDocuments)
 
   const onChange = (event) => {
     const { files } = event.target
@@ -81,6 +76,22 @@ export default function TaskDescription() {
   const onSubmit = async (event) => {
     event.preventDefault()
     try {
+      filteredDocuments.forEach((el) => {
+        if (el.documentid === id && el.userDetails.email === context.email) {
+          if (el.documentDetails.status === "submitted") {
+            swal.fire({
+              title: "Warning!!",
+              text: "you already submitted, you cant submit twice",
+              icon: "warning",
+            })
+
+            setToggle(false)
+
+            throw new Error("you already submitted, you cant submit twice")
+          }
+        }
+      })
+
       if (file === null) {
         swal.fire({
           title: "Warning!!",
@@ -111,6 +122,8 @@ export default function TaskDescription() {
                 documentid: id,
                 ownerEmail: initialState.email,
                 userDetails: userDetails?.studentInfo[0],
+                ownerStatus: initialState.ownerStatus,
+                taskStatus: initialState.taskStatus,
                 documentDetails: {
                   taskName: initialState.taskName,
                   fileUrl,
@@ -127,13 +140,17 @@ export default function TaskDescription() {
             setToggle(false)
 
             if (response) {
-              swal.fire({
-                title: "Succesfully",
-                text: "Succesfully submitted task",
-                icon: "success",
-              })
-
-              window.location.href("/admin/studentTask")
+              swal
+                .fire({
+                  title: "Succesfully",
+                  text: "Succesfully submitted task",
+                  icon: "success",
+                })
+                .then((result) => {
+                  if (result.isConfirmed) {
+                    window.location.href = "/admin/studentTasks"
+                  }
+                })
             }
           }
         })
@@ -147,16 +164,6 @@ export default function TaskDescription() {
 
   useEffect(() => {
     id && dispatch({ type: ACTIONS.GETONE, payload: { id } })
-
-    // window.onbeforeunload = function () {
-    //   window.setTimeout(function () {
-    //     window.location.href = "/admin/studentTasks"
-    //   }, 0)
-    // }
-
-    // return () => {
-    //   window.onbeforeunload = null
-    // }
   }, [id, dispatch])
 
   const complyModal = (
@@ -248,19 +255,19 @@ export default function TaskDescription() {
 
           <div className="space-x-4 flex justify-end mt-4">
             <button
-              disabled={isCheckSubmit}
+              // disabled={isCheckSubmit}
               onClick={setToggle}
-              className={`${
-                isCheckSubmit ? "bg-slate-500" : " bg-slate-900"
-              } cursor-pointer cursor-pointer hover:bg-slate-600 transition-all text-white py-2 px-4 rounded-lg border-2`}
+              className={`bg-slate-900 cursor-pointer cursor-pointer hover:bg-slate-600 transition-all text-white py-2 px-4 rounded-lg border-2`}
             >
-              {isCheckSubmit ? (
+              {/* {isCheckSubmit ? (
                 "already submitted"
               ) : (
-                <span className="flex items-center gap-2 ">
-                  <Edit2 size="15" /> upload document
-                </span>
-              )}
+               
+              )} */}
+
+              <span className="flex items-center gap-2 ">
+                <Edit2 size="15" /> upload document
+              </span>
             </button>
           </div>
         </aside>

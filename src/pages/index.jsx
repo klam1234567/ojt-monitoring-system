@@ -13,12 +13,12 @@ export { default as UpdateOrganization } from "./updateOrganization"
 export { default as UpdateEnrollmentModule } from "./UpdateEnrollmentModule"
 export { default as Tasks } from "./Admin/Tasks"
 export { default as TasksSubmitted } from "./Admin/TasksSubmitted"
+export { default as ViewSubmission } from "./Admin/ViewSubmission"
 
 // coordinator page
 export { default as MasterList } from "./Coordinator/MasterList"
 export { default as UpdateMasterList } from "./UpdateMasterList"
 export { default as ManageTasks } from "./UpdateTasks"
-export { default as ViewSubmission } from "./Coordinator/ViewSubmission"
 export { default as UpdateStudentGrade } from "./UpdateStudentGrades"
 
 // student page

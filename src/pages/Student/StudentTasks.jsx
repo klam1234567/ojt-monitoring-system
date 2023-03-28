@@ -33,18 +33,21 @@ export default function StudentTasks() {
 
   //column example
   const columns = [
-    {
-      field: "id",
-      headerName: "User Identification",
-      width: 200,
-      renderCell: (data) => {
-        return <span className="text-blue-500">{data.row?.id}</span>
-      },
-    },
+    // {
+    //   field: "id",
+    //   headerName: "User Identification",
+    //   width: 200,
+    //   renderCell: (data) => {
+    //     return <span className="text-blue-500">{data.row?.id}</span>
+    //   },
+    // },
     {
       field: "taskCode",
       headerName: "Task Code",
       width: 200,
+      renderCell: (data) => {
+        return <span className="text-blue-500">{data.row?.taskCode}</span>
+      },
     },
     {
       field: "taskName",
@@ -52,11 +55,30 @@ export default function StudentTasks() {
       type: "string",
       width: 150,
     },
-    // {
-    //   field: "description",
-    //   headerName: "Description",
-    //   width: 200,
-    // },
+    {
+      field: "taskStatus",
+      headerName: "Type",
+      width: 200,
+      renderCell: (data) => {
+        return (
+          <span className="text-slate-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-slate-200 dark:text-slate-800 mt-2">
+            {data.row?.taskStatus}
+          </span>
+        )
+      },
+    },
+    {
+      field: "ownerStatus",
+      headerName: "Status",
+      width: 200,
+      renderCell: (data) => {
+        return (
+          <span className="text-slate-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-slate-200 dark:text-slate-800 mt-2">
+            {data.row?.ownerStatus}
+          </span>
+        )
+      },
+    },
     {
       field: "deadlineStatus",
       headerName: "Status",
