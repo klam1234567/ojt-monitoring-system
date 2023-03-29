@@ -4,6 +4,7 @@ import { MenuItem } from "@mui/material"
 import { Layout, Table, AddStudentsModal, SelectMenu } from "components"
 import { sectionList } from "Utils/ReusableSyntax"
 import { useNavigate } from "react-router-dom"
+import { saveDoc } from "config/firebase"
 
 //download csv
 import { CSVLink } from "react-csv"
@@ -33,6 +34,7 @@ const entity = {
   actionType: "REGISTER",
 }
 
+//csv headers
 const headers = [
   {
     label: "id",
@@ -49,6 +51,14 @@ const headers = [
   {
     label: "course",
     key: "course",
+  },
+  {
+    label: "company",
+    key: "company",
+  },
+  {
+    label: "coordinatorEmail",
+    key: "coordinatorEmail",
   },
   {
     label: "contact",
@@ -111,6 +121,7 @@ function Students(props) {
       fullName,
       course,
       company,
+      coordinatorEmail,
       contact,
       section,
       address,
@@ -125,6 +136,8 @@ function Students(props) {
           fullName,
           course,
           company,
+          coordinatorEmail,
+          email,
           contact,
           section,
           address,
@@ -136,8 +149,8 @@ function Students(props) {
         }
 
         await props.onAuth(email, password, config, userData)
+        config && saveDoc(config, "registeredStudentsInfo")
       }
-
       setToggle(false)
     } catch (error) {
       console.log(error)
@@ -170,6 +183,12 @@ function Students(props) {
     {
       field: "course",
       headerName: "Course",
+      type: "number",
+      width: 150,
+    },
+    {
+      field: "company",
+      headerName: "Company",
       type: "number",
       width: 150,
     },

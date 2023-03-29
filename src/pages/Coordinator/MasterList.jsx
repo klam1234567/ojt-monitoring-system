@@ -34,95 +34,18 @@ const entity = {
 }
 
 function MasterList(props) {
-  // const [
-  //   {
-  //     studName,
-  //     schoolID,
-  //     course,
-  //     contact,
-  //     section,
-  //     schoolYear,
-  //     organization,
-  //     email,
-  //     address,
-  //   },
-  //   setState,
-  // ] = useState(initialState)
-
-  //const { fetchEnrollment } = useContext(EnrollmentContext)
   const { fetchRegisteredStudent } = useContext(RegisteredStudentContext)
   const context = useContext(AuthContext)
 
   const inputRef = useRef(null)
 
-  const filteredData = filterByUUID(fetchRegisteredStudent, context.uid)
-  // const sectionList = fetchEnrollment.map((type) => type.section)
-  // const filteredSectionList = eliminateDuplicates(sectionList)
-
-  // const navigate = useNavigate()
-
-  // const fetchStudents = fetchEnrollment.filter(
-  //   (type) => type.coordEmail === context.email
-  // )
-
-  // const clearState = () => {
-  //   setState(initialState)
-  // }
-
-  // const onChange = (event) => {
-  //   const { name, value } = event.target
-
-  //   setState((prevState) => ({ ...prevState, [name]: value }))
-  // }
+  const filteredData = filterByUUID(fetchRegisteredStudent, context.email)
 
   const onChangeFile = (event) => {
     const { files } = event.target
 
     props.handleFileOnChange(files, context.email, context.uid)
   }
-
-  // const onSubmit = async (event) => {
-  //   event.preventDefault()
-  //   try {
-  //     const config = {
-  //       coordinatorEmail: context.email,
-  //       coordinatorUUID: context.uid,
-  //       studName,
-  //       schoolID,
-  //       course,
-  //       contact,
-  //       section,
-  //       schoolYear,
-  //       organization,
-  //       studentEmail: email,
-  //       address,
-  //     }
-
-  //     const response = await swal.fire({
-  //       title: "Opps!",
-  //       text: "would you like to save this file?",
-  //       icon: "question",
-  //       showCancelButton: true,
-  //     })
-
-  //     if (response.isConfirmed) {
-  //       config &&
-  //         saveDoc(config, "registeredStudentsInfo").then(() => {
-  //           swal.fire({
-  //             title: "Successfully Created",
-  //             text: "please click the okay button to continue",
-  //             icon: "success",
-  //           })
-  //         })
-
-  //       clearState()
-
-  //       return false
-  //     }
-  //   } catch (error) {
-  //     console.log(error)
-  //   }
-  // }
 
   //column example
   const columns = [

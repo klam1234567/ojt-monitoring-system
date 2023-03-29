@@ -6,6 +6,7 @@ import CircularProgress from "@mui/material/CircularProgress"
 
 //context
 import { OrganizationContext } from "context/OrganizationProvider"
+import { CoordinatorContext } from "context/CoordinatorProvider"
 
 export default function AddStudentsModal({
   isToggle,
@@ -20,6 +21,8 @@ export default function AddStudentsModal({
     schoolID,
     fullName,
     course,
+    company,
+    coordinatorEmail,
     contact,
     section,
     email,
@@ -28,6 +31,7 @@ export default function AddStudentsModal({
   } = config?.students
 
   const { fetchOrganization } = useContext(OrganizationContext)
+  const { fetchCoordinator } = useContext(CoordinatorContext)
 
   return (
     <PageModal open={isToggle} isClose={toggleModal}>
@@ -84,7 +88,7 @@ export default function AddStudentsModal({
               />
               <SelectMenu
                 name="company"
-                value={section}
+                value={company}
                 onChange={(event) => onChange(event)}
                 required
                 title="company"
@@ -115,6 +119,19 @@ export default function AddStudentsModal({
                 onChange={(event) => onChange(event)}
                 required
               />
+              <SelectMenu
+                name="coordinatorEmail"
+                value={coordinatorEmail}
+                onChange={(event) => onChange(event)}
+                required
+                title="Coordinator Email"
+              >
+                {fetchCoordinator.map((type, index) => (
+                  <MenuItem key={index} value={type.email}>
+                    {type.email}
+                  </MenuItem>
+                ))}
+              </SelectMenu>
               <Textbox
                 type="text"
                 className="w-full"

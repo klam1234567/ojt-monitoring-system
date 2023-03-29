@@ -121,9 +121,9 @@ export const filteredByEmail = (itemArray, email) => {
   })
 }
 
-export const filterByUUID = (itemArray, uid) => {
+export const filterByUUID = (itemArray, email) => {
   return itemArray.filter((type) => {
-    return type.coordinatorUUID === uid
+    return type.coordinatorEmail === email
   })
 }
 
