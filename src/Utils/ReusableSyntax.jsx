@@ -87,9 +87,13 @@ export const filteredByIDSubmittedTask = (itemArray, paramsId) => {
   })
 }
 
-export const filteredBySection = (itemArray, studentSection) => {
+export const filteredBySection = (itemArray, studentSection, company) => {
   return itemArray.filter((type) => {
-    return type.section === studentSection
+    if (type.company) {
+      return type.company === company
+    } else {
+      return type.section === studentSection
+    }
   })
 }
 

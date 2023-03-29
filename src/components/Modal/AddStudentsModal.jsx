@@ -1,8 +1,11 @@
-import React, { Fragment } from "react"
+import React, { Fragment, useContext } from "react"
 import { MenuItem } from "@mui/material"
 import { sectionList } from "Utils/ReusableSyntax"
 import { PageModal, Textbox, SelectMenu } from "components"
 import CircularProgress from "@mui/material/CircularProgress"
+
+//context
+import { OrganizationContext } from "context/OrganizationProvider"
 
 export default function AddStudentsModal({
   isToggle,
@@ -23,6 +26,8 @@ export default function AddStudentsModal({
     address,
     password,
   } = config?.students
+
+  const { fetchOrganization } = useContext(OrganizationContext)
 
   return (
     <PageModal open={isToggle} isClose={toggleModal}>
@@ -77,6 +82,19 @@ export default function AddStudentsModal({
                 onChange={(event) => onChange(event)}
                 required
               />
+              <SelectMenu
+                name="company"
+                value={section}
+                onChange={(event) => onChange(event)}
+                required
+                title="company"
+              >
+                {fetchOrganization.map((type, index) => (
+                  <MenuItem key={index} value={type.organizationName}>
+                    {type.organizationName}
+                  </MenuItem>
+                ))}
+              </SelectMenu>
               <Textbox
                 type="text"
                 className="w-full"

@@ -2,12 +2,14 @@ import { useState, useEffect, useContext } from "react"
 import { admin, coordinator, student } from "data"
 import { UserContext } from "context/UserProvider"
 import { StudentContext } from "context/StudentProvider"
+import { CoordinatorContext } from "context/CoordinatorProvider"
 // import { EnrollmentContext } from "context/EnrollmentProvider"
 // import { AuthContext } from "context/auth"
 
 export default function RolesHook() {
   const { userInformation } = useContext(UserContext)
   const { fetchStudent } = useContext(StudentContext)
+  const { fetchCoordinator } = useContext(CoordinatorContext)
   // const context = useContext(AuthContext)
 
   const [links, setLinks] = useState([])
@@ -27,9 +29,13 @@ export default function RolesHook() {
     const userInfo = userInformation?.filter((obj) => obj.email === email)
 
     const studentInfo = fetchStudent?.filter((obj) => obj?.email === email)
+    const coordinatorInfo = fetchCoordinator?.filter(
+      (obj) => obj?.email === email
+    )
 
-    studentInfo.length > 0 &&
-      localStorage.setItem("user_details", JSON.stringify({ studentInfo }))
+    const userData = studentInfo.length > 0 ? studentInfo : coordinatorInfo
+
+    localStorage.setItem("user_details", JSON.stringify({ userData }))
 
     userInfo.forEach((user) => {
       user.status === "admin" && setLinks(admin)

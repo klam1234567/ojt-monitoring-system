@@ -19,12 +19,19 @@ export default function StudentTasks() {
   const { fetchTasks } = useContext(TaskContext)
   const { fetchStudent } = useContext(StudentContext)
   const context = useContext(AuthContext)
+  const { userData } = JSON.parse(localStorage.getItem("user_details"))
 
   const navigate = useNavigate()
 
   const filteredByUID = filterByStudentUUID(fetchStudent, context.uid)
 
-  const studentTasks = filteredBySection(fetchTasks, filteredByUID[0]?.section)
+  console.log(fetchTasks)
+
+  const studentTasks = filteredBySection(
+    fetchTasks,
+    filteredByUID[0]?.section,
+    userData[0]?.company
+  )
 
   // const filteredStudentTasks = newSetOfStudentTasks(
   //   studentTasks,

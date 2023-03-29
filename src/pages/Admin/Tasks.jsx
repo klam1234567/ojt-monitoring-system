@@ -5,13 +5,16 @@ import { Layout, Tabs, Textbox, Table, SelectMenu } from "components"
 import { generateTaskCode, Months } from "Utils/ReusableSyntax"
 import { useNavigate } from "react-router-dom"
 import { sectionList } from "Utils/ReusableSyntax"
-import { filterByOwnerIdTask } from "Utils/ReusableSyntax"
+import {
+  filterByOwnerIdTask,
+  filterByCoordinatorUUID,
+} from "Utils/ReusableSyntax"
 import ReactQuill from "react-quill"
 
 //context api
 import { AuthContext } from "context/auth"
 import { TaskContext } from "context/TasksProvider"
-// import { CoordinatorContext } from "context/CoordinatorProvider"
+import { CoordinatorContext } from "context/CoordinatorProvider"
 
 //Higher Order Component
 import { FormHOC } from "HOC"
@@ -35,20 +38,20 @@ const entity = {
 function Tasks(props) {
   const navigate = useNavigate()
   const context = useContext(AuthContext)
-  // const { fetchCoordinator } = useContext(CoordinatorContext)
+  const { fetchCoordinator } = useContext(CoordinatorContext)
   const { fetchTasks } = useContext(TaskContext)
   const filteredTask = filterByOwnerIdTask(fetchTasks, context.uid)
-
-  console.log(fetchTasks)
 
   const isCurrentLogged = context.email === "demo@admin.com"
 
   // const filteredTasks = filterByUUID(fetchTasks, context.uid)
 
-  // const filteredSupervisor = filterByCoordinatorUUID(
-  //   fetchCoordinator,
-  //   context.uid
-  // )
+  const filteredSupervisor = filterByCoordinatorUUID(
+    fetchCoordinator,
+    context.uid
+  )
+
+  console.log(filteredSupervisor)
 
   const [convertedText, setConvertedText] = useState("")
 
@@ -72,7 +75,8 @@ function Tasks(props) {
         section,
         ownerStatus: isCheckStatus,
         taskStatus: isCurrentLogged ? "WAR" : "TASK",
-        // company: filteredSupervisor[0]?.company,
+        company:
+          filteredSupervisor.length > 0 ? filteredSupervisor[0]?.company : null,
         deadline,
         description: convertedText,
         deadlineStatus: "active",
