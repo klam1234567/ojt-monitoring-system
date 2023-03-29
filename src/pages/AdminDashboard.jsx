@@ -6,6 +6,7 @@ import {
   filterByStudentUUIDs,
   filteredByStudentScore,
   filterByUUID,
+  filterCoordByUUID,
   coordinatorName,
 } from "Utils/ReusableSyntax"
 
@@ -33,16 +34,19 @@ export default function AdminDashboard() {
     context.uid
   )
 
+  console.log(fetchTasks)
+
   const isStudentGraded = filteredByStudentScore(filteredDocuments)
-  const tasksPerUser = filterByUUID(fetchTasks, context.uid)
+  const tasksPerUser = filterCoordByUUID(fetchTasks, context.uid)
   const tasksSubmitted = coordinatorName(fetchSubCollection, context?.email)
+  const filteredData = filterByUUID(fetchRegisteredStudent, context.email)
 
   const gradedTasks = isStudentGraded.length
   const student = fetchStudent.length
   const coordinator = fetchCoordinator.length
   const organization = fetchOrganization.length
   const tasks = tasksPerUser.length
-  const registeredStudents = fetchRegisteredStudent.length
+  const registeredStudents = filteredData.length
   const taskSubmitted = tasksSubmitted.length
   const studentTaskSubmitted = filteredDocuments.length
 

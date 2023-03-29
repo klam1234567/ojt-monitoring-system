@@ -121,6 +121,12 @@ export const filteredByEmail = (itemArray, email) => {
   })
 }
 
+export const filterCoordByUUID = (itemArray, uid) => {
+  return itemArray.filter((type) => {
+    return type.ownerUUID === uid
+  })
+}
+
 export const filterByUUID = (itemArray, email) => {
   return itemArray.filter((type) => {
     return type.coordinatorEmail === email
