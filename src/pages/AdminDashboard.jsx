@@ -34,8 +34,6 @@ export default function AdminDashboard() {
     context.uid
   )
 
-  console.log(fetchTasks)
-
   const isStudentGraded = filteredByStudentScore(filteredDocuments)
   const tasksPerUser = filterCoordByUUID(fetchTasks, context.uid)
   const tasksSubmitted = coordinatorName(fetchSubCollection, context?.email)

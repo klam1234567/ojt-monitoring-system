@@ -48,15 +48,14 @@ export default function TaskDescription() {
 
   fetchOneTask && objectAssign(fetchOneTask, initialState)
 
-  const filteredDocuments =
-    fetchSubCollection.length > 0 &&
-    filterByStudentUUIDs(fetchSubCollection, context.uid)
+  const filteredDocuments = filterByStudentUUIDs(
+    fetchSubCollection,
+    context.uid
+  )
 
   // const isCheckSubmit = useMemo(() => {
   //   return filteredDocuments[0]?.documentDetails.status === "submitted"
   // }, [filteredDocuments])
-
-  console.log(filteredDocuments)
 
   const onChange = (event) => {
     const { files } = event.target
@@ -76,21 +75,22 @@ export default function TaskDescription() {
   const onSubmit = async (event) => {
     event.preventDefault()
     try {
-      filteredDocuments.forEach((el) => {
-        if (el.documentid === id && el.userDetails.email === context.email) {
-          if (el.documentDetails.status === "submitted") {
-            swal.fire({
-              title: "Warning!!",
-              text: "you already submitted, you cant submit twice",
-              icon: "warning",
-            })
+      fetchSubCollection.length > 0 &&
+        filteredDocuments.forEach((el) => {
+          if (el.documentid === id && el.userDetails.email === context.email) {
+            if (el.documentDetails.status === "submitted") {
+              swal.fire({
+                title: "Warning!!",
+                text: "you already submitted, you cant submit twice",
+                icon: "warning",
+              })
 
-            setToggle(false)
+              setToggle(false)
 
-            throw new Error("you already submitted, you cant submit twice")
+              throw new Error("you already submitted, you cant submit twice")
+            }
           }
-        }
-      })
+        })
 
       if (file === null) {
         swal.fire({
@@ -108,7 +108,7 @@ export default function TaskDescription() {
 
       const storageRef = app.storage().ref()
       const fileRef = storageRef.child(`submitted_documents/${file.name}`)
-      await fileRef.put(file)
+      file && (await fileRef.put(file))
       await fileRef
         .getDownloadURL()
         .then(async (fileUrl) => {
@@ -121,7 +121,7 @@ export default function TaskDescription() {
               .add({
                 documentid: id,
                 ownerEmail: initialState.email,
-                userDetails: userDetails?.studentInfo[0],
+                userDetails: userDetails?.userData[0],
                 ownerStatus: initialState.ownerStatus,
                 taskStatus: initialState.taskStatus,
                 documentDetails: {
@@ -155,7 +155,7 @@ export default function TaskDescription() {
           }
         })
         .catch((error) => {
-          console.log(error.message)
+          console.log(error)
         })
     } catch (error) {
       console.log(error)

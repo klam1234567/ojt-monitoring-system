@@ -25,8 +25,6 @@ export default function StudentTasks() {
 
   const filteredByUID = filterByStudentUUID(fetchStudent, context.uid)
 
-  console.log(fetchTasks)
-
   const studentTasks = filteredBySection(
     fetchTasks,
     filteredByUID[0]?.section,
