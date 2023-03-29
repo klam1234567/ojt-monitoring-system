@@ -161,7 +161,7 @@ function MasterList(props) {
     },
   ]
 
-  const tabName = ["Student List", "Add New"]
+  const tabName = ["Student List"]
 
   // const add_new_trainee = (
   //   <Fragment>
